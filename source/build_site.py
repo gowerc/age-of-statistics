@@ -64,7 +64,7 @@ def refresh():
         os.path.join(DIR_SITE, DIR_WWW)
     )
     shutil.copyfile(
-        "./favicon.ico",
+        "./www/favicon.ico",
         os.path.join(DIR_SITE, "favicon.ico")
     )
 

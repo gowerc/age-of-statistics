@@ -5,14 +5,14 @@
     </head>
     <body>
         <div class="d-flex align-items-start flex-column main-page">
-            <div class="p-0 m-0"  style="width:100vw">
+            <div class="p-0 m-0"  style="width:100%">
                 {% include 'navbar.html' %}
             </div>
-            <div class="container-central content mb-auto">
+            <div class="container-central mb-auto mx-auto px-0">
                 {% block content %}
                 {% endblock %}
             </div>
-            <div class="p-0 m-0" style="width:100vw">
+            <div class="p-0 m-0" style="width:100%">
                 {% include 'footer.html' %}
             </div>
         </div>

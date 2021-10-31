@@ -67,8 +67,8 @@ opts_default <- list(
         ext = "png"
     ),
     square = list(
-        height = 8,
-        width = 8,
+        height = 6.75,
+        width = 9,
         units = "in",
         dpi = 150,
         scale = 1.2,
