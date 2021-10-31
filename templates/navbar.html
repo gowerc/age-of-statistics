@@ -1,0 +1,34 @@
+
+
+
+<nav class="navbar navbar-expand-sm navbar-dark bg-dark py-md-2 px-md-4 mb-sm-3">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="index.html">Age of Statistics</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse justify-content-end" id="navbarNavDropdown">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="methods.html">Methods</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="faq.html">FAQs</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Cohorts
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        {% for i in cohorts %}
+                        <a href="cohort_{{i.id}}.html">
+                            <li><button class="dropdown-item" type="button">{{i.display}}</button></li>
+                        </a>
+                        {% endfor %}
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+

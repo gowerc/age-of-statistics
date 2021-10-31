@@ -1,0 +1,168 @@
+
+- 
+    id: rm_solo_any
+    display: RM, 1v1, All Maps, >1200 Elo
+    leaderboard: 1v1 Random Map
+    mapclass: Any
+    elo_limit_lower: 1200
+    elo_limit_lower_slide: 800
+    start_limit_lower: 2021-08-25 01:00:00
+    start_limit_upper: 2021-10-04 23:00:00
+    length_limit_lower: 6
+    length_limit_upper: 180
+    rm_single_pick: False
+
+
+-
+    id: rm_solo_open
+    display: RM, 1v1, Open Maps, >1200 Elo
+    leaderboard: 1v1 Random Map
+    mapclass: Open
+    elo_limit_lower: 1200
+    elo_limit_lower_slide: 800
+    start_limit_lower: 2021-08-25 01:00:00
+    start_limit_upper: 2021-10-04 23:00:00
+    length_limit_lower: 6
+    length_limit_upper: 180
+    rm_single_pick: False
+
+
+-
+    id: rm_solo_closed
+    display: RM, 1v1, Closed Maps, >1200 Elo
+    leaderboard: 1v1 Random Map
+    mapclass: Closed
+    elo_limit_lower: 1200
+    elo_limit_lower_slide: 800
+    start_limit_lower: 2021-08-25 01:00:00
+    start_limit_upper: 2021-10-04 23:00:00
+    length_limit_lower: 6
+    length_limit_upper: 180
+    rm_single_pick: False
+
+
+-
+    id: rm_team_any
+    display: RM, Teams, All Maps, >2000 Elo
+    leaderboard: Team Random Map
+    mapclass: Any
+    elo_limit_lower: 2000
+    elo_limit_lower_slide: 1500
+    start_limit_lower: 2021-08-25 01:00:00
+    start_limit_upper: 2021-10-04 23:00:00
+    length_limit_lower: 6
+    length_limit_upper: 180
+    rm_single_pick: False
+
+
+-
+    id: rm_team_open
+    display: RM, Teams, Open Maps, >2000 Elo
+    leaderboard: Team Random Map
+    mapclass: Open
+    elo_limit_lower: 2000
+    elo_limit_lower_slide: 1500
+    start_limit_lower: 2021-08-25 01:00:00
+    start_limit_upper: 2021-10-04 23:00:00
+    length_limit_lower: 6
+    length_limit_upper: 180
+    rm_single_pick: False
+
+
+-
+    id: rm_team_closed
+    display: RM, Teams, Closed Maps, >2000 Elo
+    leaderboard: Team Random Map
+    mapclass: Closed
+    elo_limit_lower: 2000
+    elo_limit_lower_slide: 1500
+    start_limit_lower: 2021-08-25 01:00:00
+    start_limit_upper: 2021-10-04 23:00:00
+    length_limit_lower: 6
+    length_limit_upper: 180
+    rm_single_pick: False
+
+
+-
+    id: ew_solo_any
+    display: EW, 1v1, All Maps, >1100 Elo
+    leaderboard: 1v1 Empire Wars
+    mapclass: Any
+    elo_limit_lower: 1100
+    elo_limit_lower_slide: 800
+    start_limit_lower: 2021-08-25 01:00:00
+    start_limit_upper: 2021-10-04 23:00:00
+    length_limit_lower: 3
+    length_limit_upper: 180
+    rm_single_pick: False
+
+
+- 
+    id: ew_team_any
+    display: EW, Teams, All Maps, >1100 Elo
+    leaderboard: Team Empire Wars
+    mapclass: Any
+    elo_limit_lower: 1100
+    elo_limit_lower_slide: 800
+    start_limit_lower: 2021-08-25 01:00:00
+    start_limit_upper: 2021-10-04 23:00:00
+    length_limit_lower: 3
+    length_limit_upper: 180
+    rm_single_pick: False
+
+
+- 
+    id: rm_solo_open_rm1civ
+    display: RM, 1v1, Open Maps, >1200 Elo, No-Civ-Pick
+    leaderboard: 1v1 Random Map
+    mapclass: Open
+    elo_limit_lower: 1200
+    elo_limit_lower_slide: 800
+    start_limit_lower: 2021-08-25 01:00:00
+    start_limit_upper: 2021-10-04 23:00:00
+    length_limit_lower: 6
+    length_limit_upper: 180
+    rm_single_pick: True
+
+
+- 
+    id: rm_solo_closed_rm1civ
+    display: RM, 1v1, Closed Maps, >1200 Elo, No-Civ-Pick
+    leaderboard: 1v1 Random Map
+    mapclass: Closed
+    elo_limit_lower: 1200
+    elo_limit_lower_slide: 800
+    start_limit_lower: 2021-08-25 01:00:00
+    start_limit_upper: 2021-10-04 23:00:00
+    length_limit_lower: 6
+    length_limit_upper: 180
+    rm_single_pick: True
+
+
+- 
+    id: rm_solo_open_pro
+    display: RM, 1v1, Open Maps, >1700 Elo
+    leaderboard: 1v1 Random Map
+    mapclass: Open
+    elo_limit_lower: 1700
+    elo_limit_lower_slide: 1200
+    start_limit_lower: 2021-08-25 01:00:00
+    start_limit_upper: 2021-10-04 23:00:00
+    length_limit_lower: 6
+    length_limit_upper: 180
+    rm_single_pick: False
+
+
+- 
+    id: rm_solo_closed_pro
+    display: RM, 1v1, Closed Maps, >1700 Elo
+    leaderboard: 1v1 Random Map
+    mapclass: Closed
+    elo_limit_lower: 1700
+    elo_limit_lower_slide: 1200
+    start_limit_lower: 2021-08-25 01:00:00
+    start_limit_upper: 2021-10-04 23:00:00
+    length_limit_lower: 6
+    length_limit_upper: 180
+    rm_single_pick: False
+

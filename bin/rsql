@@ -1,0 +1,12 @@
+#!/bin/bash
+
+source ./bin/config
+
+psql \
+    --host $APP_HOST \
+    --port $APP_PORT \
+    --username $APP_USER \
+    -f $1 \
+    $APP_DB 
+
+

@@ -1,0 +1,25 @@
+version: '3.9'
+services:
+
+  analysis:
+    build: 
+      context: ./
+      dockerfile: ./Dockerfile
+    volumes:
+    - ".:/app"
+    command: tail -f /dev/null
+
+  db:
+    image: postgres:13.2
+    ports:
+      - 5432:5432
+    volumes: 
+    - "dbdata:/var/lib/postgresql/data"
+    environment:
+        POSTGRES_DB: aoe
+        POSTGRES_USER: postgres
+        POSTGRES_PASSWORD: Hunter2
+        PGDATA: /var/lib/postgresql/data/pgdata
+
+volumes:
+  dbdata:

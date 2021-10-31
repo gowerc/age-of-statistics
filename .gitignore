@@ -1,0 +1,32 @@
+
+### Specific output formats
+
+.gsauth
+.snakemake
+
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+.vscode
+
+*.Rds
+*.rds
+*.RDS
+*.pyc
+
+Rplots.pdf
+
+### Specific folders
+
+__pycache__
+
+data/*
+outputs/*
+docs/*
+site/*
+_site/*
+
+!.gitkeep
+
+
