@@ -38,15 +38,15 @@ rule site:
         """
 
 ###### VAD
-rule:
-    output: "data/ad_matchmeta.Rds"
-    input: "analysis/ad_ana.R", "data/ad_patchmeta.json"
+rule matchmeta_players:
+    output: "data/ad_matchmeta.Rds", "data/ad_players.Rds"
+    input: "source/ad_ana.R", "data/ad_patchmeta.json"
     shell: "Rscript {input[0]}"
 
 
-rule:
+rule patchmeta:
     output: "data/ad_patchmeta.json"
-    input: "analysis/ad_patchmeta.py"
+    input: "source/ad_patchmeta.py"
     shell: "python3.9 {input[0]}"
 
 

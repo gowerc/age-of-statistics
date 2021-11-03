@@ -4,6 +4,19 @@ import datetime
 import support
 import support.api
 
+
+# Release date for lords of the west
+# First metadata set is based on this release
+DEFAULT_TIME = support.as_seconds(datetime.datetime(
+    year=2021,
+    month=10,
+    day=1,
+    hour=1,
+    minute=00,
+    second=00
+))
+
+
 def db_insert_into(data, db_name):
     db_vars = dbmeta[db_name]["variables"].keys()
     db_keys = dbmeta[db_name]["keys"]
@@ -27,35 +40,23 @@ def db_insert_into(data, db_name):
 
 
 def extract_data(dat):
-    """
-    Function to extract data from api in particular
-    separate players data from the match data
-    perform basic filtering of removing invalid_matches
-    invalid matches are those where all players ids are known
-    and the result is known (i.e. not missing)
-    also adds match_id to the players dataset
-    """
     PLAYERS = []
     MATCHES = []
     for row in dat:
-        VALID_MATCH = True
-        PLAYERS_ROW = []
-        match_id = row["match_id"]
         players = row["players"]
+        match_id = row["match_id"]
+        row["players"] = {}
         for player in players:
-            if player["profile_id"] is None or player["won"] is None:
-                VALID_MATCH = False
             player["match_id"] = match_id
-            PLAYERS_ROW.append(player)
-        if VALID_MATCH:
-            for i in PLAYERS_ROW:
-                PLAYERS.append(i)
-            MATCHES.append(row)
+            if not player["profile_id"]:
+                player["profile_id"] = -999
+            PLAYERS.append(player)
+        MATCHES.append(row)
     return {"matches": MATCHES, "players": PLAYERS}
 
 
 def db_create_table_if_not(db_name):
-
+    
     create_table_query_template = """
     CREATE TABLE IF NOT EXISTS public.{TABLE} (
         {VARIABLES},
@@ -95,7 +96,6 @@ def db_create_table_if_not(db_name):
     cur.execute(create_table_query)
 
 
-
 def get_connection():
     with open("./bin/config.json") as fi:
         env = json.load(fi)
@@ -106,8 +106,6 @@ def get_connection():
         password=env["APP_PASSWORD"]
     )
     return conn
-
-
 
 
 def db_get_latest():
@@ -126,7 +124,7 @@ def db_get_latest():
 def add_to_db(dt):
     print(
         "Getting:",
-        datetime.datetime(1970, 1, 1) + datetime.timedelta(seconds=dt)
+        datetime.datetime.fromtimestamp(dt)
     )
     
     ret = support.api.get_matches(dt)
@@ -144,17 +142,6 @@ def add_to_db(dt):
     
     conn.commit()
 
-
-# Release date for lords of the west
-# First metadata set is based on this release
-DEFAULT_TIME = support.as_seconds(datetime.datetime(
-    year=2021,
-    month=8,
-    day=11,
-    hour=1,
-    minute=00,
-    second=00
-))
 
 if __name__ == "__main__":
     
@@ -176,9 +163,11 @@ if __name__ == "__main__":
     latest = db_get_latest()
     
     while latest <= dt_limit:
+        old_latest = latest
         add_to_db(latest)
         latest = db_get_latest()
+        if old_latest == latest:
+            raise RuntimeError("Latest did not advance after data update")
     
     cur.close()
     conn.close()
-

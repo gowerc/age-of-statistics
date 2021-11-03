@@ -3,11 +3,13 @@ import os
 import jinja2
 import yaml
 import argparse
+import pathlib
 
 
-DIR_SITE = "docs"
+DIR_SITE = "_site"
 DIR_OUTPUTS = "outputs"
 DIR_WWW = "www"
+BUILD_ID = "001"
 
 
 def get_args():
@@ -38,7 +40,8 @@ def build_page_cohort(cohort, cohort_meta):
     content = env.get_template("cohort.html").render(
         cohort=cohort["id"],
         meta=cohort,
-        cohorts=cohort_meta
+        cohorts=cohort_meta,
+        build_id=BUILD_ID
     )
     with open(PAGE, "w") as fi:
         fi.write(content)
@@ -63,10 +66,7 @@ def refresh():
         DIR_WWW,
         os.path.join(DIR_SITE, DIR_WWW)
     )
-    shutil.copyfile(
-        "./www/favicon.ico",
-        os.path.join(DIR_SITE, "favicon.ico")
-    )
+
 
 
 if __name__ == "__main__":
@@ -87,3 +87,19 @@ if __name__ == "__main__":
 
     for cohort in cohort_meta:
         build_page_cohort(cohort, cohort_meta)
+
+    for folder, subfolders, files in os.walk(DIR_SITE):
+        for file in files:
+            x = pathlib.Path(os.path.join(folder, file))
+            if x.suffix in [".png"]:
+                x.rename(x.parent.joinpath(x.stem + "_" + BUILD_ID + x.suffix))
+    
+    # Clean up
+    shutil.move(
+        os.path.join(DIR_SITE, "www", "favicon.ico"),
+        os.path.join(DIR_SITE, "favicon.ico")
+    )
+    shutil.move(
+        os.path.join(DIR_SITE, "www", "netlify.toml"),
+        os.path.join(DIR_SITE, "netlify.toml")
+    )

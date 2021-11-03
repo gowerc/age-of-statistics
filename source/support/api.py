@@ -26,7 +26,3 @@ def get_meta(game="aoe2de", language="en"):
     resp = requests.get("https://aoe2.net/api/strings", params)
     resp.raise_for_status()
     return resp.json()
-
-
-
-

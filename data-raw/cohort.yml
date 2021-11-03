@@ -6,8 +6,8 @@
     mapclass: Any
     elo_limit_lower: 1200
     elo_limit_lower_slide: 800
-    start_limit_lower: 2021-08-25 01:00:00
-    start_limit_upper: 2021-10-04 23:00:00
+    start_limit_lower: 2021-10-12 01:00:00
+    start_limit_upper: 2021-11-01 23:00:00
     length_limit_lower: 6
     length_limit_upper: 180
     rm_single_pick: False
@@ -20,8 +20,8 @@
     mapclass: Open
     elo_limit_lower: 1200
     elo_limit_lower_slide: 800
-    start_limit_lower: 2021-08-25 01:00:00
-    start_limit_upper: 2021-10-04 23:00:00
+    start_limit_lower: 2021-10-12 01:00:00
+    start_limit_upper: 2021-11-01 23:00:00
     length_limit_lower: 6
     length_limit_upper: 180
     rm_single_pick: False
@@ -34,8 +34,8 @@
     mapclass: Closed
     elo_limit_lower: 1200
     elo_limit_lower_slide: 800
-    start_limit_lower: 2021-08-25 01:00:00
-    start_limit_upper: 2021-10-04 23:00:00
+    start_limit_lower: 2021-10-12 01:00:00
+    start_limit_upper: 2021-11-01 23:00:00
     length_limit_lower: 6
     length_limit_upper: 180
     rm_single_pick: False
@@ -48,8 +48,8 @@
     mapclass: Any
     elo_limit_lower: 2000
     elo_limit_lower_slide: 1500
-    start_limit_lower: 2021-08-25 01:00:00
-    start_limit_upper: 2021-10-04 23:00:00
+    start_limit_lower: 2021-10-12 01:00:00
+    start_limit_upper: 2021-11-01 23:00:00
     length_limit_lower: 6
     length_limit_upper: 180
     rm_single_pick: False
@@ -62,8 +62,8 @@
     mapclass: Open
     elo_limit_lower: 2000
     elo_limit_lower_slide: 1500
-    start_limit_lower: 2021-08-25 01:00:00
-    start_limit_upper: 2021-10-04 23:00:00
+    start_limit_lower: 2021-10-12 01:00:00
+    start_limit_upper: 2021-11-01 23:00:00
     length_limit_lower: 6
     length_limit_upper: 180
     rm_single_pick: False
@@ -76,8 +76,8 @@
     mapclass: Closed
     elo_limit_lower: 2000
     elo_limit_lower_slide: 1500
-    start_limit_lower: 2021-08-25 01:00:00
-    start_limit_upper: 2021-10-04 23:00:00
+    start_limit_lower: 2021-10-12 01:00:00
+    start_limit_upper: 2021-11-01 23:00:00
     length_limit_lower: 6
     length_limit_upper: 180
     rm_single_pick: False
@@ -90,8 +90,8 @@
     mapclass: Any
     elo_limit_lower: 1100
     elo_limit_lower_slide: 800
-    start_limit_lower: 2021-08-25 01:00:00
-    start_limit_upper: 2021-10-04 23:00:00
+    start_limit_lower: 2021-10-12 01:00:00
+    start_limit_upper: 2021-11-01 23:00:00
     length_limit_lower: 3
     length_limit_upper: 180
     rm_single_pick: False
@@ -104,8 +104,8 @@
     mapclass: Any
     elo_limit_lower: 1100
     elo_limit_lower_slide: 800
-    start_limit_lower: 2021-08-25 01:00:00
-    start_limit_upper: 2021-10-04 23:00:00
+    start_limit_lower: 2021-10-12 01:00:00
+    start_limit_upper: 2021-11-01 23:00:00
     length_limit_lower: 3
     length_limit_upper: 180
     rm_single_pick: False
@@ -118,8 +118,8 @@
     mapclass: Open
     elo_limit_lower: 1200
     elo_limit_lower_slide: 800
-    start_limit_lower: 2021-08-25 01:00:00
-    start_limit_upper: 2021-10-04 23:00:00
+    start_limit_lower: 2021-10-12 01:00:00
+    start_limit_upper: 2021-11-01 23:00:00
     length_limit_lower: 6
     length_limit_upper: 180
     rm_single_pick: True
@@ -132,8 +132,8 @@
     mapclass: Closed
     elo_limit_lower: 1200
     elo_limit_lower_slide: 800
-    start_limit_lower: 2021-08-25 01:00:00
-    start_limit_upper: 2021-10-04 23:00:00
+    start_limit_lower: 2021-10-12 01:00:00
+    start_limit_upper: 2021-11-01 23:00:00
     length_limit_lower: 6
     length_limit_upper: 180
     rm_single_pick: True
@@ -146,8 +146,8 @@
     mapclass: Open
     elo_limit_lower: 1700
     elo_limit_lower_slide: 1200
-    start_limit_lower: 2021-08-25 01:00:00
-    start_limit_upper: 2021-10-04 23:00:00
+    start_limit_lower: 2021-10-12 01:00:00
+    start_limit_upper: 2021-11-01 23:00:00
     length_limit_lower: 6
     length_limit_upper: 180
     rm_single_pick: False
@@ -160,8 +160,8 @@
     mapclass: Closed
     elo_limit_lower: 1700
     elo_limit_lower_slide: 1200
-    start_limit_lower: 2021-08-25 01:00:00
-    start_limit_upper: 2021-10-04 23:00:00
+    start_limit_lower: 2021-10-12 01:00:00
+    start_limit_upper: 2021-11-01 23:00:00
     length_limit_lower: 6
     length_limit_upper: 180
     rm_single_pick: False

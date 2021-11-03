@@ -27,19 +27,19 @@
     </p>
     
     <h3>Distribution of Matches Played by Patch</h3>
-    <img class="img-cohort img-standard" src="outputs/cohort_{{meta.id}}/dist_patch.png">
+    <img class="img-cohort img-standard" src="outputs/cohort_{{meta.id}}/dist_patch_{{build_id}}.png">
 
     <h3>Distribution of Matches Played by Map</h3>
-    <img class="img-cohort img-standard" src="outputs/cohort_{{meta.id}}/dist_map.png">
+    <img class="img-cohort img-standard" src="outputs/cohort_{{meta.id}}/dist_map_{{build_id}}.png">
 
     <h3>Distribution of Matches Played by Game Length</h3>
-    <img class="img-cohort img-standard" src="outputs/cohort_{{meta.id}}/dist_gamelength.png">
+    <img class="img-cohort img-standard" src="outputs/cohort_{{meta.id}}/dist_gamelength_{{build_id}}.png">
 
     <h3>Distribution of Matches Played by Mean Team Elo </h3>
-    <img class="img-cohort img-standard" src="outputs/cohort_{{meta.id}}/dist_elo.png">
+    <img class="img-cohort img-standard" src="outputs/cohort_{{meta.id}}/dist_elo_{{build_id}}.png">
 
     <h3>Play Rate by Civilisation</h3>
-    <img class="img-cohort img-standard" src="outputs/cohort_{{meta.id}}/civ_playrate.png">
+    <img class="img-cohort img-standard" src="outputs/cohort_{{meta.id}}/civ_playrate_{{build_id}}.png">
 </script>
 
 
@@ -47,20 +47,20 @@
 
 <script type="text/x-template" id="c-naive-wr">
     <h3>Naive Win Rates by Civilisation</h3>
-    <img class="img-cohort img-standard" src="outputs/cohort_{{meta.id}}/civ_wrNaive.png">
+    <img class="img-cohort img-standard" src="outputs/cohort_{{meta.id}}/civ_wrNaive_{{build_id}}.png">
 
     <h3>Naive Win Rates vs Play Rate</h3>
-    <img class="img-cohort img-standard" src="outputs/cohort_{{meta.id}}/civ_wrNaive_playrate.png">
+    <img class="img-cohort img-standard" src="outputs/cohort_{{meta.id}}/civ_wrNaive_playrate_{{build_id}}.png">
 </script>
 
 
 
 <script type="text/x-template" id="c-avg-wr">
     <h3>Averaged Win Rates by Civilisation</h3>
-    <img class="img-cohort img-standard" src="outputs/cohort_{{meta.id}}/civ_wrAvg.png">
+    <img class="img-cohort img-standard" src="outputs/cohort_{{meta.id}}/civ_wrAvg_{{build_id}}.png">
 
     <h3>Averaged Win Rates vs Play Rate</h3>
-    <img class="img-cohort img-standard" src="outputs/cohort_{{meta.id}}/civ_wrAvg_playrate.png">
+    <img class="img-cohort img-standard" src="outputs/cohort_{{meta.id}}/civ_wrAvg_playrate_{{build_id}}.png">
 </script>
 
 
@@ -68,14 +68,14 @@
 
 <script type="text/x-template" id="c-sliding">
     <h3>Naive Win Rates by Elo</h3>
-    <img class="img-cohort img-square" src="outputs/cohort_{{meta.id}}/slide_wrNaive_elo.png">
+    <img class="img-cohort img-square" src="outputs/cohort_{{meta.id}}/slide_wrNaive_elo_{{build_id}}.png">
 
     <h3>Naive Win Rates by Game Length</h3>
-    <img class="img-cohort img-square" src="outputs/cohort_{{meta.id}}/slide_wrNaive_gamelength.png">
+    <img class="img-cohort img-square" src="outputs/cohort_{{meta.id}}/slide_wrNaive_gamelength_{{build_id}}.png">
 
 
     <h3>Play Rates by Elo</h3>
-    <img class="img-cohort img-square" src="outputs/cohort_{{meta.id}}/slide_playrate_elo.png">
+    <img class="img-cohort img-square" src="outputs/cohort_{{meta.id}}/slide_playrate_elo_{{build_id}}.png">
 </script>
 
 
@@ -95,7 +95,7 @@
         <h3>Civilisation v Civilisation Win Rates</h3>
         <img 
             class="img-cohort img-standard"
-            :src="'outputs/cohort_{{meta.id}}/cvc_wrNaive_' + civ + '.png'"
+            :src="'outputs/cohort_{{meta.id}}/cvc_wrNaive_' + civ + '_{{build_id}}.png'"
         >
     </div>
 </script>
@@ -105,7 +105,7 @@
 <script type="text/x-template" id="c-experimental">
     
     <h3>Distribution of Players Highest Picked Civilisation's Play Rate</h3>
-    <img class="img-cohort img-standard" src="outputs/cohort_{{meta.id}}/dist_civpick.png">
+    <img class="img-cohort img-standard" src="outputs/cohort_{{meta.id}}/dist_civpick_{{build_id}}.png">
     <p>
         For this plot we calculate the play rate of each players most played civ 
         (i.e. if I used Franks for 60% of my games, Mayans for 30% and Britains for 10%
@@ -116,7 +116,7 @@
     </p>
 
     <h3>Hierarchical Clustering Dendrogram</h3>
-    <img class="img-cohort img-standard" src="outputs/cohort_{{meta.id}}/civ_dendro.png">
+    <img class="img-cohort img-standard" src="outputs/cohort_{{meta.id}}/civ_dendro_{{build_id}}.png">
     <p>
         This output attempts to highlight civilisations that are "similar" based upon
         their win rates vs other civilisations. The algorithm works by recursively
@@ -130,7 +130,7 @@
     </p>
 
     <h3>Estimating how Overrated or Underrated each Civilisation is</h3>
-    <img class="img-cohort img-standard" src="outputs/cohort_{{meta.id}}/civ_ewr_owr_diff.png">
+    <img class="img-cohort img-standard" src="outputs/cohort_{{meta.id}}/civ_ewr_owr_diff_{{build_id}}.png">
     <p>
         This plot attempts to answer the question of "how overrated / underrated is each
         civilisation" (credit to SOTL for proposing this idea).
@@ -146,7 +146,7 @@
         shows the difference between the expected win rate and the observed win rate with
         the plot below showing the observed win rates vs the expected win rates.
     </p>
-    <img class="img-cohort img-standard" src="outputs/cohort_{{meta.id}}/civ_ewr_owr.png">
+    <img class="img-cohort img-standard" src="outputs/cohort_{{meta.id}}/civ_ewr_owr_{{build_id}}.png">
     <p>
         It must stress that these plots should be interpreted with a massive grain of
         salt. The fundamental assumption that play rates predict win rates is a strong

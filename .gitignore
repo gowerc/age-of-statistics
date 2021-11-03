@@ -30,3 +30,6 @@ _site/*
 !.gitkeep
 
 
+
+# Local Netlify folder
+.netlify

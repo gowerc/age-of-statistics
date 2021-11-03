@@ -15,6 +15,13 @@ con <- get_connection()
 meta <- get_patchmeta()
 
 
+LEADERBOARDS <- c(
+    "1v1 Random Map",
+    "Team Random Map",
+    "1v1 Empire Wars",
+    "Team Empire Wars"
+)
+
 meta_civ <- meta %>%
     filter(type == "civ") %>%
     select(civ = id, civ_name = string)
@@ -27,52 +34,105 @@ meta_map <- meta %>%
 
 meta_board <- meta %>%
     filter(type == "leaderboard") %>%
-    select(leaderboard_id = id, leaderboard_name = string)
+    select(leaderboard_id = id, leaderboard_name = string) %>%
+    filter(leaderboard_name %in% LEADERBOARDS)
 
 
-keep_matches <- tbl(con, "match_meta") %>%
-    filter(leaderboard_id %in% c(3, 4, 13, 14), ranked) %>%
-    select(match_id, map_type, version, started, leaderboard_id, finished)
+matches_all <- tbl(con, "match_meta") %>%
+    select(match_id, started, version, leaderboard_id, finished, map_type, ranked) %>%
+    collect()
 
 
-dat <- tbl(con, "match_players") %>%
-    filter(team %in% c(1, 2)) %>%
-    inner_join(keep_matches, by = "match_id") %>%
-    select(
-        match_id, rating, civ, won, slot, profile_id, started, team,
-        map_type, leaderboard_id, version, finished, profile_id, name
-    ) %>%
-    collect() %>%
+players_all <- tbl(con, "match_players") %>%
+    select(match_id, rating, civ, won, slot, profile_id, team, name) %>%
+    collect()
+
+
+remove_wrong_leaderboard <- matches_all %>%
+    filter(!(leaderboard_id %in% meta_board$leaderboard_id & ranked)) %>%
+    distinct(match_id)
+
+remove_no_player_id <- players_all %>%
+    filter(profile_id < 0) %>%
+    distinct(match_id)
+
+remove_no_elo <- players_all %>%
+    select(match_id, rating) %>%
+    filter(is.na(rating)) %>%
+    distinct(match_id)
+
+remove_no_result <- players_all %>%
+    select(match_id, won) %>%
+    filter(is.na(won)) %>%
+    distinct(match_id)
+
+remove_invalid_teams <- players_all %>%
+    filter(!team %in% c(1, 2)) %>%
+    distinct(match_id)
+
+remove_unknown_times <- matches_all %>%
+    filter(is.na(started) | is.na(started)) %>%
+    distinct(match_id)
+
+remove_unknown_maps <- matches_all %>%
+    filter(is.na(map_type)) %>%
+    distinct(match_id)
+
+remove_unknown_version <- matches_all %>%
+    filter(is.na(version)) %>%
+    distinct(match_id)
+
+remove_me <- bind_rows(
+    remove_wrong_leaderboard,
+    remove_no_player_id,
+    remove_no_elo,
+    remove_no_result,
+    remove_invalid_teams,
+    remove_unknown_times,
+    remove_unknown_maps,
+    remove_unknown_version
+) %>% 
+    distinct(match_id)
+
+
+
+valid_matches <- matches_all %>%
+    arrange(match_id) %>%
+    anti_join(remove_me, by = "match_id") %>%
     mutate(start_dt = ymd("1970-01-01") + seconds(started)) %>%
     mutate(stop_dt = ymd("1970-01-01") + seconds(finished)) %>%
     mutate(match_length = as.numeric(difftime(stop_dt, start_dt, units = "mins"))) %>%
     mutate(match_length_igm =  match_length * 1.7) %>%
-    select(-started, - finished)
+    select(-started, - finished) %>% 
+    left_join(meta_map, by = "map_type") %>%
+    left_join(meta_board, by = "leaderboard_id")
 
 
-valid_player_counts <- dat %>%
+valid_players <- players_all %>%
+    arrange(match_id, slot) %>%
+    anti_join(remove_me, by = "match_id") %>%
+    left_join(meta_civ, by = "civ")
+
+
+
+
+invalid_player_counts <- valid_players %>%
     group_by(match_id, team) %>%
     tally() %>%
     mutate(team = paste0("team_", team)) %>%
     spread(team, n) %>%
     ungroup() %>%
-    filter(!is.na(team_1), !is.na(team_2), team_1 == team_2) %>%
+    filter(is.na(team_1) | is.na(team_2) | team_1 != team_2) %>%
     distinct(match_id)
 
-
-valid_rating <- dat %>%
+invalid_ratings <- valid_players %>%
     group_by(match_id) %>%
     summarise(n_na = sum(is.na(rating))) %>%
-    filter(n_na == 0) %>%
+    filter(n_na != 0) %>%
     distinct(match_id)
 
 
-valid_maptype <- dat %>%
-    filter(!is.na(map_type)) %>%
-    distinct(match_id)
-
-
-valid_winner <- dat %>%
+invalid_winner <- valid_players %>%
     group_by(match_id, team) %>%
     summarise(
         n = n(),
@@ -80,42 +140,37 @@ valid_winner <- dat %>%
         u_res = length(unique(won)),
         .groups = "drop"
     ) %>%
-    filter(u_res == 1, n_na == 0) %>%
+    filter(u_res != 1 | n_na != 0) %>%
     distinct(match_id)
 
 
-invalid_version <- dat %>%
-    filter(is.na(version)) %>%
+remove_me2 <- bind_rows(
+    invalid_player_counts,
+    invalid_ratings,
+    invalid_winner
+) %>%
     distinct(match_id)
 
 
-dat2 <- dat %>%
-    semi_join(valid_player_counts, by = "match_id") %>%
-    semi_join(valid_rating, by = "match_id") %>%
-    semi_join(valid_maptype, by = "match_id") %>%
-    semi_join(valid_winner, by = "match_id") %>%
-    anti_join(invalid_version, by = "match_id")
+valid_matches2 <- valid_matches %>%
+    anti_join(remove_me2, by = "match_id")
 
 
-dat3 <- dat2 %>%
-    left_join(meta_civ, by = "civ") %>%
-    left_join(meta_map, by = "map_type") %>%
-    left_join(meta_board, by = "leaderboard_id") %>%
-    mutate(version = if_else(is.na(version), "Unknown", version))
+valid_players2 <- valid_players %>%
+    anti_join(remove_me2, by = "match_id")
 
 
 
 assert_that(
-    nrow(dat2) == nrow(dat3),
-    all(!is.na(dat3$civ)),
-    all(!is.na(dat3$map_type)),
-    all(!is.na(dat3$leaderboard_id)),
-    all(!is.na(dat3$map_name))
+    all(!is.na(valid_players2$civ)),
+    all(!is.na(valid_matches2$map_type)),
+    all(!is.na(valid_matches2$leaderboard_id)),
+    all(!is.na(valid_matches2$map_name))
 )
 
 
 mapclass <- get_map_class()
-u_mapname <- unique(dat3$map_name)
+u_mapname <- unique(valid_matches2$map_name)
 no_class <- u_mapname[!u_mapname %in% mapclass$map_name]
 assert_that(
     length(no_class) == 0,
@@ -126,8 +181,7 @@ assert_that(
 )
 
 
-
-player_meta <- dat3 %>%
+team_meta <- valid_players2 %>%
     group_by(match_id) %>%
     summarise(
         n_players = n(),
@@ -136,38 +190,35 @@ player_meta <- dat3 %>%
         rating_max = max(rating),
         rating_mean = mean(rating),
         rating_diff_mean = mean(rating[team == 1]) - mean(rating[team == 2]),
+        winning_team = unique(team[won]),
         .groups = "drop"
     )
 
 
-matchmeta_check <- dat3 %>%
-    distinct(
-        match_id, won, map_name, leaderboard_name, version, start_dt,
-        stop_dt, match_length, match_length_igm
-    )
+matchmeta <- valid_matches2 %>%
+    inner_join(team_meta, by = "match_id") %>%
+    left_join(mapclass, by = "map_name")
 
 
-
-matchmeta <- dat3 %>%
-    filter(won) %>%
-    distinct(
-        match_id, team, map_name, leaderboard_name, version, start_dt,
-        match_length, match_length_igm, stop_dt
-    ) %>%
-    rename(winning_team = team) %>%
-    inner_join(player_meta, "match_id") %>%
-    left_join(mapclass, by = "map_name") %>%
-    filter(n_players %in% c(2, 4, 6, 8))
+players <- valid_players2 %>%
+    semi_join(matchmeta, by = "match_id")
 
 
 assert_that(
-    nrow(matchmeta_check) == nrow(matchmeta) * 2
+    all(team_meta$n_players %in% c(2, 4, 6, 8)),
+    all(players$match_id %in% matchmeta$match_id),
+    all(matchmeta$match_id %in% players$match_id),
+    all(matchmeta$winning_team %in% c(1, 2)),
+    all(!is.na(matchmeta$n_players)),
+    all(!is.na(matchmeta$rating_mean)),
+    all(!is.na(matchmeta$rating_max)),
+    all(!is.na(matchmeta$rating_diff_mean)),
+    all(!is.na(matchmeta$map_class)),
+    all(!is.na(players$civ)),
+    all(!is.na(players$civ_name)),
+    all(!is.na(players$won)),
+    all(!is.na(players$rating))
 )
-
-
-players <- dat3 %>%
-    select(match_id, civ_name, rating, team, profile_id, name)
-
 
 
 saveRDS(
@@ -179,7 +230,4 @@ saveRDS(
     object = players,
     file = "./data/ad_players.Rds"
 )
-
-
-
 

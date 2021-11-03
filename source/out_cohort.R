@@ -13,7 +13,7 @@ library(glue)
 ## determine which cohort we are building
 COHORT <- commandArgs(trailingOnly = TRUE)
 assert_that(length(COHORT) == 1)
-if (length(COHORT) == 0) COHORT <- "rm_solo_closed_rm1civ"
+if (length(COHORT) == 0) COHORT <- "rm_solo_open"
 
 
 ## Create output directory if not exsits
@@ -43,6 +43,8 @@ matchmeta_core <- matchmeta_all %>%
     filter(start_dt >= opts$start_limit_lower) %>%
     filter(start_dt <= opts$start_limit_upper) %>%
     filter(leaderboard_name == opts$leaderboard) %>%
+    filter(match_length_igm >= opts$length_limit_lower) %>% 
+    filter(match_length_igm <= opts$length_limit_upper) %>% 
     map_filter()
 
 matchmeta <- matchmeta_core %>%
@@ -66,7 +68,7 @@ if (opts$rm_single_pick) {
         mutate(bign = sum(n)) %>%
         ungroup() %>%
         mutate(pcent = n / bign * 100) %>%
-        filter(bign >= 10, pcent >= 50) %>%
+        filter(bign >= 10, pcent >= 40) %>%
         distinct(profile_id)
 
     matches_to_remove <- players_all %>%
