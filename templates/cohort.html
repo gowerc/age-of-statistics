@@ -16,8 +16,8 @@
         <li>Started before <strong>{{meta.start_limit_upper}}</strong></li>
         <li>Had a game length longer than <strong>{{meta.length_limit_lower}}</strong> in-game minutes</li>
         <li>Had a game length shorter than <strong>{{meta.length_limit_upper}}</strong> in-game minutes</li>
-        {% if meta.no_single_pick %}
-        <li>Contains no players who played the same civ more than 50&#65130;</li>
+        {% if meta.rm_single_pick %}
+        <li>Contains no players who played the same civ more than 40&#65130;</li>
         {% endif %}
     </ul>
     <p>

@@ -97,18 +97,18 @@
     rm_single_pick: False
 
 
-- 
-    id: ew_team_any
-    display: EW, Teams, All Maps, >1100 Elo
-    leaderboard: Team Empire Wars
-    mapclass: Any
-    elo_limit_lower: 1100
-    elo_limit_lower_slide: 800
-    start_limit_lower: 2021-10-12 01:00:00
-    start_limit_upper: 2021-11-01 23:00:00
-    length_limit_lower: 3
-    length_limit_upper: 180
-    rm_single_pick: False
+# - 
+#     id: ew_team_any
+#     display: EW, Teams, All Maps, >1100 Elo
+#     leaderboard: Team Empire Wars
+#     mapclass: Any
+#     elo_limit_lower: 1100
+#     elo_limit_lower_slide: 800
+#     start_limit_lower: 2021-10-12 01:00:00
+#     start_limit_upper: 2021-11-01 23:00:00
+#     length_limit_lower: 3
+#     length_limit_upper: 180
+#     rm_single_pick: False
 
 
 - 

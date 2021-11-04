@@ -69,7 +69,12 @@ RUN Rscript -e "options(warn=2);\
 
 COPY requirements.txt /
 RUN python3.9 -m pip install -r /requirements.txt
-ENV PYTHONPATH=/app/analysis
+ENV PYTHONPATH=/app/source
+
+
+RUN curl -fsSL https://deb.nodesource.com/setup_17.x |bash -
+RUN apt-get install -y nodejs
+RUN npm install netlify-cli -g
 
 RUN mkdir /app
 WORKDIR /app
