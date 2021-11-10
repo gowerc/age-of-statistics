@@ -24,20 +24,23 @@ plot_pr <- function(dat) {
     prdat <- dat %>%
         arrange(desc(n)) %>%
         mutate(civ_name = fct_inorder(civ_name)) %>%
-        select(civ = civ_name, pr)
+        select(civ = civ_name, pr) %>%
+        mutate(y_label = pr + max(pr) * 0.015) %>%
+        mutate(pr_txt = sprintf("%4.1f %%", pr))
 
     p <- ggplot(data = prdat, aes(y = pr, x = civ)) +
         geom_bar(stat = "identity") +
         geom_hline(yintercept = 1 / nrow(prdat) * 100, col = "red") +
+        geom_text(aes(y = y_label, label = pr_txt), hjust = 0, angle = 90) +
         theme_bw() +
-        scale_y_continuous(breaks = pretty_breaks(10), expand = expansion(c(0, 0.06))) +
+        scale_y_continuous(breaks = pretty_breaks(10), expand = expansion(c(0, 0.1))) +
         theme(
             axis.text.x = element_text(angle = 50, hjust = 1),
             plot.caption = element_text(hjust = 0)
         ) +
         labs(caption = footnotes) +
-            ylab("Play Rate (%)") +
-            xlab("")
+        ylab("Play Rate (%)") +
+        xlab("")
 
     output$new(plot = p, data = prdat)
 }
