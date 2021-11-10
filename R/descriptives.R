@@ -149,6 +149,75 @@ plot_dist_map <- function(matchmeta) {
 
 
 
+
+
+
+
+#######################################
+#
+# Map distribtuons normalised
+#
+#######################################
+
+plot_dist_map_normal <- function(matchmeta) {
+
+    matchmeta_with_day <- matchmeta %>%
+        mutate(match_day_num = as.numeric(as.Date(start_dt)))
+
+    numerator <- matchmeta_with_day %>%
+        distinct(match_day_num, map_name) %>%
+        group_by(map_name) %>%
+        tally(name = "num")
+
+    denominator <- matchmeta_with_day %>%
+        distinct(match_day_num) %>%
+        nrow()
+
+    pdat <- matchmeta %>%
+        group_by(map_name) %>%
+        tally() %>%
+        left_join(numerator, by = "map_name") %>%
+        mutate(scale = num / denominator) %>%
+        mutate(n_normal = n / scale) %>%
+        mutate(bign = sum(n_normal)) %>%
+        group_by(map_name) %>%
+        summarise(
+            n = n_normal,
+            p = sprintf("%5.2f%%", n / unique(bign) * 100),
+            bign = unique(bign)
+        ) %>%
+        mutate(yjust = n + max(n)/50)
+
+    footnotes <- as_footnote(
+        "Play rates have been normalised by scaling the number of games played by 1 divided by",
+        "the percentage<br>of days in which at least 1 game was played on that map"
+    )
+
+    p <- ggplot(data = pdat, aes(x = map_name, y = n)) +
+        geom_bar(stat = "identity") +
+        geom_text(aes(label = p, y = yjust)) +
+        theme_bw() +
+        scale_y_continuous(breaks = pretty_breaks(8), expand = expansion(c(0, 0.05))) +
+        xlab("Map") +
+        ylab("Number of Games") +
+        theme(
+            plot.caption = element_text(hjust = 0),
+            axis.text.x = element_text(hjust = 1, angle = 35)
+        ) +
+        theme(plot.caption = element_text(hjust = 0)) +
+        labs(caption = footnotes)
+
+    output$new(
+        plot = p,
+        data = pdat %>% select(map = map_name, count = n, percent = p)
+    )
+}
+
+
+
+
+
+
 #######################################
 #
 # Game Length

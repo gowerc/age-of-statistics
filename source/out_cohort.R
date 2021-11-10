@@ -105,6 +105,13 @@ om$add_output(
     id = "dist_map"
 )
 
+# Distribution of Matches Played by Map (normalised)
+om$add_output(
+    output = plot_dist_map_normal(matchmeta),
+    id = "dist_map_normal"
+)
+
+
 
 
 # Distribution of Matches Played by Game Length
