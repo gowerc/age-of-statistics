@@ -189,8 +189,10 @@ plot_dist_map_normal <- function(matchmeta) {
         mutate(yjust = n + max(n)/50)
 
     footnotes <- as_footnote(
-        "Play rates have been normalised by scaling the number of games played by 1 divided by",
-        "the percentage<br>of days in which at least 1 game was played on that map"
+        c(
+            "Play rates have been normalised by scaling the number of games played by 1 divided by",
+            "the percentage<br>of days in which at least 1 game was played on that map"
+        )
     )
 
     p <- ggplot(data = pdat, aes(x = map_name, y = n)) +

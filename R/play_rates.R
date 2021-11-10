@@ -33,7 +33,7 @@ plot_pr <- function(dat) {
         geom_hline(yintercept = 1 / nrow(prdat) * 100, col = "red") +
         geom_text(aes(y = y_label, label = pr_txt), hjust = 0, angle = 90) +
         theme_bw() +
-        scale_y_continuous(breaks = pretty_breaks(10), expand = expansion(c(0, 0.1))) +
+        scale_y_continuous(breaks = pretty_breaks(10), expand = expansion(c(0, 0.13))) +
         theme(
             axis.text.x = element_text(angle = 50, hjust = 1),
             plot.caption = element_text(hjust = 0)
