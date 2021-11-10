@@ -22,6 +22,11 @@ LEADERBOARDS <- c(
     "Team Empire Wars"
 )
 
+LEADERBOARDS_1v1 <- c(
+    "1v1 Random Map",
+    "1v1 Empire Wars"
+)
+
 meta_civ <- meta %>%
     filter(type == "civ") %>%
     select(civ = id, civ_name = string)
@@ -144,6 +149,7 @@ invalid_winner <- valid_players %>%
     distinct(match_id)
 
 
+
 remove_me2 <- bind_rows(
     invalid_player_counts,
     invalid_ratings,
@@ -191,13 +197,15 @@ team_meta <- valid_players2 %>%
         rating_mean = mean(rating),
         rating_diff_mean = mean(rating[team == 1]) - mean(rating[team == 2]),
         winning_team = unique(team[won]),
+        n_unique_civ = length(unique(civ)),
         .groups = "drop"
     )
 
 
 matchmeta <- valid_matches2 %>%
     inner_join(team_meta, by = "match_id") %>%
-    left_join(mapclass, by = "map_name")
+    left_join(mapclass, by = "map_name") %>%
+    mutate(is_mirror = leaderboard_name %in% LEADERBOARDS_1v1 & n_unique_civ != 2)
 
 
 players <- valid_players2 %>%
@@ -217,7 +225,8 @@ assert_that(
     all(!is.na(players$civ)),
     all(!is.na(players$civ_name)),
     all(!is.na(players$won)),
-    all(!is.na(players$rating))
+    all(!is.na(players$rating)),
+    all(!is.na(matchmeta$is_mirror))
 )
 
 

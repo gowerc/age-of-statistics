@@ -40,11 +40,12 @@ matchmeta_all <- readRDS("./data/ad_matchmeta.Rds")
 
 
 matchmeta_core <- matchmeta_all %>%
+    filter(!is_mirror) %>%
     filter(start_dt >= opts$start_limit_lower) %>%
     filter(start_dt <= opts$start_limit_upper) %>%
     filter(leaderboard_name == opts$leaderboard) %>%
-    filter(match_length_igm >= opts$length_limit_lower) %>% 
-    filter(match_length_igm <= opts$length_limit_upper) %>% 
+    filter(match_length_igm >= opts$length_limit_lower) %>%
+    filter(match_length_igm <= opts$length_limit_upper) %>%
     map_filter()
 
 matchmeta <- matchmeta_core %>%
