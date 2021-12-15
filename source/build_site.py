@@ -9,7 +9,7 @@ import pathlib
 DIR_SITE = "_site"
 DIR_OUTPUTS = "outputs"
 DIR_WWW = "www"
-BUILD_ID = "005"
+BUILD_ID = "006"
 
 
 def get_args():

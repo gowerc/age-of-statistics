@@ -9,6 +9,10 @@ library(lubridate)
 library(forcats)
 
 
+DATE_LIMIT_LOWER <- as.numeric(ymd_hms("2021-11-20 01:00:00") - days(25))
+DATE_LIMIT_UPPER <- as.numeric(ymd_hms("2021-12-13 23:59:59") + days(1))
+
+
 con <- get_connection()
 
 
@@ -43,13 +47,20 @@ meta_board <- meta %>%
     filter(leaderboard_name %in% LEADERBOARDS)
 
 
+matches_time_limit <- tbl(con, "match_meta") %>%
+    filter(started >= DATE_LIMIT_LOWER, started <= DATE_LIMIT_UPPER) %>%
+    select(match_id)
+
+
 matches_all <- tbl(con, "match_meta") %>%
     select(match_id, started, version, leaderboard_id, finished, map_type, ranked) %>%
+    inner_join(matches_time_limit, by = "match_id") %>%
     collect()
 
 
 players_all <- tbl(con, "match_players") %>%
     select(match_id, rating, civ, won, slot, profile_id, team, name) %>%
+    inner_join(matches_time_limit, by = "match_id") %>%
     collect()
 
 
@@ -230,13 +241,13 @@ assert_that(
 )
 
 
-saveRDS(
-    object = matchmeta,
-    file = "./data/ad_matchmeta.Rds"
+arrow::write_parquet(
+    x = matchmeta,
+    sink = "./data/ad_matchmeta.parquet"
 )
 
-saveRDS(
-    object = players,
-    file = "./data/ad_players.Rds"
+arrow::write_parquet(
+    x = players,
+    sink = "./data/ad_players.parquet"
 )
 

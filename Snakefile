@@ -20,8 +20,8 @@ rule db:
 rule clean:
     shell:
         """
-        rm -f data/*
-        rm -f outputs/*
+        rm -rf data/*
+        rm -rf outputs/*
         """
 
 
@@ -39,7 +39,7 @@ rule site:
 
 ###### VAD
 rule matchmeta_players:
-    output: "data/ad_matchmeta.Rds", "data/ad_players.Rds"
+    output: "data/ad_matchmeta.parquet", "data/ad_players.parquet"
     input: "source/ad_ana.R", "data/ad_patchmeta.json"
     shell: "Rscript {input[0]}"
 
@@ -52,6 +52,6 @@ rule patchmeta:
 
 rule:
     output: "outputs/cohort_{cohort}/cohort_data.json"
-    input: "source/out_cohort.R", "data/ad_matchmeta.Rds"
+    input: "source/out_cohort.R", "data/ad_matchmeta.parquet"
     shell: "Rscript {input[0]} {wildcards.cohort}"
 

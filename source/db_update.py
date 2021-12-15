@@ -3,14 +3,22 @@ import json
 import datetime
 import support
 import support.api
+import time
+from requests.exceptions import ConnectionError
+from urllib3.exceptions import MaxRetryError
+from urllib3.exceptions import NewConnectionError
+
+
+FAILURE_LIMIT = 3
+FAILURE_CURRENT = 0
 
 
 # Release date for lords of the west
 # First metadata set is based on this release
 DEFAULT_TIME = support.as_seconds(datetime.datetime(
     year=2021,
-    month=10,
-    day=1,
+    month=9,
+    day=8,
     hour=1,
     minute=00,
     second=00
@@ -143,6 +151,7 @@ def add_to_db(dt):
     conn.commit()
 
 
+
 if __name__ == "__main__":
     
     with open("./data-raw/db_schema.json", "r") as fi:
@@ -164,7 +173,20 @@ if __name__ == "__main__":
     
     while latest <= dt_limit:
         old_latest = latest
-        add_to_db(latest)
+        try:
+            add_to_db(latest)
+        except (TimeoutError, ConnectionError, MaxRetryError, NewConnectionError) as e:
+            print("\nTimeoutError !!\n")
+            FAILURE_CURRENT = FAILURE_CURRENT + 1
+            if FAILURE_CURRENT > FAILURE_LIMIT:
+                cur.close()
+                conn.close()
+                raise RuntimeError("Failure limit reached")
+            time.sleep(90)
+            continue
+        else:
+            FAILURE_CURRENT = 0
+        
         latest = db_get_latest()
         if old_latest == latest:
             raise RuntimeError("Latest did not advance after data update")

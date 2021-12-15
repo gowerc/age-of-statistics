@@ -64,7 +64,8 @@ RUN Rscript -e "options(warn=2);\
         'ggrepel',\
         'googlesheets4',\
         'lsa',\
-        'mvtnorm'\
+        'mvtnorm',\
+        'arrow'\
     ))"
 
 COPY requirements.txt /

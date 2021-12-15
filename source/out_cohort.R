@@ -35,8 +35,8 @@ map_filter <- ifelse(
     identity
 )
 
-players_all <- readRDS("./data/ad_players.Rds")
-matchmeta_all <- readRDS("./data/ad_matchmeta.Rds")
+players_all <- arrow::read_parquet("./data/ad_players.parquet")
+matchmeta_all <- arrow::read_parquet("./data/ad_matchmeta.parquet")
 
 
 matchmeta_core <- matchmeta_all %>%
