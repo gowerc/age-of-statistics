@@ -10,7 +10,7 @@ library(forcats)
 
 
 DATE_LIMIT_LOWER <- as.numeric(ymd_hms("2021-11-20 01:00:00") - days(25))
-DATE_LIMIT_UPPER <- as.numeric(ymd_hms("2021-12-13 23:59:59") + days(1))
+DATE_LIMIT_UPPER <- as.numeric(ymd_hms("2022-01-01 23:59:59") + days(1))
 
 
 con <- get_connection()

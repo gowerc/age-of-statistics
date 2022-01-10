@@ -1,0 +1,32 @@
+{
+    "games": {
+        "aoe2":{
+            "name": "Age-Of-Empires 2"
+        }
+    },
+    "aoe2": {
+        "default": {
+            "filter": "G1",
+            "date": "D2",
+            "version": "v1"
+        },
+        "filters": {
+            "G1": {
+                "name": "RM,Solo,Open,>1200,RndOnly",
+                "criteria": { "elo_upper": 1700, "elo_lower": 1200, "map": "open" }
+            },
+            "G2": {
+                "name": "RM,Team,Open,>1200,RndOnly",
+                "criteria": { "elo_upper": 1700, "elo_lower": 1200, "map": "open" }
+            },
+            "G3": {
+                "name": "RM,Team,Open,>1200",
+                "criteria": { "elo_upper": 1700, "elo_lower": 1200, "map": "open" }
+            }
+        },
+        "dates": {
+            "D1": "2020-11-10 - 2020-12-15",
+            "D2": "2021-01-09 - 2021-01-31"
+        }
+    }
+}

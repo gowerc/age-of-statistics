@@ -186,12 +186,12 @@ plot_dist_map_normal <- function(matchmeta) {
             p = sprintf("%5.2f%%", n / unique(bign) * 100),
             bign = unique(bign)
         ) %>%
-        mutate(yjust = n + max(n)/50)
+        mutate(yjust = n + max(n) / 50)
 
     footnotes <- as_footnote(
         c(
             "Play rates have been normalised by scaling the number of games played by 1 divided by",
-            "the percentage<br>of days in which at least 1 game was played on that map"
+            "the percentage<br/>of days in which at least 1 game was played on that map"
         )
     )
 

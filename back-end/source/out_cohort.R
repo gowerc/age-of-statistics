@@ -9,6 +9,8 @@ library(lubridate)
 library(assertthat)
 library(glue)
 
+# Prevent scientific notation in plots
+options(scipen=999)
 
 ## determine which cohort we are building
 COHORT <- commandArgs(trailingOnly = TRUE)
