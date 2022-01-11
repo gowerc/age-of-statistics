@@ -1,14 +1,20 @@
 <template>
-    <div id="nav">
-        <router-link to="/methods">Methods</router-link> |
-        <router-link to="/statistics">Statistics</router-link>
-    </div>
+    <Navbar/>
     <router-view></router-view>
 </template>
 
 
 
 <script>
+import 'bootstrap'
+import 'bootstrap/dist/css/bootstrap.min.css'
+import "bootstrap-icons/font/bootstrap-icons.css";
+import Navbar from '@/components/Navbar'
+export default {
+    components: {
+        "Navbar": Navbar
+    }
+}
 </script>
 
 

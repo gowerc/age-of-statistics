@@ -3,24 +3,27 @@
 <template>
     <h2>Main Stats Page</h2>
     
+    <div>
+        <h3>Game:</h3>
+        <Selector :updateRoute="updateRoute" :list="games" name="game" />
+    </div>
     
-    <Selector 
-        :setRoute="setRoute" 
-        :list="filters"
-        name="filter"
-    />
+    <div>
+        <h3>Date:</h3>
+        <Selector :updateRoute="updateRoute" :list="dates" name="date" />
+    </div>
     
-    <Selector 
-        :setRoute="setRoute" 
-        :list="dates"
-        name="date"
-    />
+    <div>
+        <h3>Filter:</h3>
+        <Selector :updateRoute="updateRoute" :list="filters" name="filter" />
+    </div>
     
-    <Selector 
-        :setRoute="setRoute" 
-        :list="filters"
-        name="filter"
-    />
+    
+    
+    
+
+    
+    <StatsPageLinks/>
 
     <router-view v-slot="slotProps">
         <keep-alive max="6">
@@ -31,17 +34,11 @@
 
 
 <script>
-    import manifest from '@/assets/manifest.json'
+    import config from '@/assets/config.json'
     import Selector from '@/components/Selector'
+    import StatsPageLinks from '@/components/StatsPageLinks'
 
     export default {
-        data(){
-            return {
-                filter: "",
-                date: "",
-                game: ""
-            }
-        },
         computed: {
             path(){ 
                 let game = this.$route.query.game
@@ -53,7 +50,7 @@
                     this.$route.query.game,
                     this.$route.query.date,
                     this.$route.query.filter,
-                    manifest[this.$route.query.game].default.version
+                    config[this.$route.query.game].default.version
                 ].join('/');
             },
             filters(){
@@ -61,28 +58,28 @@
                 if(!game) {
                     return ""
                 }
-                return manifest[game].filters
+                return config[game].filters
             },
             dates(){
                 let game = this.$route.query.game
                 if(!game) {
                     return ""
                 }
-                return manifest[game].dates
+                return config[game].dates
             },
             games(){
-                manifest.games
+                return config.games
             }
         },
         methods: {
-            setRoute(obj, defaults = false){
+            updateRoute(obj, defaults = false){
                 let replacement = {
                     ...this.$route.query,
                     ...obj
                 }
                 if(defaults) {
-                    replacement.date = manifest[replacement.game].default.date
-                    replacement.filter = manifest[replacement.game].default.date
+                    replacement.date = config[replacement.game].default.date
+                    replacement.filter = config[replacement.game].default.filter
                 }
                 this.$router.replace({query: replacement});
             },
@@ -92,7 +89,7 @@
                     !this.$route.query.date |
                     !this.$route.query.filter 
                 ) {
-                    this.setRoute({game: "aoe2"}, true)
+                    this.updateRoute({game: "aoe2"}, true)
                 }
             }
         },
@@ -103,7 +100,15 @@
             this.ensureValidURL()
         },
         components: {
-            "Selector": Selector
+            "Selector": Selector,
+            "StatsPageLinks": StatsPageLinks
         }
     }
 </script>
+
+
+<style scoped>
+    h3 {
+        display: inline;
+    }
+</style>

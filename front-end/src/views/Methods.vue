@@ -111,3 +111,13 @@
         where that player participated are removed.
     </p>
 </template>
+
+<script>
+export default {
+    mounted() {
+        if(window.MathJax){
+            window.MathJax.typeset()
+        }
+    }
+}
+</script>

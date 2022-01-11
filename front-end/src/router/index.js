@@ -3,12 +3,22 @@ import Descriptives from '@/views/Descriptives.vue'
 import Winrates from "@/views/Winrates.vue"
 import Methods from "@/views/Methods.vue"
 import Statistics from "@/views/Statistics.vue"
+import Faq from "@/views/Faq.vue"
 
 const routes = [
     {
         path: "/methods",
         name: "Methods",
         component: Methods
+    },
+    {
+        path: "/faq",
+        name: "Faq",
+        component: Faq
+    },
+    {
+        path: "/",
+        redirect: '/statistics/descriptives'
     },
     {
         path: "/statistics",
