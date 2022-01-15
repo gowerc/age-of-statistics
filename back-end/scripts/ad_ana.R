@@ -7,10 +7,36 @@ library(stringr)
 library(assertthat)
 library(lubridate)
 library(forcats)
+library(glue)
 
 
-DATE_LIMIT_LOWER <- as.numeric(ymd_hms("2021-11-20 01:00:00") - days(25))
-DATE_LIMIT_UPPER <- as.numeric(ymd_hms("2022-01-01 23:59:59") + days(1))
+## determine which cohort we are building
+ARGS <- commandArgs(trailingOnly = TRUE)
+assert_that(length(ARGS) == 2)
+if (length(ARGS) == 0) {
+    GAME <- "aoe2"
+    PERIOD <- "p2"
+} else {
+    GAME <- ARGS[[1]]
+    PERIOD <- ARGS[[2]]
+}
+
+
+DATA_LOCATION <- get_data_location(GAME, PERIOD)
+
+config <- jsonlite::read_json("./config.json")
+
+period_meta <- config[[GAME]][["periods"]][[PERIOD]]
+
+
+DATE_LIMIT_LOWER <- paste0(period_meta$lower, " 00:00:01") %>%
+    ymd_hms() %>%
+    `-`(days(20)) %>%
+    as.numeric()
+
+DATE_LIMIT_UPPER <- paste0(period_meta$upper, " 23:59:59") %>%
+    ymd_hms() %>%
+    as.numeric()
 
 
 con <- get_connection()
@@ -19,17 +45,16 @@ con <- get_connection()
 meta <- get_patchmeta()
 
 
-LEADERBOARDS <- c(
-    "1v1 Random Map",
-    "Team Random Map",
-    "1v1 Empire Wars",
-    "Team Empire Wars"
-)
+LEADERBOARDS <- vapply(
+    config[[GAME]][["filters"]],
+    function(x) x$leaderboard,
+    character(1),
+    USE.NAMES = FALSE
+) %>%
+    unique()
 
-LEADERBOARDS_1v1 <- c(
-    "1v1 Random Map",
-    "1v1 Empire Wars"
-)
+LEADERBOARDS_1v1 <- grep("^1v1", LEADERBOARDS, value = TRUE)
+
 
 meta_civ <- meta %>%
     filter(type == "civ") %>%
@@ -49,6 +74,7 @@ meta_board <- meta %>%
 
 matches_time_limit <- tbl(con, "match_meta") %>%
     filter(started >= DATE_LIMIT_LOWER, started <= DATE_LIMIT_UPPER) %>%
+    filter(leaderboard_id %in% local(meta_board$leaderboard_id)) %>%
     select(match_id)
 
 
@@ -68,35 +94,43 @@ remove_wrong_leaderboard <- matches_all %>%
     filter(!(leaderboard_id %in% meta_board$leaderboard_id & ranked)) %>%
     distinct(match_id)
 
+
 remove_no_player_id <- players_all %>%
     filter(profile_id < 0) %>%
     distinct(match_id)
+
 
 remove_no_elo <- players_all %>%
     select(match_id, rating) %>%
     filter(is.na(rating)) %>%
     distinct(match_id)
 
+
 remove_no_result <- players_all %>%
     select(match_id, won) %>%
     filter(is.na(won)) %>%
     distinct(match_id)
 
+
 remove_invalid_teams <- players_all %>%
     filter(!team %in% c(1, 2)) %>%
     distinct(match_id)
 
+
 remove_unknown_times <- matches_all %>%
-    filter(is.na(started) | is.na(started)) %>%
+    filter(is.na(started) | is.na(finished)) %>%
     distinct(match_id)
+
 
 remove_unknown_maps <- matches_all %>%
     filter(is.na(map_type)) %>%
     distinct(match_id)
 
+
 remove_unknown_version <- matches_all %>%
     filter(is.na(version)) %>%
     distinct(match_id)
+
 
 remove_me <- bind_rows(
     remove_wrong_leaderboard,
@@ -119,7 +153,7 @@ valid_matches <- matches_all %>%
     mutate(stop_dt = ymd("1970-01-01") + seconds(finished)) %>%
     mutate(match_length = as.numeric(difftime(stop_dt, start_dt, units = "mins"))) %>%
     mutate(match_length_igm =  match_length * 1.7) %>%
-    select(-started, - finished) %>% 
+    select(-started, - finished) %>%
     left_join(meta_map, by = "map_type") %>%
     left_join(meta_board, by = "leaderboard_id")
 
@@ -186,7 +220,7 @@ assert_that(
 )
 
 
-mapclass <- get_map_class()
+mapclass <- get_map_class(GAME)
 u_mapname <- unique(valid_matches2$map_name)
 no_class <- u_mapname[!u_mapname %in% mapclass$map_name]
 assert_that(
@@ -243,11 +277,11 @@ assert_that(
 
 arrow::write_parquet(
     x = matchmeta,
-    sink = "./data/ad_matchmeta.parquet"
+    sink = paste0(DATA_LOCATION, "matchmeta.parquet")
 )
 
 arrow::write_parquet(
     x = players,
-    sink = "./data/ad_players.parquet"
+    sink = paste0(DATA_LOCATION, "players.parquet")
 )
 

@@ -1,26 +1,35 @@
+import json
 
-import yaml
+with open("./config.json", "r") as fi:
+    config = json.load(fi)
 
-with open('data/raw/cohort.yml', "r") as stream:
-    cohort_meta = yaml.safe_load(stream)
 
-cohorts = [i["id"] for i in cohort_meta]
+VAD_STRING = "data/processed/{game}/{period}/matchmeta.parquet"
+OUTPUT_STRING = "outputs/{game}/{period}/{filter}/output.log"
 
+VADS = []
+OUTPUTS = []
+GAMES = config.keys()
+for game in GAMES:
+    FILTERS = config[game]["filters"].keys()
+    PERIODS = config[game]["periods"].keys()
+    VADS += expand(VAD_STRING, game = GAMES, period = PERIODS)
+    OUTPUTS += expand(OUTPUT_STRING, game = GAMES, period = PERIODS, filter = FILTERS)
 
 
 rule all:
     input:
-        expand("outputs/cohort_{cohort}/cohort_data.json", cohort=cohorts)
+        OUTPUTS
 
 
 rule db:
-    shell: "python3.9 ./source/db_update.py"
+    shell: "python3.9 ./scripts/db_update.py"
 
 
 rule clean:
     shell:
         """
-        rm -rf data/*
+        rm -rf data/processed/*
         rm -rf outputs/*
         """
 
@@ -31,27 +40,33 @@ rule killr:
         kill -9 $(ps -u root | awk '$4=="R" {{ printf "%s ", $1 }}')
         """
 
-rule site:
-    shell:
-        """
-        python3.9 ./source/build_site.py --clean
-        """
 
-###### VAD
-rule matchmeta_players:
-    output: "data/ad_matchmeta.parquet", "data/ad_players.parquet"
-    input: "source/ad_ana.R", "data/ad_patchmeta.json"
-    shell: "Rscript {input[0]}"
+
 
 
 rule patchmeta:
-    output: "data/ad_patchmeta.json"
-    input: "source/ad_patchmeta.py"
+    output: "data/processed/patchmeta.json"
+    input: "scripts/ad_patchmeta.py"
     shell: "python3.9 {input[0]}"
 
 
-rule:
-    output: "outputs/cohort_{cohort}/cohort_data.json"
-    input: "source/out_cohort.R", "data/ad_matchmeta.parquet"
-    shell: "Rscript {input[0]} {wildcards.cohort}"
+###### VADs
 
+rule all_vads:
+    input: VADS
+
+rule:
+    output: "data/processed/{game}/{period}/matchmeta.parquet"
+    input: "scripts/ad_ana.R", "data/processed/patchmeta.json"
+    shell: "Rscript {input[0]} {wildcards.game} {wildcards.period}"
+
+
+###### Outputs
+
+rule all_outputs:
+    input: OUTPUTS
+
+rule:
+    output: "outputs/{game}/{period}/{filter}/output.log"
+    input: "scripts/outputs.R", "data/processed/{game}/{period}/matchmeta.parquet"
+    shell: "Rscript {input[0]} {wildcards.game} {wildcards.period} {wildcards.filter}"

@@ -10,18 +10,35 @@ library(assertthat)
 library(glue)
 
 # Prevent scientific notation in plots
-options(scipen=999)
+options(scipen = 999)
 
 ## determine which cohort we are building
-COHORT <- commandArgs(trailingOnly = TRUE)
-assert_that(length(COHORT) == 1)
-if (length(COHORT) == 0) COHORT <- "rm_solo_open"
+ARGS <- commandArgs(trailARGS <- commandArgs(trailingOnly = TRUE)
+ingOnly = TRUE)
+assert_that(length(ARGS) == 3)
+if (length(ARGS) == 0) {
+    GAME <- "aoe2"
+    PERIOD <- "p2"
+    FILTER <- "rm_solo_open"
+} else {
+    GAME <- ARGS[[1]]
+    PERIOD <- ARGS[[2]]
+    FILTER <- ARGS[[3]]
+}
 
 
-## Create output directory if not exsits
-OUTPUT_LOCATION <- glue("./outputs/cohort_{cohort}", cohort = COHORT)
-if (!dir.exists(OUTPUT_LOCATION)) dir.create(OUTPUT_LOCATION)
+OUTPUT_LOCATION <- get_output_location(GAME, PERIOD, FILTER)
+DATA_LOCATION <- get_data_location(GAME, PERIOD)
 
+config <- jsonlite::read_json("./config.json")
+
+config_filter <- config[[GAME]][["filters"]][[FILTER]]
+config_period <- config[[GAME]][["periods"]][[PERIOD]]
+
+assert_that(
+    !is.null(config_filter),
+    !is.null(config_period)
+)
 
 #########################
 #
@@ -29,39 +46,38 @@ if (!dir.exists(OUTPUT_LOCATION)) dir.create(OUTPUT_LOCATION)
 #
 #
 
-opts <- get_cohort_opts(COHORT)
 
 map_filter <- ifelse(
-    opts$mapclass != "Any",
-    function(x) filter(x, map_class == opts$mapclass),
+    config_filter$mapclass != "All",
+    function(x) filter(x, map_class == config_filter$mapclass),
     identity
 )
 
-players_all <- arrow::read_parquet("./data/ad_players.parquet")
-matchmeta_all <- arrow::read_parquet("./data/ad_matchmeta.parquet")
+players_all <- arrow::read_parquet(paste0(DATA_LOCATION, "players.parquet"))
+matchmeta_all <- arrow::read_parquet(paste0(DATA_LOCATION, "matchmeta.parquet"))
 
 
 matchmeta_core <- matchmeta_all %>%
     filter(!is_mirror) %>%
-    filter(start_dt >= opts$start_limit_lower) %>%
-    filter(start_dt <= opts$start_limit_upper) %>%
-    filter(leaderboard_name == opts$leaderboard) %>%
-    filter(match_length_igm >= opts$length_limit_lower) %>%
-    filter(match_length_igm <= opts$length_limit_upper) %>%
+    filter(start_dt >= ymd_hms(paste(config_period$lower, "00:00:01"))) %>%
+    filter(start_dt <= ymd_hms(paste(config_period$upper, "23:59:59"))) %>%
+    filter(leaderboard_name == config_filter$leaderboard) %>%
+    filter(match_length_igm >= config_filter$length_limit_lower) %>%
+    filter(match_length_igm <= config_filter$length_limit_upper) %>%
     map_filter()
 
 matchmeta <- matchmeta_core %>%
-    filter(rating_min >= opts$elo_limit_lower)
+    filter(rating_min >= config_filter$elo_limit_lower)
 
 matchmeta_slice <- matchmeta_core %>%
-    filter(rating_min >= opts$elo_limit_lower_slide)
+    filter(rating_min >= config_filter$elo_limit_lower_slide)
 
 
 
-if (opts$rm_single_pick) {
+if (config_filter$rm_single_pick) {
 
     matchmeta_gm <- matchmeta_all %>%
-        filter(leaderboard_name == opts$leaderboard)
+        filter(leaderboard_name == config_filter$leaderboard)
 
     players_to_remove <- players_all %>%
         semi_join(matchmeta_gm, by = "match_id") %>%
@@ -204,13 +220,13 @@ om$add_output(
 
 
 # Civilisation v Civilisation Win Rates
-cvc_plots <- plot_cvc(wr_avg_coef)
-for (civ in names(cvc_plots)) {
-    om$add_output(
-        output = cvc_plots[[civ]],
-        id = glue("cvc_wrNaive_{civ}", civ = civ)
-    )
-}
+# cvc_plots <- plot_cvc(wr_avg_coef)
+# for (civ in names(cvc_plots)) {
+#     om$add_output(
+#         output = cvc_plots[[civ]],
+#         id = glue("cvc_wrNaive_{civ}", civ = civ)
+#     )
+# }
 
 
 
@@ -247,6 +263,9 @@ om$add_output(
 om$save_all(OUTPUT_LOCATION)
 
 
+sink(paste0(OUTPUT_LOCATION, "output.log"))
+cat("done")
+sink()
 
 
 

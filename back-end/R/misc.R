@@ -29,8 +29,8 @@ as_footnote <- function(x, width = 140, add_Filter = TRUE) {
 }
 
 
-get_map_class <- function() {
-    x <- yaml::read_yaml("./data-raw/map_class.yml")
+get_map_class <- function(game) {
+    x <- yaml::read_yaml("./data/raw/maps.json")[[game]]
     tibble(
         map_name = names(unlist(x)),
         map_class = unlist(x)
@@ -56,3 +56,30 @@ lgl_to_char <- function(x){
     ifelse(x, "True", "False")
 }
 
+
+get_data_location <- function(game, period) {
+    ## Create output directory if not exsits
+    LOCATION <- glue(
+        "./data/processed/{game}/{period}/",
+        game = game,
+        period = period
+    )
+    if (!dir.exists(LOCATION)) {
+        dir.create(LOCATION, recursive = TRUE)
+    }
+    return(LOCATION)
+}
+
+get_output_location <- function(game, period, filter) {
+    ## Create output directory if not exsits
+    LOCATION <- glue(
+        "./outputs/{game}/{period}/{filter}/",
+        game = game,
+        period = period,
+        filter = filter
+    )
+    if (!dir.exists(LOCATION)) {
+        dir.create(LOCATION, recursive = TRUE)
+    }
+    return(LOCATION)
+}
