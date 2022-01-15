@@ -1,7 +1,14 @@
-^renv$
-^renv\.lock$
+
 ^LICENSE\.md$
 ^aoeci\.Rproj$
 ^\.Rproj\.user$
 ^\.gsauth$
-^src$
+^source$
+^data$
+
+
+
+
+
+
+

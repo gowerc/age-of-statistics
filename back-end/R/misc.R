@@ -1,10 +1,3 @@
-get_meta_version <- function(start_dt) {
-    case_when(
-        start_dt <= ymd_hms("2021-8-09T00-00-00") ~ "A",
-        start_dt <= ymd_hms("2021-10-05T00-00-00") ~ "B",
-        TRUE ~ "C"
-    )
-}
 
 
 logit <- function(x) {
@@ -17,11 +10,11 @@ invlogit <- function(x) {
 }
 
 
-as_footnote <- function(x, width = 140, add_cohort = TRUE) {
+as_footnote <- function(x, width = 140, add_Filter = TRUE) {
 
-    if (add_cohort) {
+    if (add_Filter) {
         x <- c(
-            glue("Cohort: {cohort}<br/>", cohort = get("COHORT", envir = .GlobalEnv)),
+            glue("Filter: {filter}<br/>", filter = get("FILTER", envir = .GlobalEnv)),
             x
         )
     }
@@ -45,16 +38,17 @@ get_map_class <- function() {
 }
 
 
-get_cohort_opts <- function(key = NULL) {
-    x <- yaml::read_yaml("./data-raw/cohort.yml")
-    ids <- vapply(x, function(y) y$id, character(1))
-    names(x) <- ids
-    if(is.null(key)) return(x)
-    x2 <- x[[key]]
-    assertthat::assert_that(key %in% names(x))
-    x2$start_limit_lower <- lubridate::ymd_hms(x2$start_limit_lower)
-    x2$start_limit_upper <- lubridate::ymd_hms(x2$start_limit_upper)
-    x2
+get_config <- function(key = NULL) {
+    x <- yaml::read_yaml("./data/raw/config.yml")
+    x
+    # ids <- vapply(x, function(y) y$id, character(1))
+    # names(x) <- ids
+    # if(is.null(key)) return(x)
+    # x2 <- x[[key]]
+    # assertthat::assert_that(key %in% names(x))
+    # x2$start_limit_lower <- lubridate::ymd_hms(x2$start_limit_lower)
+    # x2$start_limit_upper <- lubridate::ymd_hms(x2$start_limit_upper)
+    # x2
 }
 
 

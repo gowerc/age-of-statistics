@@ -1,15 +1,17 @@
-
 <template>
-    <select class="form-control w-50" @change="onChange($event)" >
-        <option 
-            v-for="(opt, key) in list" 
-            :key="key"
-            :value="key"
-            :selected="key===val"
-        > 
-            {{opt.name}}
-        </option>
-    </select>
+  <select
+    class="form-control w-50"
+    @change="onChange($event)"
+  >
+    <option 
+      v-for="(opt, key) in list" 
+      :key="key"
+      :value="key"
+      :selected="key===val"
+    > 
+      {{ opt.name }}
+    </option>
+  </select>
 </template>
 
 

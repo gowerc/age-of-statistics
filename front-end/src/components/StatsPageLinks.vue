@@ -2,21 +2,22 @@
 
 
 <template>
-    <nav class="nav nav-pills flex-column flex-md-row mb-4">
-        <router-link
-            v-for="tab in tabs"
-            :key="tab"
-            :class="[
-                'flex-sm-fill', 
-                'text-center', 
-                'tab-box', 
-                { active: lastUrl === tab.id }
-            ]"
-            :to="{ path: tab.id, query: $route.query}"
-            href="#">
-            {{ tab.desc }}
-        </router-link>
-    </nav>
+  <nav class="nav nav-pills flex-column flex-md-row mb-4">
+    <router-link
+      v-for="tab in tabs"
+      :key="tab"
+      :class="[
+        'flex-sm-fill', 
+        'text-center', 
+        'tab-box', 
+        { active: lastUrl === tab.id }
+      ]"
+      :to="{ path: tab.id, query: $route.query}"
+      href="#"
+    >
+      {{ tab.desc }}
+    </router-link>
+  </nav>
 </template>
 
 

@@ -1,0 +1,12 @@
+#!/bin/bash
+
+source ./bin/config
+
+pg_dump -C \
+    --host=$APP_HOST \
+    --port $APP_PORT \
+    --username=$APP_USER \
+    $APP_DB  > data/backup/db.sql
+
+
+

@@ -1,35 +1,50 @@
 
 
 <template>
-    <h2>Main Stats Page</h2>
+  <h2>Main Stats Page</h2>
     
-    <div>
-        <h3>Game:</h3>
-        <Selector :updateRoute="updateRoute" :list="games" name="game" />
-    </div>
+  <div>
+    <h3>Game:</h3>
+    <Selector
+      :update-route="updateRoute"
+      :list="games"
+      name="game"
+    />
+  </div>
     
-    <div>
-        <h3>Date:</h3>
-        <Selector :updateRoute="updateRoute" :list="dates" name="date" />
-    </div>
+  <div>
+    <h3>Date:</h3>
+    <Selector
+      :update-route="updateRoute"
+      :list="dates"
+      name="date"
+    />
+  </div>
     
-    <div>
-        <h3>Filter:</h3>
-        <Selector :updateRoute="updateRoute" :list="filters" name="filter" />
-    </div>
+  <div>
+    <h3>Filter:</h3>
+    <Selector
+      :update-route="updateRoute"
+      :list="filters"
+      name="filter"
+    />
+  </div>
     
     
     
     
 
     
-    <StatsPageLinks/>
+  <StatsPageLinks />
 
-    <router-view v-slot="slotProps">
-        <keep-alive max="6">
-            <component :is="slotProps.Component" :path="path"></component>
-        </keep-alive>
-    </router-view>
+  <router-view v-slot="slotProps">
+    <keep-alive max="6">
+      <component
+        :is="slotProps.Component"
+        :path="path"
+      />
+    </keep-alive>
+  </router-view>
 </template>
 
 
@@ -39,6 +54,10 @@
     import StatsPageLinks from '@/components/StatsPageLinks'
 
     export default {
+        components: {
+            "Selector": Selector,
+            "StatsPageLinks": StatsPageLinks
+        },
         computed: {
             path(){ 
                 let game = this.$route.query.game
@@ -71,6 +90,12 @@
                 return config.games
             }
         },
+        created(){
+            this.ensureValidURL()
+        },
+        beforeUpdate() {
+            this.ensureValidURL()
+        },
         methods: {
             updateRoute(obj, defaults = false){
                 let replacement = {
@@ -92,16 +117,6 @@
                     this.updateRoute({game: "aoe2"}, true)
                 }
             }
-        },
-        created(){
-            this.ensureValidURL()
-        },
-        beforeUpdate() {
-            this.ensureValidURL()
-        },
-        components: {
-            "Selector": Selector,
-            "StatsPageLinks": StatsPageLinks
         }
     }
 </script>
