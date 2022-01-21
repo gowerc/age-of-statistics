@@ -9,7 +9,7 @@
       :value="key"
       :selected="key===val"
     > 
-      {{ opt.name }}
+      {{ opt.label }}
     </option>
   </select>
 </template>

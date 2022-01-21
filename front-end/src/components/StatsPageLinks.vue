@@ -27,7 +27,8 @@ export default {
         return {
             tabs: [
                 {id: 'descriptives', desc:"Descriptives"},
-                {id: 'winrates', desc:"Win-Rates"}
+                {id: 'winrates', desc:"Win-Rates"},
+                {id: 'experimental', desc: "Experimental"}
             ]
         }
     },
@@ -38,4 +39,32 @@ export default {
     }
 }
 </script>
-   
+
+
+
+
+
+
+
+<style scoped>
+
+a:link { text-decoration: none; }
+a:visited { text-decoration: none; }
+a:hover { text-decoration: none; }
+a:active { text-decoration: none; }
+    
+    
+.tab-box.active {
+    border-bottom: 1.5px solid #555555;
+}
+
+.tab-box {
+    color: inherit;
+    margin-right: auto;
+    margin-left: auto;
+    font-weight: 600;
+}
+a.tab-box:hover { 
+    color: inherit; 
+}
+</style>

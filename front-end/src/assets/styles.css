@@ -1,0 +1,36 @@
+
+.img-standard {
+    max-height: 500px;
+}
+
+.img-square {
+    max-height: 650px;
+}
+
+.img-output {
+    max-width: 100%;
+    display: block;
+    margin-right: auto;
+    margin-left: auto;
+    margin-top: 25px;
+    margin-bottom: 50px;
+    border: 0;
+    width: auto;
+    height: auto;
+}
+
+:root {
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 14px;
+    line-height: 1.42857143;
+    background-color: #ffffff;
+    --main-font-color: #555555;
+    color: var(--main-font-color);
+}
+
+h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
+    margin-top: 30px;
+    margin-bottom: 20px;
+    font-weight: 700;
+    line-height: 1.2;
+}

@@ -1,36 +1,14 @@
-:root {
-    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-    font-size: 14px;
-    line-height: 1.42857143;
-    background-color: #ffffff;
-    --main-font-color: #555555;
-    color: var(--main-font-color);
-}
 
-h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
-    margin-top: 30px;
-    margin-bottom: 20px;
-    font-weight: 700;
-    line-height: 1.2;
-}
 
 h1 { font-size: 38px; }
 h2 { font-size: 30px; }
 h3 { font-size: 24px; }
 h4 { font-size: 18px; }
 
-a:link { text-decoration: none; }
-a:visited { text-decoration: none; }
-a:hover { text-decoration: none; }
-a:active { text-decoration: none; }
 
 
-.container-central {
-    max-width: 940px;
-    width: min(940px, 100vw); 
-    margin-left: auto;
-    margin-right: auto;
-}
+
+
 
 .main-page {
     min-height: 100vh;
@@ -44,46 +22,17 @@ a:active { text-decoration: none; }
     }
 }
 
-.img-standard {
-    max-height: 500px;
-}
-
-.img-square {
-    max-height: 650px;
-}
-
-.img-cohort {
-    max-width: 100%;
-    display: block;
-    margin-right: auto;
-    margin-left: auto;
-    margin-top: 25px;
-    margin-bottom: 50px;
-    border: 0;
-    width: auto;
-    height: auto;
-}
 
 
-.navbar-brand {
-    font-family: 'Secular One', sans-serif;
-    font-size: 22px;
-    color: #DDD !important;
-}
+
+
 
 
 .footer a {
     color: rgb(236, 236, 236);
 }
 
-.faq-a {
-    margin-bottom: 2.5rem;
-}
 
-.faq-q {
-    font-weight: 700;
-    margin-top: 2.5rem;
-}
 
 .badges {
     font-size: 30px;
@@ -103,17 +52,3 @@ a:active { text-decoration: none; }
     font-size: 11px;
 }
 
-
-.tab-box.active {
-    border-bottom: 1.5px solid #555555;
-}
-
-.tab-box {
-    color: inherit;
-    margin-right: auto;
-    margin-left: auto;
-    font-weight: 600;
-}
-a.tab-box:hover { 
-    color: inherit; 
-}

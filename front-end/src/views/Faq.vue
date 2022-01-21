@@ -96,3 +96,15 @@
     that this is at best a partial solution to what is a very difficult problem to solve.
   </p>
 </template>
+
+
+<style scoped>
+.faq-a {
+    margin-bottom: 2.5rem;
+}
+
+.faq-q {
+    font-weight: 700;
+    margin-top: 2.5rem;
+}
+</style>

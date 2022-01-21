@@ -105,7 +105,7 @@ def db_create_table_if_not(db_name):
 
 
 def get_connection():
-    with open("./bin/config.json") as fi:
+    with open("./data/raw/config_db.json") as fi:
         env = json.load(fi)
     conn = psycopg2.connect(
         host=env["APP_HOST"],
@@ -154,7 +154,7 @@ def add_to_db(dt):
 
 if __name__ == "__main__":
     
-    with open("./data-raw/db_schema.json", "r") as fi:
+    with open("./data/raw/db_schema.json", "r") as fi:
         dbmeta = json.load(fi)
     
     dt_limit = support.as_seconds(

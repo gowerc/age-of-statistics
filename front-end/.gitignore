@@ -27,3 +27,6 @@ pnpm-debug.log*
 
 **.png
 **.jpeg
+
+public/outputs
+src/assets/config.json
