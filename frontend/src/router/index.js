@@ -20,13 +20,13 @@ const routes = [
     },
     {
         path: "/",
-        redirect: '/statistics/descriptives'
+        redirect: '/statistics/criteria'
     },
     {
         path: "/statistics",
         name: "Statistics",
         component: Statistics,
-        redirect: '/statistics/descriptives',
+        redirect: '/statistics/criteria',
         children: [
             {
                 path: 'descriptives',

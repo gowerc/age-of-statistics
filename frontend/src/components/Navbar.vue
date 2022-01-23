@@ -1,5 +1,5 @@
 <template>
-<nav class="navbar navbar-expand-sm navbar-dark bg-dark px-md-4 mb-3">
+<nav class="navbar navbar-expand-sm navbar-dark bg-dark py-0 w-100 pt-1">
     <div class="container-fluid">
         
         <a class="navbar-brand" href="/">
@@ -64,5 +64,9 @@
     font-family: 'Secular One', sans-serif;
     font-size: 22px;
     color: #DDD !important;
+}
+
+.navbar {
+    box-shadow: 0px 0px 3px 3px #212529;
 }
 </style>

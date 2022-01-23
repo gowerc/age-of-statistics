@@ -1,17 +1,23 @@
 <template>
-  <select
-    class="form-control w-50"
-    @change="onChange($event)"
-  >
-    <option 
-      v-for="(opt, key) in list" 
-      :key="key"
-      :value="key"
-      :selected="key===val"
-    > 
-      {{ opt.label }}
-    </option>
-  </select>
+<div class="col-md-4 px-0 mx-0 py-1">
+    <label class = "px-0 mx-0">
+        {{ toTitleCase(name) }}:&nbsp;
+    </label>
+    <select
+        class="form-select px-0 mx-0"
+        @change="onChange($event)">
+        <option 
+            v-for="(opt, key) in list" 
+            :key="key"
+            :value="key"
+            :selected="key===val"> 
+            {{ opt.label }}
+        </option>
+    </select>
+</div>
+
+
+
 </template>
 
 
@@ -28,6 +34,14 @@ export default {
             let obj = {}
             obj[this.name] = e.target.value
             this.updateRoute(obj)
+        },
+        toTitleCase(str) {
+            return str.replace(
+                /\w\S*/g,
+                function(txt) {
+                    return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+                }
+            )
         }
     }
 }
@@ -35,11 +49,24 @@ export default {
 
 
 <style scoped>
-    select {
-        max-width: "200px";
-    }
-    .form-control {
-        width:auto;
-        display:inline-block;
-    }
+
+.selection {
+    display: inline-block;
+}
+
+select {
+    display: inline-block;
+    width: calc(100% - 4.2rem);
+    max-width: 250px;
+    min-width: 160px;
+    font-size: calc(100% - 3px);
+}
+
+
+
+
+label {
+    width: 3.6rem
+}
+
 </style>

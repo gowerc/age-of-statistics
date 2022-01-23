@@ -2,7 +2,7 @@
 
 
 <template>
-  <nav class="nav nav-pills flex-column flex-md-row mb-4">
+  <nav class="nav nav-pills flex-column flex-sm-row mb-4">
     <router-link
       v-for="tab in tabs"
       :key="tab"
@@ -56,7 +56,7 @@ a:active { text-decoration: none; }
     
     
 .tab-box.active {
-    border-bottom: 1.5px solid #555555;
+    border-bottom: 1.5px solid #212529;
 }
 
 .tab-box {

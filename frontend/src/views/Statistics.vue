@@ -1,45 +1,41 @@
 
 
 <template>
-    <div>
-        <h3>Game:</h3>
+
+
+<div class="container pb-2 px-0 mx-0">
+    <div class="row justify-content-evenly align-items-center px-0 mx-0">
         <Selector
             :update-route="updateRoute"
             :list="games"
             name="game"
         />
-    </div>
-    
-    <div>
-        <h3>Date:</h3>
         <Selector
             :update-route="updateRoute"
             :list="periods"
             name="period"
         />
-    </div>
-    
-    <div>
-        <h3>Filter:</h3>
         <Selector
             :update-route="updateRoute"
             :list="filters"
             name="filter"
         />
     </div>
+</div>
 
-    <StatsPageLinks />
 
-    <router-view v-slot="slotProps">
-        <keep-alive max="6">
-            <div v-if="path">
-                <component
-                    :is="slotProps.Component"
-                    :path="path"
-                />
-            </div>
-        </keep-alive>
-    </router-view>
+<StatsPageLinks />
+
+<router-view v-slot="slotProps">
+    <keep-alive max="6">
+        <div v-if="path">
+            <component
+                :is="slotProps.Component"
+                :path="path"
+            />
+        </div>
+    </keep-alive>
+</router-view>
 </template>
 
 
@@ -118,7 +114,8 @@ export default {
 
 
 <style scoped>
-    h3 {
-        display: inline;
-    }
+.container {
+    width: 100%;
+    max-width: inherit;
+}
 </style>
