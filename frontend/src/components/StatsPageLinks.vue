@@ -26,6 +26,7 @@ export default {
     data() {
         return {
             tabs: [
+                {id: 'criteria', desc: "Criteria"},
                 {id: 'descriptives', desc:"Descriptives"},
                 {id: 'winrates', desc:"Win-Rates"},
                 {id: 'experimental', desc: "Experimental"}

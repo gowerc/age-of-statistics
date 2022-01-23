@@ -1,9 +1,8 @@
 <template>
     <h3>Distribution of Players Highest Picked Civilisation's Play Rate</h3>
     <img 
-        class="img-cohort img-standard"
-        :src="path + '/dist_civpick.png'"
-    >
+        class="img-output img-standard"
+        :src="path + '/dist_civpick.png'">
     <p>
         For this plot we calculate the play rate of each players most played civ 
         (i.e. if I used Franks for 60% of my games, Mayans for 30% and Britains for 10%
@@ -15,9 +14,8 @@
 
     <h3>Hierarchical Clustering Dendrogram</h3>
     <img
-        class="img-cohort img-standard"
-        :src="path + '/civ_dendro.png'"
-    >
+        class="img-output img-standard"
+        :src="path + '/civ_dendro.png'">
     <p>
         This output attempts to highlight civilisations that are "similar" based upon
         their win rates vs other civilisations. The algorithm works by recursively
@@ -32,9 +30,8 @@
 
     <h3>Estimating how Overrated or Underrated each Civilisation is</h3>
     <img
-        class="img-cohort img-standard"
-        :src="path + '/civ_ewr_owr_diff.png'"
-    >
+        class="img-output img-standard"
+        :src="path + '/civ_ewr_owr_diff.png'">
     <p>
         This plot attempts to answer the question of "how overrated / underrated is each
         civilisation" (credit to SOTL for proposing this idea).
@@ -51,9 +48,8 @@
         the plot below showing the observed win rates vs the expected win rates.
     </p>
     <img
-        class="img-cohort img-standard"
-        :src="path + '/civ_ewr_owr.png'"
-    >
+        class="img-output img-standard"
+        :src="path + '/civ_ewr_owr.png'">
     <p>
         It must stress that these plots should be interpreted with a massive grain of
         salt. The fundamental assumption that play rates predict win rates is a strong
