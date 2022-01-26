@@ -1,33 +1,10 @@
 
-.img-standard {
-    max-height: 500px;
-}
-
-.img-square {
-    max-height: 650px;
-}
-
-.img-output {
-    max-width: 100%;
-    display: block;
-    margin-right: auto;
-    margin-left: auto;
-    margin-top: 25px;
-    margin-bottom: 50px;
-    border: 0;
-    width: auto;
-    height: auto;
-}
-
-
 h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
     margin-top: 30px;
     margin-bottom: 20px;
     font-weight: 700;
     line-height: 1.2;
 }
-
-
 
 
 /* If the with is greater than or equal to x-px, then ... */
@@ -49,7 +26,6 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
 }
 
 
-
 /* attach to the root i.e. apply everywhere */
 :root {
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -58,6 +34,3 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
     --main-font-color: #555555;
     color: var(--main-font-color);
 }
-
-
-

@@ -1,20 +1,36 @@
 <template>
-    <h3>Naive Win Rates by Elo</h3>
-    <img class="img-cohort img-square" src="outputs/cohort_{{meta.id}}/slide_wrNaive_elo_{{build_id}}.png">
 
-    <h3>Naive Win Rates by Game Length</h3>
-    <img class="img-cohort img-square" src="outputs/cohort_{{meta.id}}/slide_wrNaive_gamelength_{{build_id}}.png">
+<Output
+    name="slide_wrNaive_elo"
+    title="Naive Win Rates by Elo"
+    square
+    :path="path" />
 
 
-    <h3>Play Rates by Elo</h3>
-    <img class="img-cohort img-square" src="outputs/cohort_{{meta.id}}/slide_playrate_elo_{{build_id}}.png">
+<Output
+    name="slide_wrNaive_gamelength"
+    title="Naive Win Rates by Game Length"
+    square
+    :path="path" />
+
+
+<Output
+    name="slide_playrate_elo"
+    title="Play Rates by Elo"
+    square
+    :path="path" />
+
 </template>
 
 
 
 <script>
+import Output from "@/components/Output"
 export default {
     props: ["path"],
+    components: {
+        "Output": Output
+    }
 }
 </script>
 

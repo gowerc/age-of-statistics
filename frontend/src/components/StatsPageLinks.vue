@@ -28,7 +28,8 @@ export default {
             tabs: [
                 {id: 'criteria', desc: "Criteria"},
                 {id: 'descriptives', desc:"Descriptives"},
-                {id: 'winrates', desc:"Win-Rates"},
+                {id: 'winrates', desc:"Win Rates"},
+                {id: 'sliding', desc:"Sliding Window"},
                 {id: 'experimental', desc: "Experimental"}
             ]
         }

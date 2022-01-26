@@ -1,35 +1,35 @@
 
 <template>
-    <h3>Naive Win Rates by Civilisation</h3>
-    <img 
-        class="img-output img-standard"
-        :src="path + '/civ_wrNaive.png'"
-    />
 
-    <h3>Naive Win Rates vs Play Rate</h3>
-    <img 
-        class="img-output img-standard"
-        :src="path + '/civ_wrNaive_playrate.png'"
-    />
+<Output
+    name="civ_wrNaive"
+    title="Naive Win Rates by Civilisation"
+    :path="path" />
 
-    <h3>Averaged Win Rates by Civilisation</h3>
-    <img 
-        class="img-output img-standard"
-        :src="path + '/civ_wrAvg.png'"
-    />
+<Output
+    name="civ_wrNaive_playrate"
+    title="Naive Win Rates vs Play Rate"
+    :path="path" />
 
-    <h3>Averaged Win Rates vs Play Rate</h3>
-    <img
-        class="img-output img-standard"
-        :src="path + '/civ_wrAvg_playrate.png'"
-    />
-  
+<Output
+    name="civ_wrAvg"
+    title="Averaged Win Rates by Civilisation"
+    :path="path" />
+
+<Output
+    name="civ_wrAvg_playrate"
+    title="Averaged Win Rates vs Play Rate"
+    :path="path" />
 
 </template>
 
 <script>
+import Output from "@/components/Output"
 export default {
     props: ["path"],
+    components: {
+        "Output": Output
+    }
 }
 </script>
 
