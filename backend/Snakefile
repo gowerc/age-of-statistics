@@ -1,29 +1,35 @@
+# TODO
 import json
 
 with open("./config.json", "r") as fi:
     config = json.load(fi)
 
+STRINGS = [
+    "data/processed/{game}/{period}/matchmeta.parquet",
+    "outputs/{game}/{period}/{filter}/output.log"
+]
 
-VAD_STRING = "data/processed/{game}/{period}/matchmeta.parquet"
-OUTPUT_STRING = "outputs/{game}/{period}/{filter}/output.log"
-
-VADS = []
-OUTPUTS = []
+STRINGS_EXPANDED = []
 GAMES = config.keys()
 for game in GAMES:
     FILTERS = config[game]["filters"].keys()
     PERIODS = config[game]["periods"].keys()
-    VADS += expand(VAD_STRING, game = GAMES, period = PERIODS)
-    OUTPUTS += expand(OUTPUT_STRING, game = GAMES, period = PERIODS, filter = FILTERS)
+    for string in STRINGS:
+        STRINGS_EXPANDED += expand(
+            string,
+            game = GAMES,
+            period = PERIODS,
+            filter = FILTERS
+        )
 
 
 rule all:
     input:
-        OUTPUTS
+        STRINGS_EXPANDED
 
 
 rule db:
-    shell: "python3.9 ./scripts/db_update.py"
+    shell: "python3.9 ./analysis/db_update.py"
 
 
 rule clean:
@@ -46,27 +52,29 @@ rule killr:
 
 rule patchmeta:
     output: "data/processed/patchmeta.json"
-    input: "scripts/ad_patchmeta.py"
+    input: "analysis/ad_patchmeta.py"
     shell: "python3.9 {input[0]}"
 
 
-###### VADs
-
-rule all_vads:
-    input: VADS
+###### Analysis Datasets
 
 rule:
-    output: "data/processed/{game}/{period}/matchmeta.parquet"
-    input: "scripts/ad_ana.R", "data/processed/patchmeta.json"
-    shell: "Rscript {input[0]} {wildcards.game} {wildcards.period}"
+    output:
+        "data/processed/{game}/{period}/matchmeta.parquet"
+    input:
+        "analysis/ad_ana.R",
+        "data/processed/patchmeta.json"
+    shell:
+        "Rscript {input[0]} {wildcards.game} {wildcards.period}"
 
 
 ###### Outputs
 
-rule all_outputs:
-    input: OUTPUTS
-
 rule:
-    output: "outputs/{game}/{period}/{filter}/output.log"
-    input: "scripts/outputs.R", "data/processed/{game}/{period}/matchmeta.parquet"
-    shell: "Rscript {input[0]} {wildcards.game} {wildcards.period} {wildcards.filter}"
+    output:
+        "outputs/{game}/{period}/{filter}/output.log"
+    input:
+        "analysis/outputs.R",
+        "data/processed/{game}/{period}/matchmeta.parquet"
+    shell:
+        "Rscript {input[0]} {wildcards.game} {wildcards.period} {wildcards.filter}"

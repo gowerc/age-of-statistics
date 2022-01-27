@@ -1,17 +1,14 @@
+# TODO
+devtools::load_all()
+library(dplyr)
+library(ggplot2)
+library(scales)
+library(purrr)
+library(lubridate)
+library(arrow)
 
+data_location <- get_data_location()
 
-data_pr <- function(matchmeta, players){
-    players2 <- players %>% semi_join(matchmeta, by= "match_id")
-    players2 %>%
-        mutate(bign = n()) %>% 
-        group_by(civ_name) %>% 
-        summarise(
-            n = n(),
-            bign = unique(bign),
-            pr = n/bign * 100,
-            pr_format = sprintf("%5.2f %%", pr)
-        )
-}
 
 
 
@@ -46,37 +43,7 @@ plot_pr <- function(dat) {
 }
 
 
-plot_pr_wr <- function(wr, pr) {
-    assert_that(
-        nrow(wr) == nrow(pr)
-    )
 
-    pdat <- wr %>%
-        inner_join(select(pr, civ_name, pr), by = "civ_name") %>%
-        select(civ = civ_name, wr, pr)
-
-    footnotes <- c(
-        ""
-    ) %>%
-        as_footnote()
-
-    p <- ggplot(data = pdat, aes(y = pr, x = wr, label = civ)) +
-        geom_point() +
-        theme_bw() +
-        scale_y_continuous(breaks = pretty_breaks(10)) +
-        scale_x_continuous(breaks = pretty_breaks(10)) +
-        theme(
-            plot.caption = element_text(hjust = 0)
-        ) +
-        geom_text_repel(min.segment.length = unit(0.1, "lines"), alpha = 0.7) +
-        labs(caption = footnotes) +
-        ylab("Play Rate (%)") +
-        xlab("Win Rate (%)") +
-        geom_vline(xintercept = 50, col = "red", alpha = 0.65) +
-        geom_hline(yintercept = 1 / nrow(pr) * 100, col = "red", alpha = 0.65)
-    
-    output$new(plot = p, data = pdat)
-}
 
 
 

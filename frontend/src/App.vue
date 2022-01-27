@@ -22,6 +22,9 @@ import "bootstrap-icons/font/bootstrap-icons.css";
 import "@/assets/styles.css"
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
+
+document.title = 'Age of Statistics'
+
 export default {
     components: {
         "Navbar": Navbar,

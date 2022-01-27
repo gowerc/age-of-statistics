@@ -11,30 +11,19 @@ library(glue)
 
 
 ## determine which cohort we are building
-ARGS <- commandArgs(trailingOnly = TRUE)
-assert_that(length(ARGS) == 2)
-if (length(ARGS) == 0) {
-    GAME <- "aoe2"
-    PERIOD <- "p2"
-} else {
-    GAME <- ARGS[[1]]
-    PERIOD <- ARGS[[2]]
-}
 
 
-DATA_LOCATION <- get_data_location(GAME, PERIOD)
 
-config <- jsonlite::read_json("./config.json")
-
-period_meta <- config[[GAME]][["periods"]][[PERIOD]]
+config <- get_config()
+config_all <- get_config_all()
 
 
-DATE_LIMIT_LOWER <- paste0(period_meta$lower, " 00:00:01") %>%
+DATE_LIMIT_LOWER <- paste0(config$period$lower, " 00:00:01") %>%
     ymd_hms() %>%
     `-`(days(20)) %>%
     as.numeric()
 
-DATE_LIMIT_UPPER <- paste0(period_meta$upper, " 23:59:59") %>%
+DATE_LIMIT_UPPER <- paste0(config$period$upper, " 23:59:59") %>%
     ymd_hms() %>%
     as.numeric()
 
@@ -46,7 +35,7 @@ meta <- get_patchmeta()
 
 
 LEADERBOARDS <- vapply(
-    config[[GAME]][["filters"]],
+    config_all[[config$game]]$filters,
     function(x) x$leaderboard,
     character(1),
     USE.NAMES = FALSE
@@ -220,7 +209,7 @@ assert_that(
 )
 
 
-mapclass <- get_map_class(GAME)
+mapclass <- get_map_class(config$game)
 u_mapname <- unique(valid_matches2$map_name)
 no_class <- u_mapname[!u_mapname %in% mapclass$map_name]
 assert_that(
@@ -275,13 +264,15 @@ assert_that(
 )
 
 
+data_location <- get_data_location(nofilter = TRUE)
+
 arrow::write_parquet(
     x = matchmeta,
-    sink = paste0(DATA_LOCATION, "matchmeta.parquet")
+    sink = file.path(data_location, "matchmeta.parquet")
 )
 
 arrow::write_parquet(
     x = players,
-    sink = paste0(DATA_LOCATION, "players.parquet")
+    sink = file.path(data_location, "players.parquet")
 )
 

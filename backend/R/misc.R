@@ -12,9 +12,15 @@ invlogit <- function(x) {
 
 as_footnote <- function(x, width = 140, add_Filter = TRUE) {
 
+    args <- get_args()
+
     if (add_Filter) {
         x <- c(
-            glue("Filter: {filter}<br/>", filter = get("FILTER", envir = .GlobalEnv)),
+            glue::glue(
+                "Filter: {filter}, Period: {period}<br/>",
+                filter = args$filter,
+                period = args$period
+            ),
             x
         )
     }
@@ -31,7 +37,7 @@ as_footnote <- function(x, width = 140, add_Filter = TRUE) {
 
 get_map_class <- function(game) {
     x <- yaml::read_yaml("./data/raw/maps.json")[[game]]
-    tibble(
+    dplyr::tibble(
         map_name = names(unlist(x)),
         map_class = unlist(x)
     )
@@ -40,15 +46,7 @@ get_map_class <- function(game) {
 
 get_config <- function(key = NULL) {
     x <- yaml::read_yaml("./data/raw/config.yml")
-    x
-    # ids <- vapply(x, function(y) y$id, character(1))
-    # names(x) <- ids
-    # if(is.null(key)) return(x)
-    # x2 <- x[[key]]
-    # assertthat::assert_that(key %in% names(x))
-    # x2$start_limit_lower <- lubridate::ymd_hms(x2$start_limit_lower)
-    # x2$start_limit_upper <- lubridate::ymd_hms(x2$start_limit_upper)
-    # x2
+    return(x)
 }
 
 
@@ -57,12 +55,35 @@ lgl_to_char <- function(x){
 }
 
 
-get_data_location <- function(game, period) {
-    ## Create output directory if not exsits
-    LOCATION <- glue(
-        "./data/processed/{game}/{period}/",
-        game = game,
-        period = period
+get_data_location <- function(nofilter=FALSE) {
+    args <- get_args()
+
+    if (nofilter) {
+        string <- "./data/processed/{game}/{period}"
+    } else {
+        string <- "./data/processed/{game}/{period}/{filter}"
+    }
+
+    location <- glue::glue(
+        string,
+        game = args$game,
+        period = args$period,
+        filter = args$filter
+    )
+    if (!dir.exists(location)) {
+        dir.create(location, recursive = TRUE)
+    }
+    return(location)
+}
+
+
+get_output_location <- function() {
+    args <- get_args()
+    LOCATION <- glue::glue(
+        "./outputs/{game}/{period}/{filter}/",
+        game = args$game,
+        period = args$period,
+        filter = args$filter
     )
     if (!dir.exists(LOCATION)) {
         dir.create(LOCATION, recursive = TRUE)
@@ -70,16 +91,47 @@ get_data_location <- function(game, period) {
     return(LOCATION)
 }
 
-get_output_location <- function(game, period, filter) {
-    ## Create output directory if not exsits
-    LOCATION <- glue(
-        "./outputs/{game}/{period}/{filter}/",
-        game = game,
-        period = period,
-        filter = filter
-    )
-    if (!dir.exists(LOCATION)) {
-        dir.create(LOCATION, recursive = TRUE)
+
+get_args <- function() {
+    ARGS <- commandArgs(trailingOnly = TRUE)
+    if (length(ARGS) == 0) {
+        GAME <- "aoe2"
+        PERIOD <- "p02_v01"
+        FILTER <- "rm_solo_open"
+    } else {
+        GAME <- ARGS[[1]]
+        PERIOD <- ARGS[[2]]
+        FILTER <- ARGS[[3]]
     }
-    return(LOCATION)
+    args <- list(
+        game = GAME,
+        period = PERIOD,
+        filter = FILTER
+    )
+    return(args)
+}
+
+
+get_config_all <- function() {
+    jsonlite::read_json("config.json")
+}
+
+
+get_config <- function() {
+    args <- get_args()
+    config <- get_config_all()
+    list(
+        filter = config[[args$game]][["filters"]][[args$filter]],
+        period = config[[args$game]][["periods"]][[args$period]],
+        game = args$game
+    )
+}
+
+
+
+set_log <- function(path, id) {
+    logpath <- file.path(path, paste0(id, ".log"))
+    sink(logpath)
+    cat("complete")
+    sink()
 }

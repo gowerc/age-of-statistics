@@ -5,6 +5,7 @@ import support
 import support.api
 import time
 from requests.exceptions import ConnectionError
+from requests.exceptions import HTTPError
 from urllib3.exceptions import MaxRetryError
 from urllib3.exceptions import NewConnectionError
 
@@ -151,7 +152,6 @@ def add_to_db(dt):
     conn.commit()
 
 
-
 if __name__ == "__main__":
     
     with open("./data/raw/db_schema.json", "r") as fi:
@@ -175,7 +175,7 @@ if __name__ == "__main__":
         old_latest = latest
         try:
             add_to_db(latest)
-        except (TimeoutError, ConnectionError, MaxRetryError, NewConnectionError) as e:
+        except (TimeoutError, ConnectionError, MaxRetryError, NewConnectionError, HTTPError):
             print("\nTimeoutError !!\n")
             FAILURE_CURRENT = FAILURE_CURRENT + 1
             if FAILURE_CURRENT > FAILURE_LIMIT:
@@ -193,5 +193,3 @@ if __name__ == "__main__":
     
     cur.close()
     conn.close()
-
-

@@ -58,7 +58,6 @@ export default {
             return [
                 "/outputs",
                 this.$route.query.game,
-                config[this.$route.query.game].default.version,
                 this.$route.query.period,
                 this.$route.query.filter
             ].join('/');
