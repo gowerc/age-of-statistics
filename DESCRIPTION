@@ -1,9 +1,0 @@
-Package: aoecps
-Title: Analysis of AOE2 Civilisation Performance Statistics
-Version: 0.0.0.9000
-Description: Analysis of AOE2 Civilisation Performance Statistics
-License: MIT + file LICENSE
-Encoding: UTF-8
-LazyData: true
-Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.1.2

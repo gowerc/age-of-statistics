@@ -1,0 +1,37 @@
+
+### Specific output formats
+
+.gsauth
+.snakemake
+
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+.vscode
+
+*.Rds
+*.rds
+*.RDS
+*.pyc
+
+Rplots.pdf
+
+### Specific folders
+
+__pycache__
+
+data/*
+logs/*
+!data/raw/
+outputs/*
+docs/*
+site/*
+_site/*
+
+!.gitkeep
+
+
+
+# Local Netlify folder
+.netlify

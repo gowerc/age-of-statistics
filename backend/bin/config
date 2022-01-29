@@ -1,0 +1,11 @@
+#!/bin/bash
+
+export PGPASSWORD=$(jq -r ".APP_PASSWORD" ./data/raw/config_db.json)
+export APP_DB=$(jq -r ".APP_DB" ./data/raw/config_db.json)
+export APP_HOST=$(jq -r ".APP_HOST" ./data/raw/config_db.json)
+export APP_PASSWORD=$(jq -r ".APP_PASSWORD" ./data/raw/config_db.json)
+export APP_USER=$(jq -r ".APP_USER" ./data/raw/config_db.json)
+export APP_PORT=$(jq -r ".APP_PORT" ./data/raw/config_db.json)
+
+
+

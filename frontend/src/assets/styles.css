@@ -1,0 +1,36 @@
+
+h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
+    margin-top: 30px;
+    margin-bottom: 20px;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+
+/* If the with is greater than or equal to x-px, then ... */
+@media only screen and (min-width: 768px)  {
+    h1 { font-size: 38px; }
+    h2 { font-size: 30px; }
+    h3 { font-size: 24px; }
+    h4 { font-size: 18px; }
+    :root { font-size: 14px; }
+}
+
+/* If the with is less than or equal to x-px, then ... */
+@media only screen and (max-width: 768px)  {
+    h1 { font-size: 34px; }
+    h2 { font-size: 26px; }
+    h3 { font-size: 20px; }
+    h4 { font-size: 14px; }
+    :root { font-size: 12px }
+}
+
+
+/* attach to the root i.e. apply everywhere */
+:root {
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    line-height: 1.42857143;
+    background-color: #ffffff;
+    --main-font-color: #555555;
+    color: var(--main-font-color);
+}

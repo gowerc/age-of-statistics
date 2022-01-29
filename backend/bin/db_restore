@@ -1,0 +1,18 @@
+#!/bin/bash
+
+source ./bin/config
+
+dropdb \
+    --host=$APP_HOST \
+    --port $APP_PORT \
+    --username=$APP_USER \
+    $APP_DB
+
+
+psql \
+    --host $APP_HOST \
+    --port $APP_PORT \
+    --username $APP_USER \
+    -f ./data/backup/db.sql
+
+

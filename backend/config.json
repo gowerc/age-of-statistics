@@ -1,0 +1,133 @@
+{
+    "aoe2": {
+        "label": "Age of Empires 2",
+        "default": {
+            "filters": "rm_solo_all",
+            "periods": "p02_v01"
+        },
+        "filters": {
+            "rm_solo_all": {
+                "label": "RM, Solo, All, 1200",
+                "leaderboard": "1v1 Random Map",
+                "mapclass": "All",
+                "elo_limit_lower": 1200,
+                "elo_limit_lower_slide": 800,
+                "length_limit_lower": 6,
+                "length_limit_upper": 180,
+                "rm_single_pick": false
+            },
+            "rm_solo_open": {
+                "label": "RM, Solo, Open, 1200",
+                "leaderboard": "1v1 Random Map",
+                "mapclass": "Open",
+                "elo_limit_lower": 1200,
+                "elo_limit_lower_slide": 800,
+                "length_limit_lower": 6,
+                "length_limit_upper": 180,
+                "rm_single_pick": false
+            },
+            "rm_solo_closed": {
+                "label": "RM, Solo, Closed, 1200",
+                "leaderboard": "1v1 Random Map",
+                "mapclass": "Closed",
+                "elo_limit_lower": 1200,
+                "elo_limit_lower_slide": 800,
+                "length_limit_lower": 6,
+                "length_limit_upper": 180,
+                "rm_single_pick": false
+            },
+            "rm_team_all": {
+                "label": "RM, Team, All, 1200",
+                "leaderboard": "Team Random Map",
+                "mapclass": "All",
+                "elo_limit_lower": 1200,
+                "elo_limit_lower_slide": 800,
+                "length_limit_lower": 6,
+                "length_limit_upper": 180,
+                "rm_single_pick": false
+            },
+            "rm_team_open": {
+                "label": "RM, Team, Open, 1200",
+                "leaderboard": "Team Random Map",
+                "mapclass": "Open",
+                "elo_limit_lower": 1200,
+                "elo_limit_lower_slide": 800,
+                "length_limit_lower": 6,
+                "length_limit_upper": 180,
+                "rm_single_pick": false
+            },
+            "rm_team_closed": {
+                "label": "RM, Team, Closed, 1200",
+                "leaderboard": "Team Random Map",
+                "mapclass": "Closed",
+                "elo_limit_lower": 1200,
+                "elo_limit_lower_slide": 800,
+                "length_limit_lower": 6,
+                "length_limit_upper": 180,
+                "rm_single_pick": false
+            },
+            "rm_solo_open_pro": {
+                "label": "RM, Solo, Open, 1700",
+                "leaderboard": "1v1 Random Map",
+                "mapclass": "Open",
+                "elo_limit_lower": 1700,
+                "elo_limit_lower_slide": 1200,
+                "length_limit_lower": 6,
+                "length_limit_upper": 180,
+                "rm_single_pick": false
+            },
+            "rm_solo_closed_pro": {
+                "label": "RM, Solo, Closed, 1700",
+                "leaderboard": "1v1 Random Map",
+                "mapclass": "Closed",
+                "elo_limit_lower": 1700,
+                "elo_limit_lower_slide": 1200,
+                "length_limit_lower": 6,
+                "length_limit_upper": 180,
+                "rm_single_pick": false
+            },
+            "ew_solo_any": {
+                "label": "EW, Solo, All, 1100",
+                "leaderboard": "1v1 Empire Wars",
+                "mapclass": "All",
+                "elo_limit_lower": 1100,
+                "elo_limit_lower_slide": 800,
+                "length_limit_lower": 3,
+                "length_limit_upper": 180,
+                "rm_single_pick": false
+            },
+            "rm_solo_open_nopick": {
+                "label": "RM, Solo, Open, 1200, No-Pick",
+                "leaderboard": "1v1 Random Map",
+                "mapclass": "Open",
+                "elo_limit_lower": 1200,
+                "elo_limit_lower_slide": 800,
+                "length_limit_lower": 6,
+                "length_limit_upper": 180,
+                "rm_single_pick": true
+            },
+            "rm_solo_closed_nopick": {
+                "label": "RM, Solo, Closed, 1200, No-Pick",
+                "leaderboard": "1v1 Random Map",
+                "mapclass": "Closed",
+                "elo_limit_lower": 1200,
+                "elo_limit_lower_slide": 800,
+                "length_limit_lower": 6,
+                "length_limit_upper": 180,
+                "rm_single_pick": true
+            }
+        },
+        "periods": {
+            "p01_v01"    : {
+                "label": "10Oct2021 - 16Nov2021",
+                "lower": "2021-10-10",
+                "upper": "2021-11-16"
+            },
+            "p02_v01": {
+                "label": "20Nov2021 - 23Jan2022",
+                "lower": "2021-11-20",
+                "upper": "2022-01-23"
+            }
+        }
+    }
+}
