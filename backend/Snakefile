@@ -1,26 +1,25 @@
-# TODO
 import json
+
+config: "./config.yaml"
 
 with open("./config.json", "r") as fi:
     config = json.load(fi)
 
-STRINGS = [
-    "data/processed/{game}/{period}/matchmeta.parquet",
-    "outputs/{game}/{period}/{filter}/output.log"
-]
+
+STRING = "outputs/{game}/{period}/{filter}/output.log"
+
 
 STRINGS_EXPANDED = []
 GAMES = config.keys()
 for game in GAMES:
     FILTERS = config[game]["filters"].keys()
     PERIODS = config[game]["periods"].keys()
-    for string in STRINGS:
-        STRINGS_EXPANDED += expand(
-            string,
-            game = GAMES,
-            period = PERIODS,
-            filter = FILTERS
-        )
+    STRINGS_EXPANDED += expand(
+        STRING,
+        game = GAMES,
+        period = PERIODS,
+        filter = FILTERS
+    )
 
 
 rule all:
@@ -37,17 +36,15 @@ rule clean:
         """
         rm -rf data/processed/*
         rm -rf outputs/*
+        rm -rf logs/*
         """
 
 
 rule killr:
     shell:
         """
-        kill -9 $(ps -u root | awk '$4=="R" {{ printf "%s ", $1 }}')
+        kill -9 $(ps -u docker | awk '$4=="R" {{ printf "%s ", $1 }}')
         """
-
-
-
 
 
 rule patchmeta:
@@ -56,25 +53,192 @@ rule patchmeta:
     shell: "python3.9 {input[0]}"
 
 
-###### Analysis Datasets
 
-rule:
+###############################
+#
+# Analysis Datasets
+#
+#
+
+rule matchmeta:
     output:
-        "data/processed/{game}/{period}/matchmeta.parquet"
+        "data/processed/{game}/{period}/matchmeta.log"
     input:
-        "analysis/ad_ana.R",
+        "analysis/ad_matchmeta.R",
         "data/processed/patchmeta.json"
+    log:
+        "logs/{game}/{period}/ad_matchmeta.log"
     shell:
-        "Rscript {input[0]} {wildcards.game} {wildcards.period}"
+        "Rscript {input[0]} {wildcards.game} {wildcards.period} > {log} 2>&1"
 
 
-###### Outputs
-
-rule:
+rule matchmeta_filter:
     output:
-        "outputs/{game}/{period}/{filter}/output.log"
+        "data/processed/{game}/{period}/{filter}/matchmeta_filter.log"
     input:
-        "analysis/outputs.R",
-        "data/processed/{game}/{period}/matchmeta.parquet"
+        "analysis/ad_matchmeta_filter.R",
+        "data/processed/{game}/{period}/matchmeta.log"
+    log:
+        "logs/{game}/{period}/{filter}/ad_matchmeta_filter.log"
     shell:
-        "Rscript {input[0]} {wildcards.game} {wildcards.period} {wildcards.filter}"
+        "Rscript {input[0]} {wildcards.game} {wildcards.period} {wildcards.filter} > {log} 2>&1"
+
+
+rule pr:
+    output:
+        "data/processed/{game}/{period}/{filter}/pr.parquet"
+    input:
+        "analysis/ad_pr.R",
+        "data/processed/{game}/{period}/{filter}/matchmeta_filter.log"
+    log:
+        "logs/{game}/{period}/{filter}/ad_pr.log"
+    shell:
+        "Rscript {input[0]} {wildcards.game} {wildcards.period} {wildcards.filter} > {log} 2>&1"
+
+
+rule cvc:
+    output:
+        "data/processed/{game}/{period}/{filter}/cvc.Rds"
+    input:
+        "analysis/ad_cvc.R",
+        "data/processed/{game}/{period}/{filter}/matchmeta_filter.log"
+    resources:
+        load=25
+    log:
+        "logs/{game}/{period}/{filter}/ad_cvc.log"
+    shell:
+        "Rscript {input[0]} {wildcards.game} {wildcards.period} {wildcards.filter} > {log} 2>&1"
+
+
+
+rule wr_avg:
+    output:
+        "data/processed/{game}/{period}/{filter}/wr_avg.parquet"
+    input:
+        "analysis/ad_wr_avg.R",
+        "data/processed/{game}/{period}/{filter}/cvc.Rds"
+    log:
+        "logs/{game}/{period}/{filter}/ad_wr_avg.log"
+    shell:
+        "Rscript {input[0]} {wildcards.game} {wildcards.period} {wildcards.filter} > {log} 2>&1"
+
+
+rule wr_naive:
+    output:
+        "data/processed/{game}/{period}/{filter}/wr_naive.parquet"
+    input:
+        "analysis/ad_wr_naive.R",
+        "data/processed/{game}/{period}/{filter}/matchmeta_filter.log"
+    log:
+        "logs/{game}/{period}/{filter}/ad_wr_naive.log"
+    shell:
+        "Rscript {input[0]} {wildcards.game} {wildcards.period} {wildcards.filter} > {log} 2>&1"
+
+
+
+
+###############################
+#
+# Outputs
+#
+#
+
+rule outputs:
+    output:
+        touch("outputs/{game}/{period}/{filter}/output.log")
+    input:
+        "outputs/{game}/{period}/{filter}/descriptives.log",
+        "outputs/{game}/{period}/{filter}/civ_dendro.png",
+        "outputs/{game}/{period}/{filter}/win_rates.log",
+        "outputs/{game}/{period}/{filter}/sliding_window.log",
+        "outputs/{game}/{period}/{filter}/play_rates.log",
+        "outputs/{game}/{period}/{filter}/wr_estimated.log"
+
+
+rule descriptives:
+    output:
+        "outputs/{game}/{period}/{filter}/descriptives.log"
+    input:
+        "analysis/g_descriptives.R",
+        "data/processed/{game}/{period}/{filter}/matchmeta_filter.log"
+    log:
+        "logs/{game}/{period}/{filter}/g_descriptives.log"
+    shell:
+        "Rscript {input[0]} {wildcards.game} {wildcards.period} {wildcards.filter} > {log} 2>&1"
+
+
+
+rule civ_dendro:
+    output:
+        "outputs/{game}/{period}/{filter}/civ_dendro.png"
+    input:
+        "analysis/g_civ_dendro.R",
+        "data/processed/{game}/{period}/{filter}/cvc.Rds"
+    log:
+        "logs/{game}/{period}/{filter}/g_civ_dendro.log"
+    shell:
+        "Rscript {input[0]} {wildcards.game} {wildcards.period} {wildcards.filter} > {log} 2>&1"
+
+
+rule win_rates:
+    output:
+        "outputs/{game}/{period}/{filter}/win_rates.log"
+    input:
+        "analysis/g_win_rates.R",
+        "data/processed/{game}/{period}/{filter}/pr.parquet",
+        "data/processed/{game}/{period}/{filter}/wr_avg.parquet",
+        "data/processed/{game}/{period}/{filter}/wr_naive.parquet"
+    log:
+        "logs/{game}/{period}/{filter}/g_win_rates.log"
+    shell:
+        "Rscript {input[0]} {wildcards.game} {wildcards.period} {wildcards.filter} > {log} 2>&1"
+
+
+rule sliding_window:
+    output:
+        "outputs/{game}/{period}/{filter}/sliding_window.log"
+    input:
+        "analysis/g_sliding_window.R",
+        "data/processed/{game}/{period}/{filter}/matchmeta_filter.log"
+    resources:
+        cpu=3,
+        load=25
+    log:
+        "logs/{game}/{period}/{filter}/g_sliding_window.log"
+    shell:
+        "Rscript {input[0]} {wildcards.game} {wildcards.period} {wildcards.filter} > {log} 2>&1"
+
+
+rule play_rates:
+    output:
+        "outputs/{game}/{period}/{filter}/play_rates.log"
+    input:
+        "analysis/g_play_rates.R",
+        "data/processed/{game}/{period}/{filter}/pr.parquet",
+        "data/processed/{game}/{period}/{filter}/matchmeta_filter.log"
+    log:
+        "logs/{game}/{period}/{filter}/g_play_rates.log"
+    shell:
+        "Rscript {input[0]} {wildcards.game} {wildcards.period} {wildcards.filter} > {log} 2>&1"
+
+
+rule wr_estimated:
+    output:
+        "outputs/{game}/{period}/{filter}/wr_estimated.log"
+    input:
+        "analysis/g_wr_estimated.R",
+        "data/processed/{game}/{period}/{filter}/pr.parquet",
+        "data/processed/{game}/{period}/{filter}/wr_naive.parquet"
+    log:
+        "logs/{game}/{period}/{filter}/g_wr_estimated.log"
+    shell:
+        "Rscript {input[0]} {wildcards.game} {wildcards.period} {wildcards.filter} > {log} 2>&1"
+
+
+# snakemake --profile ./snake outputs/aoe2/p02_v01/rm_solo_open/win_rates.log
+# snakemake --profile ./snake outputs/aoe2/p02_v01/rm_solo_open/wr_estimated.log
+# snakemake --profile ./snake outputs/aoe2/p02_v01/rm_solo_open/play_rates.log
+# snakemake --profile ./snake outputs/aoe2/p02_v01/rm_solo_open/sliding_window.log
+# snakemake --profile ./snake outputs/aoe2/p02_v01/rm_solo_open/descriptives.log
+# snakemake --profile ./snake outputs/aoe2/p02_v01/rm_solo_open/civ_dendro.png
+# snakemake --profile ./snake outputs/aoe2/p02_v01/rm_solo_open/output.log

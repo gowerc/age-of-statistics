@@ -42,6 +42,7 @@ LEADERBOARDS <- vapply(
 ) %>%
     unique()
 
+
 LEADERBOARDS_1v1 <- grep("^1v1", LEADERBOARDS, value = TRUE)
 
 
@@ -164,6 +165,7 @@ invalid_player_counts <- valid_players %>%
     filter(is.na(team_1) | is.na(team_2) | team_1 != team_2) %>%
     distinct(match_id)
 
+
 invalid_ratings <- valid_players %>%
     group_by(match_id) %>%
     summarise(n_na = sum(is.na(rating))) %>%
@@ -276,3 +278,4 @@ arrow::write_parquet(
     sink = file.path(data_location, "players.parquet")
 )
 
+set_log(data_location, "matchmeta")

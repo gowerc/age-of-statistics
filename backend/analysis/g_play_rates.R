@@ -1,4 +1,3 @@
-# TODO
 devtools::load_all()
 library(dplyr)
 library(ggplot2)
@@ -9,193 +8,131 @@ library(arrow)
 
 data_location <- get_data_location()
 
+pr <- read_parquet(file.path(data_location, "pr.parquet"))
+matchmeta <- read_parquet(file.path(data_location, "matchmeta.parquet"))
+players <- read_parquet(file.path(data_location, "players.parquet"))
+
+
+###############################
+#
+# Play Rate
+#
+###############################
+
+
+footnotes <- c(
+    "The red line represents the hypothetical play rate if civs were picked at random"
+) %>%
+    as_footnote()
+
+
+prdat <- pr %>%
+    arrange(desc(n)) %>%
+    mutate(civ_name = fct_inorder(civ_name)) %>%
+    select(civ = civ_name, pr) %>%
+    mutate(y_label = pr + max(pr) * 0.015) %>%
+    mutate(pr_txt = sprintf("%4.1f %%", pr))
+
+
+p <- ggplot(data = prdat, aes(y = pr, x = civ)) +
+    geom_bar(stat = "identity") +
+    geom_hline(yintercept = 1 / nrow(prdat) * 100, col = "red") +
+    geom_text(aes(y = y_label, label = pr_txt), hjust = 0, angle = 90) +
+    theme_bw() +
+    scale_y_continuous(breaks = pretty_breaks(10), expand = expansion(c(0, 0.13))) +
+    theme(
+        axis.text.x = element_text(angle = 50, hjust = 1),
+        plot.caption = element_text(hjust = 0)
+    ) +
+    labs(caption = footnotes) +
+    ylab("Play Rate (%)") +
+    xlab("")
+
+
+save_plot(
+    p = p,
+    id = "civ_playrate",
+    type = "standard"
+)
 
 
 
-plot_pr <- function(dat) {
-    footnotes <- c(
-        "The red line represents the hypothetical play rate if civs were picked at random"
-    ) %>%
-        as_footnote()
+###############################
+#
+# Distribution of Players Highest Picked Civilisation's Play Rate
+#
+###############################
 
-    prdat <- dat %>%
-        arrange(desc(n)) %>%
-        mutate(civ_name = fct_inorder(civ_name)) %>%
-        select(civ = civ_name, pr) %>%
-        mutate(y_label = pr + max(pr) * 0.015) %>%
-        mutate(pr_txt = sprintf("%4.1f %%", pr))
+lower_limit <- 20
 
-    p <- ggplot(data = prdat, aes(y = pr, x = civ)) +
-        geom_bar(stat = "identity") +
-        geom_hline(yintercept = 1 / nrow(prdat) * 100, col = "red") +
-        geom_text(aes(y = y_label, label = pr_txt), hjust = 0, angle = 90) +
-        theme_bw() +
-        scale_y_continuous(breaks = pretty_breaks(10), expand = expansion(c(0, 0.13))) +
-        theme(
-            axis.text.x = element_text(angle = 50, hjust = 1),
-            plot.caption = element_text(hjust = 0)
-        ) +
-        labs(caption = footnotes) +
-        ylab("Play Rate (%)") +
-        xlab("")
-
-    output$new(plot = p, data = prdat)
-}
+players2 <- players %>%
+    semi_join(matchmeta, by = "match_id")
 
 
+n_total_players <- length(unique(players2$profile_id))
 
 
+play_counts <- players2 %>%
+    group_by(profile_id) %>%
+    tally() %>%
+    filter(n >= lower_limit)
+
+play_counts_civ <- players2 %>%
+    semi_join(play_counts, by = "profile_id") %>%
+    group_by(profile_id, civ_name) %>%
+    tally() %>%
+    group_by(profile_id) %>%
+    mutate(bign = sum(n)) %>%
+    ungroup() %>%
+    mutate(pcent = n / bign * 100)
 
 
-plot_pr_civ1 <- function(matchmeta, players, lower_limit = 30) {
-
-    players2 <- players %>% semi_join(matchmeta, by= "match_id")
-
-    n_total_players <- length(unique(players2$profile_id))
-
-    play_counts <- players2 %>%
-        group_by(profile_id) %>%
-        tally() %>%
-        filter(n >= lower_limit)
-
-    play_counts_civ <- players2 %>%
-        semi_join(play_counts, by = "profile_id") %>%
-        group_by(profile_id, civ_name) %>%
-        tally() %>%
-        group_by(profile_id) %>%
-        mutate(bign = sum(n)) %>%
-        ungroup() %>%
-        mutate(pcent = n / bign * 100)
+pdat <- play_counts_civ %>%
+    arrange(profile_id, desc(pcent)) %>%
+    group_by(profile_id) %>%
+    filter(row_number() == 1) %>%
+    mutate(pcent_cat = cut(pcent, seq(0, 100, 10))) %>%
+    group_by(pcent_cat) %>%
+    tally() %>%
+    ungroup() %>%
+    mutate(p = sprintf("%4.1f%%", n / sum(n) * 100)) %>%
+    mutate(yadj = n + max(n) / 50)
 
 
-    pdat <- play_counts_civ %>%
-        arrange(profile_id, desc(pcent)) %>%
-        group_by(profile_id) %>%
-        filter(row_number() == 1) %>%
-        mutate(pcent_cat = cut(pcent, seq(0, 100, 10))) %>%
-        group_by(pcent_cat) %>%
-        tally() %>%
-        ungroup() %>%
-        mutate(p = sprintf("%4.1f%%", n / sum(n) * 100)) %>%
-        mutate(yadj = n + max(n) / 50)
-
-
-    footnotes <- c(
-        sprintf(
-            "Only includes %s / %s players who have played more than %s games", 
-            nrow(play_counts),
-            n_total_players,
-            lower_limit
-        )
-    ) %>%
-        as_footnote()
-
-
-    p <- ggplot(data = pdat, aes(x = pcent_cat, y = n)) +
-        geom_bar(stat = "identity") +
-        geom_text(aes(label = p, y = yadj)) +
-        theme_bw() +
-        scale_y_continuous(breaks = pretty_breaks(8), expand = expansion(c(0, 0.05))) +
-        xlab("Play Rate of Most Used Civ") +
-        ylab("Number of Players") +
-        theme(
-            plot.caption = element_text(hjust = 0),
-            axis.text.x = element_text(hjust = 1, angle = 35)
-        ) +
-        labs(caption = footnotes)
-
-    pdat2 <- pdat %>% select(percent_group = pcent_cat, count = n, percent = p)
-
-    output$new(plot = p, data = pdat2)
-}
-
-
-
-
-
-plot_wr_ewr <- function(wr, pr) {
-
-    assert_that(
-        nrow(wr) == nrow(pr)
+footnotes <- c(
+    sprintf(
+        "Only includes %s / %s players who have played more than %s games", 
+        nrow(play_counts),
+        n_total_players,
+        lower_limit
     )
-
-    boxtrans <- function(x, y) {
-        box_cox_num <- MASS::boxcox(x ~ y, data = data.frame(x = x, y = y), plotit = FALSE)
-        lambda <- box_cox_num$x[which.max(box_cox_num$y)]
-        if (lambda == 0) {
-            return(log(x))
-        } else {
-            return(((x^lambda) - 1) / lambda)
-        }
-    }
+) %>%
+    as_footnote()
 
 
-    dat <- wr %>%
-        inner_join(select(pr, civ_name, pr), by = "civ_name") %>%
-        mutate(box_pr = boxtrans(pr, wr))
+p <- ggplot(data = pdat, aes(x = pcent_cat, y = n)) +
+    geom_bar(stat = "identity") +
+    geom_text(aes(label = p, y = yadj)) +
+    theme_bw() +
+    scale_y_continuous(breaks = pretty_breaks(8), expand = expansion(c(0, 0.05))) +
+    xlab("Play Rate of Most Used Civ") +
+    ylab("Number of Players") +
+    theme(
+        plot.caption = element_text(hjust = 0),
+        axis.text.x = element_text(hjust = 1, angle = 35)
+    ) +
+    labs(caption = footnotes)
 
 
-    mod <- MASS::rlm(wr ~ box_pr, data = dat, psi = MASS::psi.huber)
-
-    dat2 <- dat %>%
-        mutate(preds = predict(mod)) %>%
-        mutate(bias = preds - wr) %>%
-        arrange(bias) %>%
-        mutate(civ_name = fct_inorder(civ_name))
+pdat2 <- pdat %>%
+    select(percent_group = pcent_cat, count = n, percent = p)
 
 
-    footnotes <- c(
-        "Negative values indicate that a civilisation is 'underestimated'<br/>",
-        "Positive values indicate that a civilisation is 'overestimated'<br/>",
-        "Expected win rates are calculated by fitting a robust linear model with",
-        "box-cox transformed play rates as the predcitor <br/>",
-        "The reference lines are arbitrarily set at -2.5 and 2.5 to provide a visual aid"
-    ) %>%
-        as_footnote()
+save_plot(
+    p = p,
+    id = "dist_civpick",
+    type = "standard"
+)
 
-
-    p1 <- ggplot(data = dat2, aes(y = bias, x = civ_name)) +
-        geom_bar(stat = "identity") +
-        theme_bw() +
-        scale_y_continuous(breaks = pretty_breaks(10)) +
-        geom_hline(yintercept = c(-2.5, 2.5), col = "blue", alpha = 0.65) +
-        theme(
-            axis.text.x = element_text(angle = 50, hjust = 1),
-            plot.caption = element_text(hjust = 0)
-        ) +
-        labs(caption = footnotes) +
-        ylab("Difference in Expected Win Rate and Observed Win Rate") +
-        xlab("")
-
-
-    footnotes <- c(
-        "Expected win rates are calculated by fitting a robust linear model with",
-        "box-cox transformed play rates as the predcitor"
-    ) %>%
-        as_footnote()
-
-
-    p2 <- ggplot(data = dat2, aes(y = wr, x = preds, label = civ_name)) +
-        geom_point() +
-        theme_bw() +
-        scale_y_continuous(breaks = pretty_breaks(10)) +
-        labs(caption = footnotes) +
-        ylab("Observed Win Rate") +
-        xlab("Expected Win Rate") +
-        geom_text_repel(min.segment.length = unit(0.1, "lines"), alpha = 0.7) +
-        geom_abline(slope = 1, intercept = 0, col = "red", alpha = 0.65) +
-        geom_vline(xintercept = 50, col = "blue", alpha = 0.4) +
-        geom_hline(yintercept = 50, col = "blue", alpha = 0.4) +
-        theme(plot.caption = element_text(hjust = 0))
-
-    dat_p1 <- dat2 %>% select(civ = civ_name, wr, bias)
-    dat_p2 <- dat2 %>% select(civ = civ_name, wr, pred_wr = preds)
-
-    list(
-        output$new(plot = p1, data = dat_p1),
-        output$new(plot = p2, data = dat_p2)
-    )
-
-}
-
+set_log(get_output_location(), "play_rates")
 

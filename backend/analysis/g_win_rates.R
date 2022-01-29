@@ -6,6 +6,8 @@ library(lubridate)
 library(arrow)
 
 
+data_location <- get_data_location()
+
 pr <- read_parquet(file.path(data_location, "pr.parquet"))
 
 

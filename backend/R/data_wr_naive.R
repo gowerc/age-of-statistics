@@ -1,5 +1,5 @@
 
-data_wr_naive <- function(matchmeta, players){
+data_wr_naive <- function(matchmeta, players) {
 
     players2 <- players %>%
         semi_join(matchmeta, by = "match_id")

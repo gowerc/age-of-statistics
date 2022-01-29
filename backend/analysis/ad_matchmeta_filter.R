@@ -77,11 +77,11 @@ if (config$filter$rm_single_pick) {
 }
 
 
-players2 <- players %>% semi_join(matchmeta, by = "match_id")
+players <- players_all %>% semi_join(matchmeta, by = "match_id")
 
 
 write_parquet(
-    players2,
+    players,
     file.path(data_location_flt, "players.parquet")
 )
 
@@ -95,4 +95,4 @@ write_parquet(
     file.path(data_location_flt, "matchmeta_broad.parquet")
 )
 
-set_log(get_data_location(), "matchmeta")
+set_log(get_data_location(), "matchmeta_filter")

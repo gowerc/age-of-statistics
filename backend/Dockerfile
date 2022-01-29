@@ -1,4 +1,4 @@
-FROM rocker/r-ver:4.1.1
+FROM rocker/r-ver:4.1.2
 
 ## Required system dependencies
 RUN apt-get update && apt-get install -y \
@@ -34,7 +34,7 @@ RUN apt-get update && apt-get -y install postgresql-client-13
 
 
 # Fix Rstudio package manager to use a specific date cutoff
-RUN sed -i "s/latest/2021-09-14\+Y3JhbiwyOjQ1MjYyMTU7MjQ1QUQ0RA/g" /usr/local/lib/R/etc/Rprofile.site
+RUN sed -i "s/latest/2022-01-03/g" /usr/local/lib/R/etc/Rprofile.site
 
 # Install required libraries
 RUN Rscript -e "options(warn=2);\
@@ -76,3 +76,10 @@ RUN mkdir /app
 WORKDIR /app
 
 
+ARG USER=docker
+ARG UID=1000
+ARG GID=1000
+
+RUN useradd -m ${USER} --uid=${UID}
+
+USER ${UID}:${GID}

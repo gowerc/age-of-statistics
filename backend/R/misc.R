@@ -93,20 +93,24 @@ get_output_location <- function() {
 
 
 get_args <- function() {
-    ARGS <- commandArgs(trailingOnly = TRUE)
-    if (length(ARGS) == 0) {
-        GAME <- "aoe2"
-        PERIOD <- "p02_v01"
-        FILTER <- "rm_solo_open"
+    args <- commandArgs(trailingOnly = TRUE)
+    if (length(args) == 0) {
+        game <- "aoe2"
+        period <- "p02_v01"
+        filter <- "rm_solo_open"
     } else {
-        GAME <- ARGS[[1]]
-        PERIOD <- ARGS[[2]]
-        FILTER <- ARGS[[3]]
+        game <- args[[1]]
+        period <- args[[2]]
+        if (length(args) > 2) {
+            filter <- args[[3]]
+        } else {
+            filter <- ""
+        }
     }
     args <- list(
-        game = GAME,
-        period = PERIOD,
-        filter = FILTER
+        game = game,
+        period = period,
+        filter = filter
     )
     return(args)
 }

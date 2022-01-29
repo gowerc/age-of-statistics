@@ -6,6 +6,7 @@ library(arrow)
 library(purrr)
 library(tidyr)
 
+data_location <- get_data_location()
 
 matchmeta <- read_parquet(
     file.path(data_location, "matchmeta.parquet")

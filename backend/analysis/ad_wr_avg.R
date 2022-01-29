@@ -10,7 +10,7 @@ library(tidyr)
 data_location <- get_data_location()
 
 
-mcoef <- readRds(file.path(data_location, "cvc_mod.Rds"))
+mcoef <- readRDS(file.path(data_location, "cvc.Rds"))
 
 civlist <- mcoef$civlist
 coefs <- mcoef$coefs
@@ -42,6 +42,6 @@ dat <- tibble(
     )
 
 write_parquet(
-    dat,
-    file.path(data_location, "wr_avg.parquet")
+    x = dat,
+    sink = file.path(data_location, "wr_avg.parquet")
 )

@@ -81,7 +81,7 @@ mod <- glm(
 )
 
 
-
+coefs <- coef(mod)
 
 
 coefs2 <- coefs[names(coefs) != "rating_diff_mean"]
@@ -100,7 +100,7 @@ diag(cvc) <- 0.5
 
 
 mcoef <- list(
-    coefs = coef(mod),
+    coefs = coefs,
     vcov = vcov(mod),
     civlist = civlist,
     cvc = cvc
