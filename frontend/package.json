@@ -1,12 +1,14 @@
 {
   "name": "age-of-statistics",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "content": "python3 scripts/get-content.py"
+    "content": "python3 scripts/get-content.py",
+    "deploy": "netlify deploy --dir=dist",
+    "deploy-prod": "netlify deploy --prod --dir=dist"
   },
   "dependencies": {
     "bootstrap": "^5.1.3",
