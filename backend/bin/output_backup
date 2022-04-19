@@ -1,0 +1,8 @@
+#!/bin/bash
+
+# creates a backup of outputs
+
+OUTPUTS=outputs-$(date '+%Y-%m-%d')
+
+zip -r data/backup/$OUTPUTS.zip ./outputs
+
