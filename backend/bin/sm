@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# Wrapper around snakemake to run it with common arguments
+
 echo -e "Runing: \n\nsnakemake
     $@
     --cores 8

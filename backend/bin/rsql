@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Wrapper script to execute sql scripts against the analysis
+# database
+
 source ./bin/config
 
 psql \

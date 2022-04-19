@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# Backup analysis database to local file
+
 source ./bin/config
 
 pg_dump -C \

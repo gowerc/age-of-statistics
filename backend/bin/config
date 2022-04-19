@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# Set common required environment variables
+
 export PGPASSWORD=$(jq -r ".APP_PASSWORD" ./data/raw/config_db.json)
 export APP_DB=$(jq -r ".APP_DB" ./data/raw/config_db.json)
 export APP_HOST=$(jq -r ".APP_HOST" ./data/raw/config_db.json)

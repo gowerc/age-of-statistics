@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# Open an interactive sql session connected to the analysis db
+
 source ./bin/config
 
 
