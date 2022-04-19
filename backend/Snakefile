@@ -1,3 +1,56 @@
+##############################################
+#
+#    SnakeFile
+#
+##############################################
+# 
+# 
+# This file is responsible for co-ordinating the pipeline to create
+# all graphs / tables that are displayed within the website.
+# 
+#
+# Key commands
+#   - Rebuild Database
+#     ./bin/sm db
+# 
+#   - Remove all prior content (except database)
+#     ./bin/sm clean
+#
+#   - Remove dead lingering R processes (bug of vscode-R)
+#     ./bin/sm killr
+#
+#   - Output Datasets
+#         patchmeta
+#         data/processed/{game}/{period}/matchmeta.log
+#         data/processed/{game}/{period}/{filter}/matchmeta_filter.log
+#         data/processed/{game}/{period}/{filter}/pr.parquet
+#         data/processed/{game}/{period}/{filter}/cvc.Rds
+#         data/processed/{game}/{period}/{filter}/wr_avg.parquet
+#         data/processed/{game}/{period}/{filter}/wr_naive.parquet
+#
+#    - Outputs
+#          outputs/{game}/{period}/{filter}/descriptives.log
+#          outputs/{game}/{period}/{filter}/civ_dendro.png
+#          outputs/{game}/{period}/{filter}/win_rates.log
+#          outputs/{game}/{period}/{filter}/sliding_window.log
+#          outputs/{game}/{period}/{filter}/play_rates.log
+#          outputs/{game}/{period}/{filter}/wr_estimated.log
+# 
+#     Examples:
+#          ./bin/sm outputs/aoe2/p02_v01/rm_solo_open/win_rates.log
+#          ./bin/sm outputs/aoe2/p02_v01/rm_solo_open/wr_estimated.log
+#          ./bin/sm outputs/aoe2/p02_v01/rm_solo_open/play_rates.log
+#          ./bin/sm outputs/aoe2/p02_v01/rm_solo_open/sliding_window.log
+#          ./bin/sm outputs/aoe2/p02_v01/rm_solo_open/descriptives.log
+#          ./bin/sm outputs/aoe2/p02_v01/rm_solo_open/civ_dendro.png
+#          ./bin/sm outputs/aoe2/p02_v01/rm_solo_open/output.log
+
+
+
+
+
+
+
 import json
 
 config: "./config.yaml"
@@ -235,10 +288,3 @@ rule wr_estimated:
         "Rscript {input[0]} {wildcards.game} {wildcards.period} {wildcards.filter} > {log} 2>&1"
 
 
-# snakemake --profile ./snake outputs/aoe2/p02_v01/rm_solo_open/win_rates.log
-# snakemake --profile ./snake outputs/aoe2/p02_v01/rm_solo_open/wr_estimated.log
-# snakemake --profile ./snake outputs/aoe2/p02_v01/rm_solo_open/play_rates.log
-# snakemake --profile ./snake outputs/aoe2/p02_v01/rm_solo_open/sliding_window.log
-# snakemake --profile ./snake outputs/aoe2/p02_v01/rm_solo_open/descriptives.log
-# snakemake --profile ./snake outputs/aoe2/p02_v01/rm_solo_open/civ_dendro.png
-# snakemake --profile ./snake outputs/aoe2/p02_v01/rm_solo_open/output.log
