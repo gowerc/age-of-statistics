@@ -82,17 +82,17 @@ res <- map_df(
 
 
 
-ggplot(res, aes(x = day, y = avg_rating)) +
+p1 <- ggplot(res, aes(x = day, y = avg_rating)) +
     theme_bw() +
     geom_point() +
     geom_line() +
     scale_y_continuous(breaks = pretty_breaks(10)) +
     scale_x_date(breaks = pretty_breaks(10)) +
-    ylab("Average Player Rating") +
+    ylab("Average Player Elo") +
     xlab("Date")
 
 
-ggplot(res, aes(x = day, y = n_games)) +
+p2 <- ggplot(res, aes(x = day, y = n_games)) +
     theme_bw() +
     geom_point() +
     geom_line() +
@@ -102,7 +102,7 @@ ggplot(res, aes(x = day, y = n_games)) +
     xlab("Date")
 
 
-ggplot(res, aes(x = day, y = n_players)) +
+p3 <- ggplot(res, aes(x = day, y = n_players)) +
     theme_bw() +
     geom_point() +
     geom_line() +
@@ -111,3 +111,27 @@ ggplot(res, aes(x = day, y = n_players)) +
     ylab("Number of Unique Players") +
     xlab("Date")
 
+
+ggsave(
+    plot = p1,
+    filename = "./outputs/misc/exp_elo_time_AVG.png",
+    width = 8,
+    height = 6,
+    dpi = 200
+)
+
+ggsave(
+    plot = p2,
+    filename = "./outputs/misc/exp_elo_time_NGAME.png",
+    width = 8,
+    height = 6,
+    dpi = 200
+)
+
+ggsave(
+    plot = p3,
+    filename = "./outputs/misc/exp_elo_time_NPLAYER.png",
+    width = 8,
+    height = 6,
+    dpi = 200
+)

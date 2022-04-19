@@ -13,7 +13,6 @@ library(glue)
 ## determine which cohort we are building
 
 
-
 config <- get_config()
 config_all <- get_config_all()
 

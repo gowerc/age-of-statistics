@@ -49,7 +49,10 @@
         "Sacred Springs": "Hybrid",
         "Coastal Forest": "Hybrid",
         "Amazon Tunnel": "Closed",
-        "Land Nomad": "Nomad"
+        "Land Nomad": "Nomad",
+        "Yucatan": "Closed",
+        "Water Nomad": "Nomad",
+        "Cenotes": "Open"
     }
 }
 

@@ -96,7 +96,7 @@ get_args <- function() {
     args <- commandArgs(trailingOnly = TRUE)
     if (length(args) == 0) {
         game <- "aoe2"
-        period <- "p02_v01"
+        period <- "p03_v01"
         filter <- "rm_solo_open"
     } else {
         game <- args[[1]]

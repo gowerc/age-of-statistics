@@ -6,10 +6,10 @@ echo -e "Runing: \n\nsnakemake
     $@
     --cores 8
     --resources load=100 cpu=8
-    --default-resources load=15 cpu=1\n\n"
+    --default-resources load=20 cpu=1\n\n"
 
 snakemake \
     $@ \
     --cores 8 \
     --resources load=100 cpu=8 \
-    --default-resources load=15 cpu=1
+    --default-resources load=20 cpu=1
