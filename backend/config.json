@@ -3,7 +3,7 @@
         "label": "Age of Empires 2",
         "default": {
             "filters": "rm_solo_all",
-            "periods": "p02_v01"
+            "periods": "p03_v01"
         },
         "filters": {
             "rm_solo_all": {
@@ -127,6 +127,11 @@
                 "label": "20Nov2021 - 23Jan2022",
                 "lower": "2021-11-20",
                 "upper": "2022-01-23"
+            },
+            "p03_v01": {
+                "label": "24Jan2022 - 17Apr2022",
+                "lower": "2022-01-24",
+                "upper": "2022-04-17"
             }
         }
     }
