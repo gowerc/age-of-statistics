@@ -20,6 +20,7 @@
 #     ./bin/sm killr
 #
 #   - Output Datasets
+#         patchmeta
 #         data/processed/{game}/{period}/matchmeta.log
 #         data/processed/{game}/{period}/{filter}/matchmeta_filter.log
 #         data/processed/{game}/{period}/{filter}/pr.parquet
@@ -97,6 +98,15 @@ rule killr:
         """
         kill -9 $(ps -u docker | awk '$4=="R" {{ printf "%s ", $1 }}')
         """
+
+
+
+# Used to periodically update strings, not apart of overall pipeline
+rule strings:
+    output: "data/raw/strings.json"
+    input: "data/raw/strings.py"
+    shell: "python3.9 {input[0]}"
+
 
 
 ###############################

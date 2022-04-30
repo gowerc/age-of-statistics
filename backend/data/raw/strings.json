@@ -105,7 +105,7 @@
         },
         {
             "id": 20,
-            "string": "Indians"
+            "string": "Hindustanis"
         },
         {
             "id": 21,
@@ -182,6 +182,22 @@
         {
             "id": 39,
             "string": "Bohemians"
+        },
+        {
+            "id": 40,
+            "string": "Dravidians"
+        },
+        {
+            "id": 41,
+            "string": "Bengalis"
+        },
+        {
+            "id": 42,
+            "string": "Gurjaras"
+        },
+        {
+            "id": 43,
+            "string": "Indians"
         }
     ],
     "game_type": [

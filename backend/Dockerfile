@@ -70,7 +70,7 @@ RUN Rscript -e "options(warn=2);\
 
 COPY requirements.txt /
 RUN python3.9 -m pip install -r /requirements.txt
-ENV PYTHONPATH=/app/scripts
+ENV PYTHONPATH=/app/analysis
 
 RUN mkdir /app
 WORKDIR /app
