@@ -20,7 +20,7 @@ get_connection <- function() {
 #' @importFrom purrr map2_df map_chr map_dbl
 #' @export
 get_patchmeta <- function() {
-    meta_raw <- read_json("./data/processed/patchmeta.json")
+    meta_raw <- read_json("./data/raw/patchmeta.json")
 
     meta_raw2 <- meta_raw[!names(meta_raw) %in% "language"]
 
