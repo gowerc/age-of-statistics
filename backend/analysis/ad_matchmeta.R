@@ -30,7 +30,7 @@ DATE_LIMIT_UPPER <- paste0(config$period$upper, " 23:59:59") %>%
 con <- get_connection()
 
 
-meta <- get_patchmeta()
+meta <- get_strings()
 
 
 LEADERBOARDS <- vapply(
