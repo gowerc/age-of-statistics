@@ -7,7 +7,7 @@ data_pr <- function(matchmeta, players) {
 
     dat <- players2 %>%
         mutate(bign = n()) %>%
-        group_by(civ_name) %>%
+        group_by(civ) %>%
         summarise(
             n = n(),
             bign = unique(bign),

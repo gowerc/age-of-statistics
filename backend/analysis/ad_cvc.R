@@ -27,7 +27,7 @@ players2 <- players %>%
     inner_join(result, by = "match_id")
 
 
-civlist <- players$civ_name %>% unique
+civlist <- players$civ %>% unique
 civlist <- civlist[order(civlist)]
 
 ridge <- cross_df(list(civ_win = civlist, civ_lose = civlist)) %>%
@@ -36,12 +36,12 @@ ridge <- cross_df(list(civ_win = civlist, civ_lose = civlist)) %>%
 
 team_win <- players2 %>%
     filter(team == winning_team) %>%
-    select(match_id, civ_win = civ_name)
+    select(match_id, civ_win = civ)
 
 
 team_lose <- players2 %>%
     filter(team != winning_team) %>%
-    select(match_id, civ_lose = civ_name)
+    select(match_id, civ_lose = civ)
 
 
 assert_that(

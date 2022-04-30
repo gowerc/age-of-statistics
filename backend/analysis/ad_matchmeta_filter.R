@@ -9,9 +9,6 @@ library(arrow)
 
 
 ## determine which cohort we are building
-
-data_location <- get_data_location(nofilter = TRUE)
-data_location_flt <- get_data_location()
 config <- get_config()
 
 
@@ -21,6 +18,22 @@ config <- get_config()
 #
 #
 
+matchmeta_all <- arrow::read_parquet(
+    file.path("data", "processed", "aoe2", "matches.parquet")
+)
+
+players_all <- arrow::read_parquet(
+    file.path("data", "processed", "aoe2", "players.parquet")
+)
+
+
+DATE_LIMIT_LOWER <- paste0(config$period$lower, " 00:00:01") %>%
+    ymd_hms()
+
+
+DATE_LIMIT_UPPER <- paste0(config$period$upper, " 23:59:59") %>%
+    ymd_hms()
+
 
 map_filter <- ifelse(
     config$filter$mapclass != "All",
@@ -28,15 +41,11 @@ map_filter <- ifelse(
     identity
 )
 
-players_all <- read_parquet(file.path(data_location, "players.parquet"))
-matchmeta_all <- read_parquet(file.path(data_location, "matchmeta.parquet"))
-
-
 matchmeta_core <- matchmeta_all %>%
     filter(!is_mirror) %>%
-    filter(start_dt >= ymd_hms(paste(config$period$lower, "00:00:01"))) %>%
-    filter(start_dt <= ymd_hms(paste(config$period$upper, "23:59:59"))) %>%
-    filter(leaderboard_name == config$filter$leaderboard) %>%
+    filter(start_dt >= DATE_LIMIT_LOWER) %>%
+    filter(start_dt <= DATE_LIMIT_UPPER) %>%
+    filter(leaderboard == config$filter$leaderboard) %>%
     filter(match_length_igm >= config$filter$length_limit_lower) %>%
     filter(match_length_igm <= config$filter$length_limit_upper) %>%
     map_filter()
@@ -52,15 +61,21 @@ matchmeta_slice <- matchmeta_core %>%
 if (config$filter$rm_single_pick) {
 
     matchmeta_gm <- matchmeta_all %>%
-        filter(leaderboard_name == config$filter$leaderboard)
+        filter(start_dt >= (DATE_LIMIT_LOWER - days(20))) %>%
+        filter(start_dt <= DATE_LIMIT_UPPER) %>%
+        filter(leaderboard == config$filter$leaderboard)
 
     players_to_remove <- players_all %>%
         semi_join(matchmeta_gm, by = "match_id") %>%
-        group_by(profile_id, civ_name) %>%
+        as.data.table() %>%
+        group_by(profile_id, civ) %>%
         tally() %>%
+        as_tibble() %>%
+        as.data.table() %>%
         group_by(profile_id) %>%
         mutate(bign = sum(n)) %>%
         ungroup() %>%
+        as_tibble() %>%
         mutate(pcent = n / bign * 100) %>%
         filter(bign >= 10, pcent >= 40) %>%
         distinct(profile_id)
@@ -77,22 +92,31 @@ if (config$filter$rm_single_pick) {
 }
 
 
-players <- players_all %>% semi_join(matchmeta, by = "match_id")
+players <- players_all %>%
+    semi_join(matchmeta, by = "match_id")
+
+players_broad <- players_all %>%
+    semi_join(matchmeta_slice, by = "match_id")
 
 
 write_parquet(
     players,
-    file.path(data_location_flt, "players.parquet")
+    file.path(get_data_location(), "players.parquet")
+)
+
+write_parquet(
+    players_broad,
+    file.path(get_data_location(), "players_broad.parquet")
 )
 
 write_parquet(
     matchmeta,
-    file.path(data_location_flt, "matchmeta.parquet")
+    file.path(get_data_location(), "matchmeta.parquet")
 )
 
 write_parquet(
     matchmeta_slice,
-    file.path(data_location_flt, "matchmeta_broad.parquet")
+    file.path(get_data_location(), "matchmeta_broad.parquet")
 )
 
 set_log(get_data_location(), "matchmeta_filter")

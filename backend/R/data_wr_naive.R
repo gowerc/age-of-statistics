@@ -11,7 +11,7 @@ data_wr_naive <- function(matchmeta, players) {
 
 
     mod <- glm(
-        won ~ 0 + civ_name + rating_diff_mean,
+        won ~ 0 + civ + rating_diff_mean,
         data = results,
         family = binomial()
     )
@@ -25,14 +25,14 @@ data_wr_naive <- function(matchmeta, players) {
 
     moddat2 <- moddat %>%
         filter(coef != "rating_diff_mean") %>% 
-        mutate(coef = str_remove(coef, "^civ_name")) %>% 
+        mutate(coef = str_remove(coef, "^civ")) %>% 
         mutate(
             est = invlogit(lp) * 100,
             lci = invlogit(lp - 1.96 * se) * 100,
             uci = invlogit(lp + 1.96 * se) * 100,
             wr = est
         ) %>% 
-        rename(civ_name = coef)
+        rename(civ = coef)
 
     return(moddat2)
 }

@@ -37,13 +37,15 @@
 #          outputs/{game}/{period}/{filter}/wr_estimated.log
 # 
 #     Examples:
-#          ./bin/sm outputs/aoe2/p02_v01/rm_solo_open/win_rates.log
-#          ./bin/sm outputs/aoe2/p02_v01/rm_solo_open/wr_estimated.log
-#          ./bin/sm outputs/aoe2/p02_v01/rm_solo_open/play_rates.log
-#          ./bin/sm outputs/aoe2/p02_v01/rm_solo_open/sliding_window.log
-#          ./bin/sm outputs/aoe2/p02_v01/rm_solo_open/descriptives.log
-#          ./bin/sm outputs/aoe2/p02_v01/rm_solo_open/civ_dendro.png
-#          ./bin/sm outputs/aoe2/p02_v01/rm_solo_open/output.log
+#          ./bin/sm data/processed/aoe2/matchmeta.log
+#          ./bin/sm data/processed/aoe2/p03_v01/rm_solo_open/matchmeta_filter.log
+#          ./bin/sm outputs/aoe2/p03_v01/rm_solo_open/win_rates.log
+#          ./bin/sm outputs/aoe2/p03_v01/rm_solo_open/wr_estimated.log
+#          ./bin/sm outputs/aoe2/p03_v01/rm_solo_open/play_rates.log
+#          ./bin/sm outputs/aoe2/p03_v01/rm_solo_open/sliding_window.log
+#          ./bin/sm outputs/aoe2/p03_v01/rm_solo_open/descriptives.log
+#          ./bin/sm outputs/aoe2/p03_v01/rm_solo_open/civ_dendro.png
+#          ./bin/sm outputs/aoe2/p03_v01/rm_solo_open/output.log
 
 
 
@@ -117,15 +119,15 @@ rule strings:
 
 rule matchmeta:
     output:
-        "data/processed/{game}/{period}/matchmeta.log"
+        "data/processed/{game}/matchmeta.log"
     input:
         "analysis/ad_matchmeta.R",
     log:
-        "logs/{game}/{period}/ad_matchmeta.log"
+        "logs/{game}/ad_matchmeta.log"
     resources:
         load=35
     shell:
-        "Rscript {input[0]} {wildcards.game} {wildcards.period} > {log} 2>&1"
+        "Rscript {input[0]} {wildcards.game} > {log} 2>&1"
 
 
 rule matchmeta_filter:
@@ -133,7 +135,7 @@ rule matchmeta_filter:
         "data/processed/{game}/{period}/{filter}/matchmeta_filter.log"
     input:
         "analysis/ad_matchmeta_filter.R",
-        "data/processed/{game}/{period}/matchmeta.log"
+        "data/processed/{game}/matchmeta.log"
     log:
         "logs/{game}/{period}/{filter}/ad_matchmeta_filter.log"
     shell:

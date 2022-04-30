@@ -28,8 +28,8 @@ footnotes <- c(
 
 prdat <- pr %>%
     arrange(desc(n)) %>%
-    mutate(civ_name = fct_inorder(civ_name)) %>%
-    select(civ = civ_name, pr) %>%
+    mutate(civ = fct_inorder(civ)) %>%
+    select(civ, pr) %>%
     mutate(y_label = pr + max(pr) * 0.015) %>%
     mutate(pr_txt = sprintf("%4.1f %%", pr))
 
@@ -79,7 +79,7 @@ play_counts <- players2 %>%
 
 play_counts_civ <- players2 %>%
     semi_join(play_counts, by = "profile_id") %>%
-    group_by(profile_id, civ_name) %>%
+    group_by(profile_id, civ) %>%
     tally() %>%
     group_by(profile_id) %>%
     mutate(bign = sum(n)) %>%

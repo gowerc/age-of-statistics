@@ -8,15 +8,15 @@ library(parallel)
 
 
 data_location <- get_data_location()
-data_location_all <- get_data_location(nofilter = TRUE)
+
 
 matchmeta <- read_parquet(file.path(data_location, "matchmeta_broad.parquet"))
-players <- read_parquet(file.path(data_location_all, "players.parquet"))
+players <- read_parquet(file.path(data_location, "players_broad.parquet"))
 
 
 get_slide_smoothed <- function(CIV, dat) {
     dat2 <- dat %>%
-        filter(civ_name == CIV)
+        filter(civ == CIV)
 
     # fit GAM model
     lci_m <- mgcv::gam(lci ~ s(y), data = dat2)
@@ -25,7 +25,7 @@ get_slide_smoothed <- function(CIV, dat) {
 
     pdat <- tibble(
         y = dat2$y,
-        civ = dat2$civ_name,
+        civ = dat2$civ,
         lci = predict(lci_m, newdata = data.frame(y = y)),
         med = predict(med_m, newdata = data.frame(y = y)),
         uci = predict(uci_m, newdata = data.frame(y = y)),
@@ -94,8 +94,8 @@ res <- bind_rows(res_list)
 
 
 civlist <- res %>%
-    arrange(civ_name) %>%
-    pull(civ_name) %>%
+    arrange(civ) %>%
+    pull(civ) %>%
     unique()
 
 
@@ -183,8 +183,8 @@ res <- bind_rows(res_list)
 
 
 civlist <- res %>%
-    arrange(civ_name) %>%
-    pull(civ_name) %>%
+    arrange(civ) %>%
+    pull(civ) %>%
     unique()
 
 
@@ -273,8 +273,8 @@ res <- pmap_df(
 )
 
 civlist <- res %>%
-    arrange(civ_name) %>%
-    pull(civ_name) %>%
+    arrange(civ) %>%
+    pull(civ) %>%
     unique()
 
 
@@ -284,7 +284,7 @@ footnotes <- c(
 ) %>%
     as_footnote()
 
-p <- ggplot(data = res, aes(x = y, group = civ_name, y = pr)) +
+p <- ggplot(data = res, aes(x = y, group = civ, y = pr)) +
     geom_line(col = "#383838") +
     theme_bw() +
     scale_y_continuous(breaks = pretty_breaks(5)) +
@@ -292,7 +292,7 @@ p <- ggplot(data = res, aes(x = y, group = civ_name, y = pr)) +
     geom_hline(yintercept = 1/length(civlist) * 100, col = "red", alpha = 0.8) +
     ylab("Play Rate (%)") +
     xlab("Elo") +
-    facet_wrap(~civ_name) +
+    facet_wrap(~civ) +
     theme(
         legend.position = "none",
         axis.text.x = element_text(angle = 50, hjust = 1),

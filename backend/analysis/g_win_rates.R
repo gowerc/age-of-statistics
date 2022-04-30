@@ -17,8 +17,8 @@ plot_pr_wr <- function(wr, pr) {
     )
 
     pdat <- wr %>%
-        inner_join(select(pr, civ_name, pr), by = "civ_name") %>%
-        select(civ = civ_name, wr, pr)
+        inner_join(select(pr, civ, pr), by = "civ") %>%
+        select(civ = civ, wr, pr)
 
     footnotes <- c(
         ""
@@ -55,7 +55,7 @@ wr <- read_parquet(file.path(data_location, "wr_naive.parquet"))
 
 pdat <- wr %>%
     arrange(desc(est)) %>%
-    mutate(civ = fct_inorder(civ_name)) %>%
+    mutate(civ = fct_inorder(civ)) %>%
     select(civ, lci, uci, wr = est)
 
 
@@ -108,7 +108,7 @@ wr <- read_parquet(file.path(data_location, "wr_avg.parquet"))
 
 pdat <- wr %>%
     arrange(desc(est)) %>%
-    mutate(coef = fct_inorder(civ_name)) %>%
+    mutate(coef = fct_inorder(civ)) %>%
     select(civ = coef, wr = est, lci, uci)
 
 

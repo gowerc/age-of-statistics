@@ -31,7 +31,7 @@ boxtrans <- function(x, y) {
 
 
 dat <- wr %>%
-    inner_join(select(pr, civ_name, pr), by = "civ_name") %>%
+    inner_join(select(pr, civ, pr), by = "civ") %>%
     mutate(box_pr = boxtrans(pr, wr))
 
 
@@ -41,7 +41,7 @@ dat2 <- dat %>%
     mutate(preds = predict(mod)) %>%
     mutate(bias = preds - wr) %>%
     arrange(bias) %>%
-    mutate(civ_name = fct_inorder(civ_name))
+    mutate(civ = fct_inorder(civ))
 
 
 footnotes <- c(
@@ -54,7 +54,7 @@ footnotes <- c(
     as_footnote()
 
 
-p1 <- ggplot(data = dat2, aes(y = bias, x = civ_name)) +
+p1 <- ggplot(data = dat2, aes(y = bias, x = civ)) +
     geom_bar(stat = "identity") +
     theme_bw() +
     scale_y_continuous(breaks = pretty_breaks(10)) +
@@ -75,7 +75,7 @@ footnotes <- c(
     as_footnote()
 
 
-p2 <- ggplot(data = dat2, aes(y = wr, x = preds, label = civ_name)) +
+p2 <- ggplot(data = dat2, aes(y = wr, x = preds, label = civ)) +
     geom_point() +
     theme_bw() +
     scale_y_continuous(breaks = pretty_breaks(10)) +

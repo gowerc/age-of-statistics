@@ -30,7 +30,7 @@ for (i in seq_along(civlist)) {
 trans <- trans / length(civlist)
 
 dat <- tibble(
-    civ_name = civlist,
+    civ = civlist,
     lp = as.vector(trans %*% matrix(ncol = 1, coefs)),
     se = sqrt(diag(trans %*% covmat %*% t(trans))),
 ) %>%
