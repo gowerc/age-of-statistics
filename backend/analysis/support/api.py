@@ -18,7 +18,7 @@ def get_matches(
     return resp.json()
 
 
-def get_meta(game="aoe2de", language="en"):
+def get_strings(game="aoe2de", language="en"):
     params = {
         "game": game,
         "language": language

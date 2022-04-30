@@ -20,7 +20,6 @@
 #     ./bin/sm killr
 #
 #   - Output Datasets
-#         patchmeta
 #         data/processed/{game}/{period}/matchmeta.log
 #         data/processed/{game}/{period}/{filter}/matchmeta_filter.log
 #         data/processed/{game}/{period}/{filter}/pr.parquet
@@ -100,13 +99,6 @@ rule killr:
         """
 
 
-rule patchmeta:
-    output: "data/processed/patchmeta.json"
-    input: "analysis/ad_patchmeta.py"
-    shell: "python3.9 {input[0]}"
-
-
-
 ###############################
 #
 # Analysis Datasets
@@ -118,7 +110,6 @@ rule matchmeta:
         "data/processed/{game}/{period}/matchmeta.log"
     input:
         "analysis/ad_matchmeta.R",
-        "data/processed/patchmeta.json"
     log:
         "logs/{game}/{period}/ad_matchmeta.log"
     resources:
