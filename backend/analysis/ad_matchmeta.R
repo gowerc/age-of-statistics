@@ -43,7 +43,7 @@ matches_slim <- tbl(con, "match_meta") %>%
     filter(!is.na(version)) %>%
     filter(map_type %in% local(map_ids$map_type)) %>%
     filter(!(is.na(started) | is.na(finished))) %>%
-    filter(finished - started < 180 * 60) %>%
+    filter(finished - started < (180 * 60)) %>%
     select(match_id, started, version, leaderboard_id, finished, map_type)
 
 
@@ -55,7 +55,7 @@ players_slim <- tbl(con, "match_players") %>%
     filter(!is.na(won)) %>%
     filter(!is.na(slot)) %>%
     filter(civ %in% local(civ_ids$civ)) %>%
-    filter(team %in% c(1, 2)) %>%
+    filter(team %in% c(1, 2), !is.na(team)) %>%
     select(match_id, rating, civ, won, slot, profile_id, team)
 
 
@@ -157,6 +157,7 @@ n_players_df <- ad_players %>%
     summarise(n_players2 = max(slot)) %>%
     as_tibble()
 
+
 keep_consistant_nplayers <- team_meta %>%
     left_join(n_players_df, by = "match_id") %>%
     filter(n_players == n_players2)
@@ -173,6 +174,8 @@ ad_matches2 <- ad_matches %>%
 
 ad_players2 <- ad_players %>%
     semi_join(ad_matches2, by = "match_id")
+
+
 
 ############################################
 #
@@ -275,15 +278,25 @@ for (var in names(meta_matches)) {
 #
 #
 
+
+dir.create(
+    path = file.path("data", "processed", "aoe2"),
+    recursive = TRUE,
+    showWarnings = FALSE
+)
+
+
 arrow::write_parquet(
     x = ad_matches2,
     sink = file.path("data", "processed", "aoe2", "matches.parquet")
 )
 
+
 arrow::write_parquet(
     x = ad_players2,
     sink = file.path("data", "processed", "aoe2", "players.parquet")
 )
+
 
 set_log(file.path("data", "processed", "aoe2"), "matchmeta")
 

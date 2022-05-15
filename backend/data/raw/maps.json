@@ -52,7 +52,9 @@
         "Land Nomad": "Nomad",
         "Yucatan": "Closed",
         "Water Nomad": "Nomad",
-        "Cenotes": "Open"
+        "Cenotes": "Open",
+        "Nile Delta" : "Water",
+        "Team Moats" : "Open"
     }
 }
 
