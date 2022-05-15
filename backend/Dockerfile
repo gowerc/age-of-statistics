@@ -72,8 +72,6 @@ COPY requirements.txt /
 RUN python3.9 -m pip install -r /requirements.txt
 ENV PYTHONPATH=/app/analysis
 
-RUN mkdir /app
-WORKDIR /app
 
 
 ARG USER=docker
@@ -83,3 +81,6 @@ ARG GID=1000
 RUN useradd -m ${USER} --uid=${UID}
 
 USER ${UID}:${GID}
+
+RUN mkdir /app
+WORKDIR /app
