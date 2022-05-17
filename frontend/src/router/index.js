@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import Descriptives from '@/views/outputs/Descriptives.vue'
 import Experimental from '@/views/outputs/Experimental.vue'
 import Winrates from "@/views/outputs/Winrates.vue"
+import Individual from "@/views/outputs/Individual.vue"
 import Sliding from "@/views/outputs/Sliding.vue"
 import Criteria from "@/views/outputs/Criteria.vue"
 import Methods from "@/views/Methods.vue"
@@ -44,6 +45,10 @@ const routes = [
             {
                 path: 'criteria',
                 component: Criteria
+            },
+            {
+                path: 'individual',
+                component: Individual
             },
             {
                 path: 'sliding',

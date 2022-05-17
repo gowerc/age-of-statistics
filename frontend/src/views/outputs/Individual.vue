@@ -1,26 +1,60 @@
-    <div id="civ-pick">
-        <div class="form-group">
-            <label for="civselect" class = "pe-3">Select a Civilisation:</label>
-            <select name="cars" id="cars" v-model="civ" class = "form-control d-inline-block" style="width: auto;">
-                <option v-bind:key="i_civ" v-for="i_civ in all_civs">
-                    {% raw %}{{ i_civ }}{% endraw %}
-                </option>
-            </select>
-        </div>
 
-        <h3>Civilisation v Civilisation Win Rates</h3>
-        <img 
-            class="img-cohort img-standard"
-            :src="'outputs/cohort_{{meta.id}}/cvc_wrNaive_' + civ + '_{{build_id}}.png'"
-        >
-    </div>
+<template>
+
+<div class="col-4 px-0 mx-0 py-1" v-if="data !== null">
+    <label class = "px-0 mx-0">
+        Civilisation:
+    </label>
+    <select class="form-select px-0 mx-0" v-model="civ">
+        <option 
+            v-for="(opt, key) in data" 
+            :key="key"
+            > 
+            {{ key }}
+        </option>
+    </select>
+</div>
+
+<OutputPlotly v-if="data !== null"
+    name="civ_wrNaive"
+    title="Civilisation v Civilisation Win Rates"
+    :data="data[civ]"/>
 </template>
 
-
-
 <script>
+import OutputPlotly from "@/components/OutputPlotly"
+
 export default {
     props: ["path"],
+    components: {
+        "OutputPlotly": OutputPlotly
+    },
+    data() {
+        return {
+            data : null,
+            civ: 'Aztecs'
+        }
+    },
+    watch: {
+        path: function (val) {
+            this.fetchData()
+        }
+    },
+    created() {
+        this.fetchData()
+    },
+    methods: {
+        fetchData() {
+            let filepath = this.path + "/cvc.json";
+            fetch(filepath)
+                .then( response => {
+                    return response.json()
+                })
+                .then( jsondata => {
+                    this.data = jsondata
+                })
+        }
+    }
 }
 </script>
 

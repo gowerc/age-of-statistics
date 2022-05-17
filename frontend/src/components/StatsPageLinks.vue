@@ -29,6 +29,7 @@ export default {
                 {id: 'criteria', desc: "Criteria"},
                 {id: 'descriptives', desc:"Descriptives"},
                 {id: 'winrates', desc:"Win Rates"},
+                {id: 'individual', desc:"Individual Civs"},
                 {id: 'sliding', desc:"Sliding Window"},
                 {id: 'experimental', desc: "Experimental"}
             ]
