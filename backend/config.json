@@ -3,7 +3,7 @@
         "label": "Age of Empires 2",
         "default": {
             "filters": "rm_solo_all",
-            "periods": "p03_v01"
+            "periods": "p03_v02"
         },
         "filters": {
             "rm_solo_all": {
@@ -118,20 +118,20 @@
             }
         },
         "periods": {
-            "p01_v01" : {
+            "p01_v02" : {
                 "label": "10Oct2021 - 16Nov2021",
                 "lower": "2021-10-10",
                 "upper": "2021-11-16"
             },
-            "p02_v01": {
+            "p02_v02": {
                 "label": "20Nov2021 - 27Apr2022",
                 "lower": "2021-11-20",
                 "upper": "2022-04-27"
             },
-            "p03_v01": {
-                "label": "28Apr2022 - 29Apr2022",
-                "lower": "2022-04-28",
-                "upper": "2022-04-29"
+            "p03_v02": {
+                "label": "07May2022 - 15May2022",
+                "lower": "2022-05-07",
+                "upper": "2022-05-15"
             }
         }
     }

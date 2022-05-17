@@ -7,6 +7,7 @@ library(purrr)
 library(tidyr)
 
 
+
 data_location <- get_data_location()
 
 
@@ -66,6 +67,7 @@ res <- team_win %>%
     group_by(match_id, term) %>%
     summarise(val = sum(val), .groups = "drop")
 
+
 res2 <- res %>%
     select(match_id, term, val) %>%
     spread(term, val, fill = 0) %>%
@@ -107,3 +109,8 @@ mcoef <- list(
 )
 
 saveRDS(mcoef, file.path(data_location, "cvc.Rds"))
+
+
+
+
+

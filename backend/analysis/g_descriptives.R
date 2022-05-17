@@ -133,7 +133,7 @@ save_plot(
 
 pdat <- matchmeta %>%
     mutate(bign = n()) %>%
-    group_by(map_name) %>%
+    group_by(map) %>%
     summarise(
         n = n(),
         p = sprintf("%5.2f%%", n / unique(bign) * 100),
@@ -143,7 +143,7 @@ pdat <- matchmeta %>%
     mutate(yjust = n + max(n)/50)
 
 
-p <- ggplot(data = pdat, aes(x = map_name, y = n)) +
+p <- ggplot(data = pdat, aes(x = map, y = n)) +
     geom_bar(stat = "identity") +
     geom_text(aes(label = p, y = yjust)) +
     theme_bw() +
@@ -182,8 +182,8 @@ matchmeta_with_day <- matchmeta %>%
     mutate(match_day_num = as.numeric(as.Date(start_dt)))
 
 numerator <- matchmeta_with_day %>%
-    distinct(match_day_num, map_name) %>%
-    group_by(map_name) %>%
+    distinct(match_day_num, map) %>%
+    group_by(map) %>%
     tally(name = "num")
 
 denominator <- matchmeta_with_day %>%
@@ -191,13 +191,13 @@ denominator <- matchmeta_with_day %>%
     nrow()
 
 pdat <- matchmeta %>%
-    group_by(map_name) %>%
+    group_by(map) %>%
     tally() %>%
-    left_join(numerator, by = "map_name") %>%
+    left_join(numerator, by = "map") %>%
     mutate(scale = num / denominator) %>%
     mutate(n_normal = n / scale) %>%
     mutate(bign = sum(n_normal)) %>%
-    group_by(map_name) %>%
+    group_by(map) %>%
     summarise(
         n = n_normal,
         p = sprintf("%5.2f%%", n / unique(bign) * 100),
@@ -212,7 +212,7 @@ footnotes <- as_footnote(
     )
 )
 
-p <- ggplot(data = pdat, aes(x = map_name, y = n)) +
+p <- ggplot(data = pdat, aes(x = map, y = n)) +
     geom_bar(stat = "identity") +
     geom_text(aes(label = p, y = yjust)) +
     theme_bw() +

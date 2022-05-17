@@ -95,9 +95,10 @@ get_output_location <- function() {
 get_args <- function() {
     args <- commandArgs(trailingOnly = TRUE)
     if (length(args) == 0) {
+        cfg <- get_config_all()
         game <- "aoe2"
-        period <- "p03_v01"
-        filter <- "rm_solo_open"
+        period <- cfg$aoe2$default$period
+        filter <- cfg$aoe2$default$filter
     } else {
         game <- args[[1]]
         period <- args[[2]]

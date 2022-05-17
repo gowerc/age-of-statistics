@@ -38,14 +38,14 @@
 # 
 #     Examples:
 #          ./bin/sm data/processed/aoe2/matchmeta.log
-#          ./bin/sm data/processed/aoe2/p03_v01/rm_solo_open/matchmeta_filter.log
-#          ./bin/sm outputs/aoe2/p03_v01/rm_solo_open/win_rates.log
-#          ./bin/sm outputs/aoe2/p03_v01/rm_solo_open/wr_estimated.log
-#          ./bin/sm outputs/aoe2/p03_v01/rm_solo_open/play_rates.log
-#          ./bin/sm outputs/aoe2/p03_v01/rm_solo_open/sliding_window.log
-#          ./bin/sm outputs/aoe2/p03_v01/rm_solo_open/descriptives.log
-#          ./bin/sm outputs/aoe2/p03_v01/rm_solo_open/civ_dendro.png
-#          ./bin/sm outputs/aoe2/p03_v01/rm_solo_open/output.log
+#          ./bin/sm data/processed/aoe2/p03_v02/rm_solo_open/matchmeta_filter.log
+#          ./bin/sm outputs/aoe2/p03_v02/rm_solo_open/win_rates.log
+#          ./bin/sm outputs/aoe2/p03_v02/rm_solo_open/wr_estimated.log
+#          ./bin/sm outputs/aoe2/p03_v02/rm_solo_open/play_rates.log
+#          ./bin/sm outputs/aoe2/p03_v02/rm_solo_open/sliding_window.log
+#          ./bin/sm outputs/aoe2/p03_v02/rm_solo_open/descriptives.log
+#          ./bin/sm outputs/aoe2/p03_v02/rm_solo_open/civ_dendro.png
+#          ./bin/sm outputs/aoe2/p03_v02/rm_solo_open/output.log
 
 
 
@@ -121,11 +121,11 @@ rule matchmeta:
     output:
         "data/processed/{game}/matchmeta.log"
     input:
-        "analysis/ad_matchmeta.R",
+        "analysis/ad_matchmeta.R"
+    resources:
+        load=50
     log:
         "logs/{game}/ad_matchmeta.log"
-    resources:
-        load=35
     shell:
         "Rscript {input[0]} {wildcards.game} > {log} 2>&1"
 
@@ -136,6 +136,8 @@ rule matchmeta_filter:
     input:
         "analysis/ad_matchmeta_filter.R",
         "data/processed/{game}/matchmeta.log"
+    resources:
+        load=40
     log:
         "logs/{game}/{period}/{filter}/ad_matchmeta_filter.log"
     shell:
@@ -210,7 +212,20 @@ rule outputs:
         "outputs/{game}/{period}/{filter}/win_rates.log",
         "outputs/{game}/{period}/{filter}/sliding_window.log",
         "outputs/{game}/{period}/{filter}/play_rates.log",
-        "outputs/{game}/{period}/{filter}/wr_estimated.log"
+        "outputs/{game}/{period}/{filter}/wr_estimated.log",
+        "outputs/{game}/{period}/{filter}/cvc.json"
+
+
+rule cvcjson:
+    output:
+        "outputs/{game}/{period}/{filter}/cvc.json"
+    input:
+        "analysis/j_cvc.R",
+        "data/processed/{game}/{period}/{filter}/cvc.Rds"
+    log:
+        "logs/{game}/{period}/{filter}/j_cvc.log"
+    shell:
+        "Rscript {input[0]} {wildcards.game} {wildcards.period} {wildcards.filter} > {log} 2>&1"
 
 
 rule descriptives:

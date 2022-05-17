@@ -39,7 +39,7 @@ plot_pr_wr <- function(wr, pr) {
         xlab("Win Rate (%)") +
         geom_vline(xintercept = 50, col = "red", alpha = 0.65) +
         geom_hline(yintercept = 1 / nrow(pr) * 100, col = "red", alpha = 0.65)
-    
+
     return(p)
 }
 
@@ -60,14 +60,14 @@ pdat <- wr %>%
 
 
 footnotes <- c(
-    "Win rates have been calculated as the # of wins / # of games.<br/>",
     "Win rates have been adjusted for difference in mean Elo.<br/>",
     "The error bars represent the 95% confidence interval."
 ) %>%
     as_footnote()
 
 p <- ggplot(data = pdat, aes(x = civ, group = civ, ymin = lci, ymax = uci, y = wr)) +
-    geom_hline(yintercept = 50, col = "red", alpha = 0.65) + 
+    geom_hline(yintercept = 50, col = "red", alpha = 0.65) +
+    geom_hline(yintercept = c(45,55), col = "blue", alpha = 0.65, lty = 2) +
     geom_errorbar(width = 0.3) +
     geom_point() +
     theme_bw() +
@@ -123,6 +123,7 @@ footnotes <- c(
 
 p <- ggplot(data = pdat, aes(x = civ, group = civ, ymin = lci, ymax = uci, y = wr)) +
     geom_hline(yintercept = 50, col = "red", alpha = 0.65) +
+    geom_hline(yintercept = c(45,55), col = "blue", alpha = 0.65, lty = 2) +
     geom_errorbar(width = 0.3) +
     geom_point() +
     theme_bw() +
