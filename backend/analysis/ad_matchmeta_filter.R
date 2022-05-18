@@ -5,11 +5,19 @@ library(dplyr)
 library(assertthat)
 library(lubridate)
 library(arrow)
-
+library(dtplyr)
+library(data.table)
 
 
 ## determine which cohort we are building
 config <- get_config()
+
+# config_all <- jsonlite::read_json("config.json")
+# config <- list(
+#     filter = config_all[["aoe2"]][["filters"]][["rm_solo_open_nopick"]],
+#     period = config_all[["aoe2"]][["periods"]][["p03_v02"]],
+#     game = "aoe2"
+# )
 
 
 #########################
@@ -97,6 +105,20 @@ players <- players_all %>%
 
 players_broad <- players_all %>%
     semi_join(matchmeta_slice, by = "match_id")
+
+
+
+### Sample size sanity check
+civ_count <- players %>%
+    group_by(civ) %>%
+    tally() %>%
+    pull(n)
+
+assert_that(
+    all(civ_count > 30),
+    msg = "At least one civ has less than 30 games"
+)
+
 
 
 write_parquet(

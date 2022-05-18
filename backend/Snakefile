@@ -46,6 +46,21 @@
 #          ./bin/sm outputs/aoe2/p03_v02/rm_solo_open/descriptives.log
 #          ./bin/sm outputs/aoe2/p03_v02/rm_solo_open/civ_dendro.png
 #          ./bin/sm outputs/aoe2/p03_v02/rm_solo_open/output.log
+#
+#
+#
+#     output groups:
+#        ./bin/sm "outputs/aoe2/p03_v02/rm_solo_all/output.log"
+#        ./bin/sm "outputs/aoe2/p03_v02/rm_solo_open/output.log"
+#        ./bin/sm "outputs/aoe2/p03_v02/rm_solo_closed/output.log"
+#        ./bin/sm "outputs/aoe2/p03_v02/rm_team_all/output.log"
+#        ./bin/sm "outputs/aoe2/p03_v02/rm_team_open/output.log"
+#        ./bin/sm "outputs/aoe2/p03_v02/rm_team_closed/output.log"
+#        ./bin/sm "outputs/aoe2/p03_v02/rm_solo_open_pro/output.log"
+#        ./bin/sm "outputs/aoe2/p03_v02/rm_solo_closed_pro/output.log"
+#        ./bin/sm "outputs/aoe2/p03_v02/rm_solo_open_nopick/output.log"
+#        ./bin/sm "outputs/aoe2/p03_v02/rm_solo_closed_nopick/output.log"
+
 
 
 

@@ -7,11 +7,13 @@ library(arrow)
 library(parallel)
 
 
+# data_location <- "./data/processed/aoe2/p02_v02/ew_solo_any"
 data_location <- get_data_location()
 
 
 matchmeta <- read_parquet(file.path(data_location, "matchmeta_broad.parquet"))
 players <- read_parquet(file.path(data_location, "players_broad.parquet"))
+
 
 
 get_slide_smoothed <- function(CIV, dat) {
@@ -78,7 +80,7 @@ cuts <- tibble(
         ub = quantile(matchmeta$rating_mean, cub)
     )
 
-cl <- get_cluster(3)
+cl <- get_cluster(2)
 clusterExport(cl, c("matchmeta", "players"))
 
 res_list <- parallel::clusterMap(
@@ -165,7 +167,7 @@ upper_limit <- ceiling(quantile(glen, 0.85) / 5) * 5
 y <- seq(lower_limit, upper_limit, by = 1)
 
 
-cl <- get_cluster(3)
+cl <- get_cluster(2)
 clusterExport(cl, c("matchmeta", "players"))
 
 res_list <- parallel::clusterMap(

@@ -3,6 +3,8 @@ library(dplyr)
 library(stringr)
 library(jsonlite)
 
+data_location <- get_data_location()
+mcoef <- readRDS(file.path(data_location, "cvc.Rds"))
 
 civ_split <- str_split_fixed(names(mcoef$coefs), "_", n = 2)
 
@@ -41,7 +43,7 @@ check_2 <- dat %>%
     filter(civ == "Aztecs", civ_a == "Franks")
 
 assert_that(
-    check_1$wr == (100 - check_2$wr)
+    round(check_1$wr, 2) == round((100 - check_2$wr), 2)
 )
 
 
