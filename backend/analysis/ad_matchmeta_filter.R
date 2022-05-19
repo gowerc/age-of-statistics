@@ -14,7 +14,7 @@ config <- get_config()
 
 # config_all <- jsonlite::read_json("config.json")
 # config <- list(
-#     filter = config_all[["aoe2"]][["filters"]][["rm_solo_open_nopick"]],
+#     filter = config_all[["aoe2"]][["filters"]][["rm_solo_closed_pro"]],
 #     period = config_all[["aoe2"]][["periods"]][["p03_v02"]],
 #     game = "aoe2"
 # )

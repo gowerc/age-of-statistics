@@ -1,5 +1,5 @@
 ##############################################
-#
+
 #    SnakeFile
 #
 ##############################################
@@ -50,16 +50,16 @@
 #
 #
 #     output groups:
-#        ./bin/sm "outputs/aoe2/p03_v02/rm_solo_all/output.log"
-#        ./bin/sm "outputs/aoe2/p03_v02/rm_solo_open/output.log"
-#        ./bin/sm "outputs/aoe2/p03_v02/rm_solo_closed/output.log"
-#        ./bin/sm "outputs/aoe2/p03_v02/rm_team_all/output.log"
-#        ./bin/sm "outputs/aoe2/p03_v02/rm_team_open/output.log"
-#        ./bin/sm "outputs/aoe2/p03_v02/rm_team_closed/output.log"
-#        ./bin/sm "outputs/aoe2/p03_v02/rm_solo_open_pro/output.log"
-#        ./bin/sm "outputs/aoe2/p03_v02/rm_solo_closed_pro/output.log"
-#        ./bin/sm "outputs/aoe2/p03_v02/rm_solo_open_nopick/output.log"
-#        ./bin/sm "outputs/aoe2/p03_v02/rm_solo_closed_nopick/output.log"
+#        ./bin/sm outputs/aoe2/p03_v02/rm_solo_all/output.log
+#        ./bin/sm outputs/aoe2/p03_v02/rm_solo_open/output.log
+#        ./bin/sm outputs/aoe2/p03_v02/rm_solo_closed/output.log
+#        ./bin/sm outputs/aoe2/p03_v02/rm_team_all/output.log
+#        ./bin/sm outputs/aoe2/p03_v02/rm_team_open/output.log
+#        ./bin/sm outputs/aoe2/p03_v02/rm_team_closed/output.log
+#        ./bin/sm outputs/aoe2/p03_v02/rm_solo_open_pro/output.log
+#        ./bin/sm outputs/aoe2/p03_v02/rm_solo_closed_pro/output.log
+#        ./bin/sm outputs/aoe2/p03_v02/rm_solo_open_nopick/output.log
+#        ./bin/sm outputs/aoe2/p03_v02/rm_solo_closed_nopick/output.log
 
 
 
@@ -138,7 +138,7 @@ rule matchmeta:
     input:
         "analysis/ad_matchmeta.R"
     resources:
-        load=50
+        load=60
     log:
         "logs/{game}/ad_matchmeta.log"
     shell:
@@ -152,7 +152,7 @@ rule matchmeta_filter:
         "analysis/ad_matchmeta_filter.R",
         "data/processed/{game}/matchmeta.log"
     resources:
-        load=40
+        load=60
     log:
         "logs/{game}/{period}/{filter}/ad_matchmeta_filter.log"
     shell:
@@ -178,7 +178,7 @@ rule cvc:
         "analysis/ad_cvc.R",
         "data/processed/{game}/{period}/{filter}/matchmeta_filter.log"
     resources:
-        load=30
+        load=90
     log:
         "logs/{game}/{period}/{filter}/ad_cvc.log"
     shell:
@@ -211,6 +211,43 @@ rule wr_naive:
 
 
 
+rule slide_wr_elo:
+    output:
+        "data/processed/{game}/{period}/{filter}/ad_slide_WR_ELO.parquet"
+    input:
+        "analysis/ad_slide_wr_elo.R",
+        "data/processed/{game}/{period}/{filter}/matchmeta_filter.log"
+    log:
+        "logs/{game}/{period}/{filter}/ad_slide_wr_elo.log"
+    shell:
+        "Rscript {input[0]} {wildcards.game} {wildcards.period} {wildcards.filter} > {log} 2>&1"
+
+
+
+rule slide_wr_gl:
+    output:
+        "data/processed/{game}/{period}/{filter}/ad_slide_WR_GL.parquet"
+    input:
+        "analysis/ad_slide_wr_gl.R",
+        "data/processed/{game}/{period}/{filter}/matchmeta_filter.log"
+    log:
+        "logs/{game}/{period}/{filter}/ad_slide_wr_gl.log"
+    shell:
+        "Rscript {input[0]} {wildcards.game} {wildcards.period} {wildcards.filter} > {log} 2>&1"
+
+
+
+
+rule slide_pr_elo:
+    output:
+        "data/processed/{game}/{period}/{filter}/ad_slide_PR_ELO.parquet"
+    input:
+        "analysis/ad_slide_pr_elo.R",
+        "data/processed/{game}/{period}/{filter}/matchmeta_filter.log"
+    log:
+        "logs/{game}/{period}/{filter}/ad_slide_pr_elo.log"
+    shell:
+        "Rscript {input[0]} {wildcards.game} {wildcards.period} {wildcards.filter} > {log} 2>&1"
 
 ###############################
 #
@@ -287,10 +324,12 @@ rule sliding_window:
         "outputs/{game}/{period}/{filter}/sliding_window.log"
     input:
         "analysis/g_sliding_window.R",
-        "data/processed/{game}/{period}/{filter}/matchmeta_filter.log"
+        "data/processed/{game}/{period}/{filter}/ad_slide_WR_ELO.parquet",
+        "data/processed/{game}/{period}/{filter}/ad_slide_PR_ELO.parquet",
+        "data/processed/{game}/{period}/{filter}/ad_slide_WR_GL.parquet"
     resources:
         cpu=3,
-        load=30
+        load=40
     log:
         "logs/{game}/{period}/{filter}/g_sliding_window.log"
     shell:

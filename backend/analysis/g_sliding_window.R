@@ -2,107 +2,17 @@ devtools::load_all()
 library(dplyr)
 library(ggplot2)
 library(scales)
-library(lubridate)
 library(arrow)
-library(parallel)
 
 
+# data_location <- "./data/processed/aoe2/p03_v02/rm_solo_open"
 # data_location <- "./data/processed/aoe2/p02_v02/ew_solo_any"
 data_location <- get_data_location()
 
 
-matchmeta <- read_parquet(file.path(data_location, "matchmeta_broad.parquet"))
-players <- read_parquet(file.path(data_location, "players_broad.parquet"))
-
-
-
-get_slide_smoothed <- function(CIV, dat) {
-    dat2 <- dat %>%
-        filter(civ == CIV)
-
-    # fit GAM model
-    lci_m <- mgcv::gam(lci ~ s(y), data = dat2)
-    med_m <- mgcv::gam(est ~ s(y), data = dat2)
-    uci_m <- mgcv::gam(uci ~ s(y), data = dat2)
-
-    pdat <- tibble(
-        y = dat2$y,
-        civ = dat2$civ,
-        lci = predict(lci_m, newdata = data.frame(y = y)),
-        med = predict(med_m, newdata = data.frame(y = y)),
-        uci = predict(uci_m, newdata = data.frame(y = y)),
-    )
-    return(pdat)
-}
-
-
-
-get_cluster <- function(n) {
-    cl <- makeCluster(n)
-    clusterEvalQ(cl, {
-        library(dplyr)
-        library(lubridate)
-        devtools::load_all()
-    })
-    return(cl)
-}
-
-
-###############################
-#
-# Sliding Win Rate by Elo
-#
-###############################
-
-
-
-
-get_slide_wr_elo <- function(y, lb, ub) {
-    matchmeta2 <- matchmeta %>%
-        filter(rating_mean >= lb, rating_mean <= ub)
-
-    data_wr_naive(matchmeta2, players) %>%
-        mutate(y = y) %>%
-        mutate(limit_upper = ub, limit_lower = lb)
-}
-
-
-
-cuts <- tibble(
-    cy = seq(0, 1, by = 0.01),
-    clb = cy - 0.1,
-    cub = cy + 0.1,
-) %>%
-    filter(clb >= 0, cub <= 1) %>%
-    mutate(
-        lb = quantile(matchmeta$rating_mean, clb),
-        y = quantile(matchmeta$rating_mean, cy),
-        ub = quantile(matchmeta$rating_mean, cub)
-    )
-
-cl <- get_cluster(2)
-clusterExport(cl, c("matchmeta", "players"))
-
-res_list <- parallel::clusterMap(
-    cl = cl,
-    get_slide_wr_elo,
-    y = cuts$y,
-    lb = cuts$lb,
-    ub = cuts$ub
+pdat <- arrow::read_parquet(
+    file = file.path(data_location, "ad_slide_WR_ELO.parquet")
 )
-
-stopCluster(cl)
-res <- bind_rows(res_list)
-
-
-civlist <- res %>%
-    arrange(civ) %>%
-    pull(civ) %>%
-    unique()
-
-
-pdat <- map_df(civlist, get_slide_smoothed, res) %>%
-    select(civ, med, lci, uci, elo = y)
 
 
 footnotes <- c(
@@ -150,49 +60,9 @@ save_plot(
 
 
 
-get_slide_wr_gamelength <- function(y, lb, ub) {
-    matchmeta2 <- matchmeta %>%
-        filter(match_length_igm >= lb, match_length_igm <= ub)
-
-    data_wr_naive(matchmeta2, players) %>%
-        mutate(y = y) %>%
-        mutate(limit_upper = ub, limit_lower = lb)
-}
-
-
-glen <- matchmeta$match_length_igm
-lower_limit <- floor(quantile(glen, 0.1) / 5) * 5
-upper_limit <- ceiling(quantile(glen, 0.85) / 5) * 5
-
-y <- seq(lower_limit, upper_limit, by = 1)
-
-
-cl <- get_cluster(2)
-clusterExport(cl, c("matchmeta", "players"))
-
-res_list <- parallel::clusterMap(
-    cl = cl,
-    get_slide_wr_gamelength,
-    y = y,
-    lb = y - 5,
-    ub = y + 5
+pdat <- arrow::read_parquet(
+    file = file.path(data_location, "ad_slide_WR_GL.parquet")
 )
-
-stopCluster(cl)
-res <- bind_rows(res_list)
-
-
-
-
-civlist <- res %>%
-    arrange(civ) %>%
-    pull(civ) %>%
-    unique()
-
-
-pdat <- map(civlist, get_slide_smoothed, res) %>%
-    bind_rows() %>%
-    select(civ, med, lci, uci, len = y)
 
 footnotes <- c(
     "Win rates are calculated at each point X after filtering the data to",
@@ -238,40 +108,8 @@ save_plot(
 ###############################
 
 
-get_slide_pr_elo <- function(y, lb, ub, matchmeta, players) {
-    matchmeta2 <- matchmeta %>%
-        filter(rating_mean >= lb, rating_mean <= ub)
-
-    data_pr(matchmeta2, players) %>%
-        mutate(y = y) %>%
-        mutate(limit_upper = ub, limit_lower = lb)
-}
-
-
-
-
-cuts <- tibble(
-    cy = seq(0, 1, by = 0.01),
-    clb = cy - 0.1,
-    cub = cy + 0.1,
-) %>%
-    filter(clb >= 0, cub <= 1) %>% 
-    mutate(
-        lb = quantile(matchmeta$rating_mean, clb),
-        y = quantile(matchmeta$rating_mean, cy),
-        ub = quantile(matchmeta$rating_mean, cub)
-    )
-
-
-res <- pmap_df(
-    list(
-        y = cuts$y,
-        lb = cuts$lb,
-        ub = cuts$ub
-    ),
-    get_slide_pr_elo,
-        matchmeta = matchmeta,
-        players = players
+res <- arrow::read_parquet(
+    file = file.path(data_location, "ad_slide_PR_ELO.parquet")
 )
 
 civlist <- res %>%

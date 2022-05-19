@@ -67,20 +67,20 @@
                 "rm_single_pick": false
             },
             "rm_solo_open_pro": {
-                "label": "RM, Solo, Open, >1700",
+                "label": "RM, Solo, Open, >1600",
                 "leaderboard": "1v1 Random Map",
                 "mapclass": "Open",
-                "elo_limit_lower": 1700,
+                "elo_limit_lower": 1600,
                 "elo_limit_lower_slide": 1200,
                 "length_limit_lower": 6,
                 "length_limit_upper": 180,
                 "rm_single_pick": false
             },
             "rm_solo_closed_pro": {
-                "label": "RM, Solo, Closed, >1700",
+                "label": "RM, Solo, Closed, >1600",
                 "leaderboard": "1v1 Random Map",
                 "mapclass": "Closed",
-                "elo_limit_lower": 1700,
+                "elo_limit_lower": 1600,
                 "elo_limit_lower_slide": 1200,
                 "length_limit_lower": 6,
                 "length_limit_upper": 180,
@@ -119,9 +119,9 @@
                 "upper": "2022-04-26"
             },
             "p03_v02": {
-                "label": "07May2022 - 16May2022",
-                "lower": "2022-05-07",
-                "upper": "2022-05-16"
+                "label": "05May2022 - 17May2022",
+                "lower": "2022-05-05",
+                "upper": "2022-05-17"
             }
         }
     }
