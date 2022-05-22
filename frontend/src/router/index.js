@@ -8,6 +8,7 @@ import Criteria from "@/views/outputs/Criteria.vue"
 import Methods from "@/views/Methods.vue"
 import Statistics from "@/views/Statistics.vue"
 import Faq from "@/views/Faq.vue"
+import Change from "@/views/ChangeLog.vue"
 
 const routes = [
     {
@@ -19,6 +20,11 @@ const routes = [
         path: "/faq",
         name: "Faq",
         component: Faq
+    },
+    {
+        path: "/changelog",
+        name: "Change",
+        component: Change
     },
     {
         path: "/",

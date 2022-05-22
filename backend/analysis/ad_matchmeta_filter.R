@@ -27,11 +27,11 @@ config <- get_config()
 #
 
 matchmeta_all <- arrow::read_parquet(
-    file.path("data", "processed", "aoe2", "matches.parquet")
+    file.path("data", "processed", "matches.parquet")
 )
 
 players_all <- arrow::read_parquet(
-    file.path("data", "processed", "aoe2", "players.parquet")
+    file.path("data", "processed", "players.parquet")
 )
 
 

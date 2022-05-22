@@ -27,7 +27,7 @@
 <script>
 import Output from "@/components/Output"
 export default {
-    props: ["path"],
+    props: ["path", "config"],
     components: {
         "Output": Output
     }

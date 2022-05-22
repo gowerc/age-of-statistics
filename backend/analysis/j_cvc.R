@@ -2,8 +2,13 @@ pkgload::load_all()
 library(dplyr)
 library(stringr)
 library(jsonlite)
+library(arrow)
+
+
+data_location <- "./data/processed/aoe2/p02_v02/rm_solo_open"
 
 data_location <- get_data_location()
+
 mcoef <- readRDS(file.path(data_location, "cvc.Rds"))
 
 civ_split <- str_split_fixed(names(mcoef$coefs), "_", n = 2)
@@ -58,3 +63,10 @@ filepath <- file.path(
 sink(filepath)
 toJSON(results)
 sink()
+
+
+write_parquet(
+    x = dat,
+    sink = file.path(data_location, "cvc.parquet")
+)
+

@@ -1,7 +1,7 @@
 <template>
   <h2>Frequently Asked Questions</h2>
  
- 
+  <hr>
   <ul>
     <p class="faq-q">
       Why have you included games with players below an Elo of X?

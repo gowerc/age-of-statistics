@@ -9,7 +9,7 @@ if outloc.exists():
 shutil.copytree("../backend/outputs", outloc)
 
 
-configloc = pathlib.Path("./src/assets/config.json")
+configloc = pathlib.Path("./public/config.json")
 if configloc.exists():
     configloc.unlink()
 

@@ -1,6 +1,6 @@
 <template>
   <h2>Methods</h2>
-    
+  <hr>
   <h3>Confidence Intervals and why they are Important</h3>
 
   <p>

@@ -1,13 +1,13 @@
 
 <template>
 
-<div class="col-4 px-0 mx-0 py-1" v-if="data !== null">
+<div class="col-4 px-0 mx-0 py-1" v-if="cvc">
     <label class = "px-0 mx-0">
         Civilisation:
     </label>
     <select class="form-select px-0 mx-0" v-model="civ">
         <option 
-            v-for="(opt, key) in data" 
+            v-for="(opt, key) in cvc" 
             :key="key"
             > 
             {{ key }}
@@ -15,43 +15,58 @@
     </select>
 </div>
 
-<OutputPlotly v-if="data !== null"
+<OutputWR v-if="cvc !== null"
     name="civ_wrNaive"
     title="Civilisation v Civilisation Win Rates"
-    :data="data[civ]"/>
+    :data="cvc[civ]"/>
+
+<OutputWrElo v-if="wr_elo !== null"
+    name="civ_wr_elo"
+    title="Naive Win Rates by Elo"
+    :data="wr_elo[civ]"/>
+
+
 </template>
 
 <script>
-import OutputPlotly from "@/components/OutputPlotly"
+import OutputWR from "@/components/OutputWR"
+import OutputWrElo from "@/components/OutputWrElo"
+
 
 export default {
-    props: ["path"],
+    props: ["path", "config"],
     components: {
-        "OutputPlotly": OutputPlotly
+        "OutputWR": OutputWR,
+        "OutputWrElo": OutputWrElo
     },
     data() {
         return {
-            data : null,
+            cvc : null,
+            wr_elo: null,
             civ: 'Aztecs'
         }
     },
     watch: {
         path: function (val) {
-            this.fetchData()
+            this.updateData()
         }
     },
     created() {
-        this.fetchData()
+        this.updateData()
     },
     methods: {
-        fetchData() {
-            let filepath = this.path + "/cvc.json";
+        updateData() {
+            this.fetchData("cvc", "cvc.json")
+            this.fetchData("wr_elo", "slide_WR_ELO.json")
+        },
+        fetchData(id, file) {
+            let filepath = this.path + "/" + file;
             fetch(filepath)
                 .then( response => {
                     return response.json()
                 })
                 .then( jsondata => {
-                    this.data = jsondata
+                    this[id] = jsondata
                 })
         }
     }

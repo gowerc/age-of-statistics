@@ -51,6 +51,14 @@
                     </router-link>
                 </li>
                 
+                <li class="nav-item">
+                    <router-link
+                        class="nav-link"
+                        to="/changelog">
+                        
+                        Change-Log
+                    </router-link>
+                </li>
                 
             </ul>
         </div>

@@ -35,8 +35,8 @@ as_footnote <- function(x, width = 140, add_Filter = TRUE) {
 }
 
 
-get_map_class <- function(game) {
-    x <- yaml::read_yaml("./data/raw/maps.json")[[game]]
+get_map_class <- function() {
+    x <- yaml::read_yaml("./data/raw/maps.json")
     dplyr::tibble(
         map_name = names(unlist(x)),
         map_class = unlist(x)
@@ -59,14 +59,13 @@ get_data_location <- function(nofilter=FALSE) {
     args <- get_args()
 
     if (nofilter) {
-        string <- "./data/processed/{game}/{period}"
+        string <- "./data/processed/{period}"
     } else {
-        string <- "./data/processed/{game}/{period}/{filter}"
+        string <- "./data/processed/{period}/{filter}"
     }
 
     location <- glue::glue(
         string,
-        game = args$game,
         period = args$period,
         filter = args$filter
     )
@@ -80,8 +79,7 @@ get_data_location <- function(nofilter=FALSE) {
 get_output_location <- function() {
     args <- get_args()
     LOCATION <- glue::glue(
-        "./outputs/{game}/{period}/{filter}/",
-        game = args$game,
+        "./outputs/{period}/{filter}/",
         period = args$period,
         filter = args$filter
     )
@@ -96,20 +94,17 @@ get_args <- function() {
     args <- commandArgs(trailingOnly = TRUE)
     if (length(args) == 0) {
         cfg <- get_config_all()
-        game <- "aoe2"
-        period <- cfg$aoe2$default$period
-        filter <- cfg$aoe2$default$filter
+        period <- cfg$default$period
+        filter <- cfg$default$filter
     } else {
-        game <- args[[1]]
-        period <- args[[2]]
-        if (length(args) > 2) {
-            filter <- args[[3]]
+        period <- args[[1]]
+        if (length(args) > 1) {
+            filter <- args[[2]]
         } else {
             filter <- ""
         }
     }
     args <- list(
-        game = game,
         period = period,
         filter = filter
     )
@@ -126,9 +121,8 @@ get_config <- function() {
     args <- get_args()
     config <- get_config_all()
     list(
-        filter = config[[args$game]][["filters"]][[args$filter]],
-        period = config[[args$game]][["periods"]][[args$period]],
-        game = args$game
+        filter = config[["filters"]][[args$filter]],
+        period = config[["periods"]][[args$period]]
     )
 }
 

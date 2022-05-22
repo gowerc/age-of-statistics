@@ -99,7 +99,7 @@ matches_maps <- matches %>%
     select(-map_type)
 
 
-mapclass <- get_map_class("aoe2")
+mapclass <- get_map_class()
 u_mapname <- unique(matches_maps$map)
 no_class <- u_mapname[!u_mapname %in% mapclass$map_name]
 assert_that(
@@ -280,7 +280,7 @@ for (var in names(meta_matches)) {
 
 
 dir.create(
-    path = file.path("data", "processed", "aoe2"),
+    path = file.path("data", "processed"),
     recursive = TRUE,
     showWarnings = FALSE
 )
@@ -288,15 +288,15 @@ dir.create(
 
 arrow::write_parquet(
     x = ad_matches2,
-    sink = file.path("data", "processed", "aoe2", "matches.parquet")
+    sink = file.path("data", "processed", "matches.parquet")
 )
 
 
 arrow::write_parquet(
     x = ad_players2,
-    sink = file.path("data", "processed", "aoe2", "players.parquet")
+    sink = file.path("data", "processed", "players.parquet")
 )
 
 
-set_log(file.path("data", "processed", "aoe2"), "matchmeta")
+set_log(file.path("data", "processed"), "matchmeta")
 

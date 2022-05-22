@@ -7,11 +7,6 @@
     <div class="row justify-content-evenly align-items-center px-0 mx-0">
         <Selector
             :update-route="updateRoute"
-            :list="games"
-            name="game"
-        />
-        <Selector
-            :update-route="updateRoute"
             :list="periods"
             name="period"
         />
@@ -28,10 +23,11 @@
 
 <router-view v-slot="slotProps">
     <keep-alive max="6">
-        <div v-if="path">
+        <div v-if="current_config">
             <component
                 :is="slotProps.Component"
                 :path="path"
+                :config="current_config"
             />
         </div>
     </keep-alive>
@@ -40,72 +36,116 @@
 
 
 <script>
-import config from '@/assets/config.json'
 import Selector from '@/components/Selector'
 import StatsPageLinks from '@/components/StatsPageLinks'
 
 export default {
+    data() {
+        return {
+            "config": null
+        }
+    },
     components: {
         "Selector": Selector,
-        "StatsPageLinks": StatsPageLinks
+        "StatsPageLinks": StatsPageLinks,
     },
     computed: {
         path(){ 
-            let game = this.$route.query.game
-            if(!game) {
-                return ""
-            }
             return [
                 "/outputs",
-                this.$route.query.game,
                 this.$route.query.period,
                 this.$route.query.filter
             ].join('/');
         },
+        
         filters(){
-            let game = this.$route.query.game
-            if(!game) {
-                return ""
+            if (!this.config) {
+                return null;
             }
-            return config[game].filters
+            return this.config.filters
         },
+        
         periods(){
-            let game = this.$route.query.game
-            if(!game) {
-                return ""
+            if (!this.config) {
+                return null;
             }
-            return config[game].periods
+            return this.config.periods
         },
-        games(){
-            return config
+        
+        current_filter(){
+            return this.$route.query.filter
+        },
+        
+        current_period(){
+            return this.$route.query.period
+        },
+        
+        current_config(){
+            if (!this.config || !this.current_period || !this.current_filter) {
+                return null;
+            }
+            
+            if (!(this.current_period in this.config.periods)) {
+                this.ensureValidURL(true)
+                return null
+            }
+            
+            if (!(this.current_filter in this.config.filters)) {
+                this.ensureValidURL(true)
+                return null
+            }
+            
+            return {
+                "period": this.config.periods[this.current_period],
+                "filter": this.config.filters[this.current_filter]
+            }
         }
     },
+    
     created(){
-        this.ensureValidURL()
+        this.fetchData()
     },
+    
     beforeUpdate() {
         this.ensureValidURL()
     },
+    
     methods: {
+        
         updateRoute(obj, defaults = false){
             let replacement = {
                 ...this.$route.query,
                 ...obj
             }
+            
             if(defaults) {
-                replacement.period = config[replacement.game].default.periods
-                replacement.filter = config[replacement.game].default.filters
+                replacement.period = this.config.default.periods
+                replacement.filter = this.config.default.filters
             }
+            
             this.$router.replace({query: replacement});
         },
-        ensureValidURL(){
+        
+        ensureValidURL(force = false){
             if(
-                !this.$route.query.game |
-                !this.$route.query.period |
-                !this.$route.query.filter 
+                !this.$route.query.period ||
+                !this.$route.query.filter ||
+                force
             ) {
-                this.updateRoute({game: "aoe2"}, true)
+                return this.updateRoute({}, true)
             }
+        },
+        
+        fetchData() {
+            let config_path = '/config.json';
+            fetch(config_path)
+                .then( response => {
+                    return response.json()
+                })
+                .then( jsondata => {
+                    this.config = jsondata
+                    this.ensureValidURL()
+                })
         }
     }
 }
