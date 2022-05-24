@@ -1,116 +1,191 @@
-
-
-
 pkgload::load_all()
 library(dplyr)
-library(dbplyr)
-library(DBI)
 library(lubridate)
 library(ggplot2)
 library(scales)
+library(arrow)
+library(dtplyr)
+library(data.table)
+library(parallel)
 
 
-con <- get_connection()
+get_day_summary <- function(day, matches_set, players_set) {
 
-
-date_limits <- tbl(con, "match_meta") %>%
-    summarise(
-        min = min(started, na.rm = TRUE),
-        max = max(started, na.rm = TRUE)
-    ) %>%
-    collect()
-
-
-DATE_LIMIT_LOWER <- date_limits$min
-DATE_LIMIT_UPPER <- date_limits$max
-
-
-matches_time_limit <- tbl(con, "match_meta") %>%
-    filter(started >= DATE_LIMIT_LOWER) %>%
-    filter(started <= DATE_LIMIT_UPPER) %>%
-    filter(leaderboard_id == 3) %>%
-    select(match_id)
-
-
-matches_all <- tbl(con, "match_meta") %>%
-    select(match_id, started) %>%
-    inner_join(matches_time_limit, by = "match_id") %>%
-    collect() %>%
-    mutate(start = as.Date(ymd("1970-01-01") + seconds(started)))
-
-
-players_all <- tbl(con, "match_players") %>%
-    select(match_id, rating, profile_id) %>%
-    filter(!is.na(rating)) %>%
-    inner_join(matches_time_limit, by = "match_id") %>%
-    collect()
-
-
-STEP_SIZE <- 10
-DAY_START <- as.Date(ymd("1970-01-01") + seconds(DATE_LIMIT_LOWER)) + days(STEP_SIZE)
-DAY_STOP <- as.Date(ymd("1970-01-01") + seconds(DATE_LIMIT_UPPER)) - days(STEP_SIZE)
-
-
-get_day_summary <- function(day) {
-    matches_selected <- matches_all %>%
+    matches_selected <- matches_set %>%
         filter(start > day - days(STEP_SIZE)) %>%
-        filter(start < day + days(STEP_SIZE))
+        filter(start < day + days(STEP_SIZE)) %>%
+        select(match_id, start)
 
 
-    players_selected <- players_all %>%
-        semi_join(matches_selected, by = "match_id") %>%
-        group_by(profile_id) %>%
-        summarise(
-            n = n(),
-            rating = mean(rating)
-        )
+    players_selected <- players_set %>%
+        inner_join(matches_selected, by = "match_id")
+
+
+    players_rating <- players_selected %>%
+        as.data.table() %>%
+        group_by(profile_id, start) %>%
+        summarise(rating_avg_plr = mean(rating), .groups = "drop") %>%
+        group_by(start) %>% 
+        summarise(rating_avg = mean(rating_avg_plr)) %>% 
+        as_tibble()
+
+
+    players_n <- players_selected %>%
+        as.data.table() %>%
+        group_by(start) %>%
+        summarise(n = length(unique(profile_id)), .groups = "drop") %>%
+        as_tibble()
+
 
     tibble(
         day = day,
-        avg_rating = mean(players_selected$rating),
-        n_games = sum(players_selected$n),
-        n_players = nrow(players_selected)
+        avg_rating = mean(players_rating$rating_avg),
+        n_games = nrow(matches_selected) / STEP_SIZE,
+        n_players = mean(players_n$n)
     )
 }
 
 
-res <- map_df(
+matches <- read_parquet("./data/processed/matches.parquet")
+players <- read_parquet("./data/processed/players.parquet")
+
+
+
+matches2 <- matches %>%
+    mutate(start = as.Date(start_dt)) %>%
+    mutate(stop = as.Date(stop_dt))
+
+
+
+players2 <- players %>%
+    semi_join(matches2, by = "match_id")
+
+
+rm("matches", "players")
+gc()
+
+matches_solo <- matches2 %>%
+    filter(leaderboard == "1v1 Random Map") %>%
+    mutate(start = as.Date(start_dt)) %>%
+    mutate(stop = as.Date(stop_dt))
+
+matches_solo_ew <- matches2 %>%
+    filter(leaderboard == "1v1 Empire Wars") %>%
+    mutate(start = as.Date(start_dt)) %>%
+    mutate(stop = as.Date(stop_dt))
+
+matches_team <- matches2 %>%
+    filter(leaderboard == "Team Random Map") %>%
+    mutate(start = as.Date(start_dt)) %>%
+    mutate(stop = as.Date(stop_dt))
+
+
+STEP_SIZE <- 7
+DAY_START <- as.Date(min(matches2$start_dt)) + days(STEP_SIZE)
+DAY_STOP <- as.Date(max(matches2$stop_dt)) - days(STEP_SIZE)
+
+
+
+res_all <- map_df(
     seq(DAY_START, DAY_STOP, by = 4),
-    get_day_summary
+    get_day_summary,
+    matches2,
+    players2
+)
+
+
+res_solo <- map_df(
+    seq(DAY_START, DAY_STOP, by = 4),
+    get_day_summary,
+    matches_solo,
+    players2
+)
+
+res_solo_ew <- map_df(
+    seq(DAY_START, DAY_STOP, by = 4),
+    get_day_summary,
+    matches_solo_ew,
+    players2
+)
+
+res_team <- map_df(
+    seq(DAY_START, DAY_STOP, by = 4),
+    get_day_summary,
+    matches_team,
+    players2
 )
 
 
 
+res <- bind_rows(
+    res_all %>% mutate(group = "All Ladders"),
+    res_solo %>% mutate(group = "RM 1v1 Ladder"),
+    res_team %>% mutate(group = "RM Team Ladder"),
+    res_solo_ew %>% mutate(group = "EW 1v1 Ladder")
+)
 
-p1 <- ggplot(res, aes(x = day, y = avg_rating)) +
+res_no_all <- res %>% filter(group != "All Ladders")
+
+elo_limits <- c(
+    min(1000, res_no_all$avg_rating),
+    max(res_no_all$avg_rating)
+)
+
+footnotes <- c(
+    "Calculations presented are a 14 day rolling average<br/>",
+    "Data does not include games for EW teams<br/>",
+    "Exact numbers are underestimated due to ~20% of matches being missing due to data integrity issues"
+) %>% 
+    as_footnote(add_Filter = FALSE)
+
+p1 <- ggplot(res_no_all, aes(x = day, y = avg_rating, group = group, col = group)) +
     theme_bw() +
     geom_point() +
     geom_line() +
-    scale_y_continuous(breaks = pretty_breaks(10)) +
+    scale_y_continuous(breaks = pretty_breaks(10), limits = elo_limits) +
     scale_x_date(breaks = pretty_breaks(10)) +
-    ylab("Average Player Elo") +
-    xlab("Date")
+    ylab("Average player Elo") +
+    xlab("Date") +
+    theme(
+        legend.position = "bottom",
+        plot.caption = element_text(hjust = 0)
+    ) +    scale_color_discrete(name = "") +
+    labs(caption = footnotes)
 
 
-p2 <- ggplot(res, aes(x = day, y = n_games)) +
+p2 <- ggplot(res, aes(x = day, y = n_games, group = group, col = group)) +
     theme_bw() +
     geom_point() +
     geom_line() +
-    scale_y_continuous(breaks = pretty_breaks(10)) +
+    scale_y_continuous(breaks = pretty_breaks(10), limits = c(0, max(res$n_games))) +
     scale_x_date(breaks = pretty_breaks(10)) +
-    ylab("Total Number of Games Played") +
-    xlab("Date")
+    ylab("Total number of games played per day") +
+    xlab("Date") +
+    theme(
+        legend.position = "bottom",
+        plot.caption = element_text(hjust = 0)
+    ) +
+    scale_color_discrete(name = "") +
+    labs(caption = footnotes)
 
 
-p3 <- ggplot(res, aes(x = day, y = n_players)) +
+p3 <- ggplot(res, aes(x = day, y = n_players, group = group, col = group)) +
     theme_bw() +
     geom_point() +
     geom_line() +
-    scale_y_continuous(breaks = pretty_breaks(10)) +
+    scale_y_continuous(breaks = pretty_breaks(10), limits = c(0, max(res$n_players))) +
     scale_x_date(breaks = pretty_breaks(10)) +
-    ylab("Number of Unique Players") +
-    xlab("Date")
+    ylab("Number of unique players per day") +
+    xlab("Date") +
+    theme(
+        legend.position = "bottom",
+        plot.caption = element_text(hjust = 0)
+    ) +    scale_color_discrete(name = "") +
+    labs(caption = footnotes)
 
+
+
+dir.create("./outputs/misc", recursive = TRUE, showWarnings= FALSE)
 
 ggsave(
     plot = p1,
@@ -135,3 +210,5 @@ ggsave(
     height = 6,
     dpi = 200
 )
+
+
