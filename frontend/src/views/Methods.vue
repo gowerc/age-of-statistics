@@ -35,7 +35,7 @@
     $$
     \displaylines{
     Y_{ij} \sim Bin(1, p_{ij}) \\
-    p_i = \text{logistic}(\beta_i +  \beta_d d_{j})
+    p_{ij} = \text{logistic}(\beta_i +  \beta_d d_{j})
     }
     $$
         
@@ -45,6 +45,7 @@
       <li>\(Y_{ij}\) is 1 if civilisation \(i\) won its \(j\)'th match</li>
       <li>\(\beta_i\) is civilisation \(i\)'s logit win rate</li>
       <li>\(d_j\) is the difference in mean Elo between team 1 and team 2 in match \(j\)</li>
+      <li>\(\beta_d\) is the importance of the difference in mean Elo between team 1 and team 2 in match \(j\)</li>
     </ul>
         
     All mirror matchups are excluded.
@@ -72,7 +73,7 @@
     $$
     \displaylines{
     Y_{j} \sim Bin(1, p_{j}) \\
-    p_i = \text{logistic}
+    p_j = \text{logistic}
     \left(\frac{
     \beta_{AX} + \beta_{AY} + \beta_{AZ} + 
     \beta_{BX} + \beta_{BY} + \beta_{BZ} + 
@@ -87,6 +88,7 @@
       <li>\(Y_j\) = 1 if team 1 won or 0 if team 2 won</li>
       <li>\(\beta_{mn}\) is civilisation \(m\)'s win rate against civilisation \(n\)</li>
       <li>\(d_j\) is the difference in mean Elo between team 1 and team 2</li>
+      <li>\(\beta_d\) is the importance of the difference in mean Elo between team 1 and team 2 in match \(j\)</li>
     </ul>
 
     Please note that a major limitation of this formulation is that it doesn't allow for any
