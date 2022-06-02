@@ -8,13 +8,14 @@ The only dependencies for this project are `docker`, `docker-compose` and an int
 
 Instructions to re-run the analysis
 
-- Clone down the project and navigate to it via the terminal
+- Clone down the project and navigate to the `backend` directory via the terminal
 - Build the images by running `docker-compose build`
 - Enable the containers by running `docker-compose up -d`
 - Enter the analytic container via `docker-compose exec analysis bash`
+- Move into the app directory by running `cd app`
 - Build the database by running `snakemake -j1 db` (this will take a long time to run)
 - Remove prior analysis files via `snakemake -j1 clean`
-- Re-run the analysis via `snakemake -j1 all` 
+- Re-run the analysis via `snakemake -j1 all`
 
 Finally once done we can clean up by:
 - exiting the analytic container by running `exit`
