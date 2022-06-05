@@ -65,7 +65,8 @@ RUN Rscript -e "options(warn=2);\
         'googlesheets4',\
         'lsa',\
         'mvtnorm',\
-        'arrow'\
+        'arrow',\
+        'fastglm'\
     ))"
 
 COPY requirements.txt /
@@ -86,5 +87,3 @@ USER ${UID}:${GID}
 # Get dev containers to use bash by default
 ENV SHELL /bin/bash
 
-# RUN mkdir /app
-# WORKDIR /app
