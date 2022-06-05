@@ -45,7 +45,9 @@
 #          ./bin/sm outputs/p03_v03/rm_solo_open/sliding_window.log
 #          ./bin/sm outputs/p03_v03/rm_solo_open/descriptives.log
 #          ./bin/sm outputs/p03_v03/rm_solo_open/civ_dendro.png
+#          ./bin/sm outputs/p03_v03/rm_solo_open/civ_wr_rank.png
 #          ./bin/sm outputs/p03_v03/rm_solo_open/output.log
+#
 #
 #
 #
@@ -212,6 +214,18 @@ rule wr_naive:
         "Rscript {input[0]} {wildcards.period} {wildcards.filter} > {log} 2>&1"
 
 
+rule wr_boot:
+    output:
+        "data/processed/{period}/{filter}/wr_boot.parquet"
+    input:
+        "analysis/ad_wr_boot.R",
+        "data/processed/{period}/{filter}/matchmeta_filter.log"
+    log:
+        "logs/{period}/{filter}/ad_wr_boot.log"
+    shell:
+        "Rscript {input[0]} {wildcards.period} {wildcards.filter} > {log} 2>&1"
+
+
 
 rule slide_wr_elo:
     output:
@@ -270,6 +284,7 @@ rule outputs:
         "outputs/{period}/{filter}/sliding_window.log",
         "outputs/{period}/{filter}/play_rates.log",
         "outputs/{period}/{filter}/wr_estimated.log",
+        "outputs/{period}/{filter}/wr_rank.log",
         "outputs/{period}/{filter}/cvc.json"
 
 
@@ -320,6 +335,18 @@ rule win_rates:
         "data/processed/{period}/{filter}/wr_naive.parquet"
     log:
         "logs/{period}/{filter}/g_win_rates.log"
+    shell:
+        "Rscript {input[0]} {wildcards.period} {wildcards.filter} > {log} 2>&1"
+
+
+rule win_rates_rank:
+    output:
+        "outputs/{period}/{filter}/civ_wr_rank.png"
+    input:
+        "analysis/g_wr_rank.R",
+        "data/processed/{period}/{filter}/wr_boot.parquet"
+    log:
+        "logs/{period}/{filter}/g_wr_rank.log"
     shell:
         "Rscript {input[0]} {wildcards.period} {wildcards.filter} > {log} 2>&1"
 
