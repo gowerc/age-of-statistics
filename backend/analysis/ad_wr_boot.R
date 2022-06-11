@@ -84,7 +84,7 @@ devnull <- clusterEvalQ(cl, {
 devnull <- clusterExport(cl, c("matchmeta", "players", "get_boot_wr"))
 
 runtime <- system.time({
-    res <- clusterApplyLB(cl, 1:120, get_boot_wr)
+    res <- clusterApplyLB(cl, 1:200, get_boot_wr)
 })
 
 stopCluster(cl)

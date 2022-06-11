@@ -220,6 +220,8 @@ rule wr_boot:
     input:
         "analysis/ad_wr_boot.R",
         "data/processed/{period}/{filter}/matchmeta_filter.log"
+    resources:
+        load=90
     log:
         "logs/{period}/{filter}/ad_wr_boot.log"
     shell:
@@ -253,6 +255,17 @@ rule slide_wr_gl:
 
 
 
+rule slide_wr_ggl:
+    output:
+        "data/processed/{period}/{filter}/ad_slide_WR_GGL.parquet"
+    input:
+        "analysis/ad_slide_wr_ggl.R",
+        "data/processed/{period}/{filter}/matchmeta_filter.log"
+    log:
+        "logs/{period}/{filter}/ad_slide_wr_ggl.log"
+    shell:
+        "Rscript {input[0]} {wildcards.period} {wildcards.filter} > {log} 2>&1"
+
 
 rule slide_pr_elo:
     output:
@@ -284,7 +297,7 @@ rule outputs:
         "outputs/{period}/{filter}/sliding_window.log",
         "outputs/{period}/{filter}/play_rates.log",
         "outputs/{period}/{filter}/wr_estimated.log",
-        "outputs/{period}/{filter}/wr_rank.log",
+        "outputs/{period}/{filter}/civ_wr_rank.png",
         "outputs/{period}/{filter}/cvc.json"
 
 
@@ -358,6 +371,7 @@ rule sliding_window:
         "analysis/g_sliding_window.R",
         "data/processed/{period}/{filter}/ad_slide_WR_ELO.parquet",
         "data/processed/{period}/{filter}/ad_slide_PR_ELO.parquet",
+        "data/processed/{period}/{filter}/ad_slide_WR_GGL.parquet",
         "data/processed/{period}/{filter}/ad_slide_WR_GL.parquet"
     resources:
         cpu=3,

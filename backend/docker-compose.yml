@@ -3,7 +3,7 @@ services:
 
   analysis:
     build: 
-      context: ./
+      context: ./docker
       dockerfile: ./Dockerfile
     volumes:
     - ".:/app"

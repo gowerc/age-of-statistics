@@ -1,10 +1,11 @@
-FROM rocker/r-ver:4.1.2
+FROM rocker/r-ver:4.2.0
 
 ## Required system dependencies
 RUN apt-get update && apt-get install -y \
     apt-utils \
     libssl-dev \
     libsasl2-dev \
+    uuid-dev \
     curl \
     wget \
     libz-dev \
@@ -25,7 +26,6 @@ RUN apt-get update && apt-get install -y \
     htop \
     python3.9-dev
 
-RUN python3 -m pip install snakemake
 
 ## Install postgressql-cleint 13 (to communicate with db from the command line)
 RUN wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add -
@@ -34,41 +34,15 @@ RUN apt-get update && apt-get -y install postgresql-client-13
 
 
 # Fix Rstudio package manager to use a specific date cutoff
-RUN sed -i "s/latest/2022-01-03/g" /usr/local/lib/R/etc/Rprofile.site
+COPY Rprofile.site /usr/local/lib/R/etc/Rprofile.site
 
-# Install required libraries
-RUN Rscript -e "options(warn=2);\
-    install.packages(c(\
-        'tidyverse',\
-        'dplyr',\
-        'tidyr',\
-        'tibble',\
-        'stringr',\
-        'assertthat',\
-        'lubridate',\
-        'httr',\
-        'glue',\
-        'languageserver',\
-        'devtools',\
-        'RPostgres',\
-        'DBI',\
-        'rmarkdown',\
-        'knitr',\
-        'DT',\
-        'dbplyr',\
-        'forcats',\
-        'HyRiM',\
-        'ggdendro',\
-        'jsonlite',\
-        'kableExtra',\
-        'ggrepel',\
-        'googlesheets4',\
-        'lsa',\
-        'mvtnorm',\
-        'arrow',\
-        'fastglm'\
-    ))"
 
+# Install required R libraries
+COPY install.R /install.R
+RUN Rscript /install.R
+
+
+# Install required Python libraries
 COPY requirements.txt /
 RUN python3.9 -m pip install -r /requirements.txt
 ENV PYTHONPATH=/app/analysis

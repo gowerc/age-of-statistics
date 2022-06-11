@@ -8,7 +8,7 @@ pkgload::load_all()
 
 
 data_location <- get_data_location()
-
+# data_location <- "./data/processed/p02_v02/rm_solo_all"
 dat <- read_parquet(file.path(data_location, "wr_boot.parquet"))
 
 
@@ -24,6 +24,14 @@ footnotes <- c(
 ) %>%
     as_footnote()
 
+
+
+get_breaks_0to1 <- function(...) {
+    breaks <- breaks_pretty(10)(...)
+    breaks[breaks == 0] <- 1
+    return(breaks)
+}
+
 p <- ggplot(data = pdat, aes(x = civ, group = civ, ymin = lci_rank, ymax = uci_rank, y = rank)) +
     geom_errorbar(width = 0.3) +
     geom_point() +
@@ -34,8 +42,8 @@ p <- ggplot(data = pdat, aes(x = civ, group = civ, ymin = lci_rank, ymax = uci_r
     ) +
     labs(caption = footnotes) +
     ylab("Win Rate (Rank)") +
-    xlab("") +
-    scale_y_reverse(breaks = pretty_breaks(10))
+    xlab("") +  
+    scale_y_reverse(breaks = get_breaks_0to1)
 
 
 

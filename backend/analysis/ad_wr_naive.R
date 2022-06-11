@@ -18,7 +18,9 @@ players <- read_parquet(
     file.path(data_location, "players.parquet")
 )
 
-dat <- data_wr_naive(matchmeta, players)
+
+results <- prep_wr_naive(matchmeta, players)
+dat <- data_wr_naive(results)
 
 write_parquet(
     dat,

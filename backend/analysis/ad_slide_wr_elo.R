@@ -28,10 +28,10 @@ players <- read_parquet(
 
 
 get_slide_wr_elo <- function(y, lb, ub) {
-    matchmeta2 <- matchmeta %>%
+    results2 <- results %>%
         filter(rating_mean >= lb, rating_mean <= ub)
 
-    data_wr_naive(matchmeta2, players) %>%
+    data_wr_naive(results2) %>%
         mutate(y = y) %>%
         mutate(limit_upper = ub, limit_lower = lb)
 }
@@ -50,8 +50,15 @@ cuts <- tibble(
         ub = quantile(matchmeta$rating_mean, cub)
     )
 
+
+results <- prep_wr_naive(matchmeta, players)
+
 cl <- get_cluster(2)
-clusterExport(cl, c("matchmeta", "players"))
+clusterExport(cl, c("results"))
+clusterEvalQ(cl, {
+    library(fastglm)
+    library(dplyr)
+})
 
 res_list <- parallel::clusterMap(
     cl = cl,

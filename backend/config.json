@@ -1,7 +1,7 @@
 {
     "default": {
         "filters": "rm_solo_all",
-        "periods": "p03_v03"
+        "periods": "p03_v04"
     },
     "filters": {
         "rm_solo_all": {
@@ -116,10 +116,10 @@
             "lower": "2021-11-20",
             "upper": "2022-04-26"
         },
-        "p03_v03": {
-            "label": "05May2022 - 21May2022",
-            "lower": "2022-05-05",
-            "upper": "2022-05-21"
+        "p03_v04": {
+            "label": "08May2022 - 09June2022",
+            "lower": "2022-05-08",
+            "upper": "2022-06-09"
         }
     }
 }
