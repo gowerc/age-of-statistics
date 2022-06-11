@@ -11,6 +11,12 @@
     title="Naive Win Rates vs Play Rate"
     :path="path" />
 
+
+<Output
+    name="civ_wr_rank"
+    title="Naive Win Rates (Ranked) by Civilisation"
+    :path="path" />
+
 <Output
     name="civ_wrAvg"
     title="Averaged Win Rates by Civilisation"

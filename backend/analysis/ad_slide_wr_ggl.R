@@ -10,8 +10,10 @@ library(lubridate)
 library(arrow)
 library(parallel)
 library(jsonlite)
+library(fastglm)
 
 
+# data_location <- "./data/processed/aoe2/p02_v02/rm_solo_any"
 # data_location <- "./data/processed/aoe2/p03_v02/rm_solo_open"
 # data_location <- "./data/processed/aoe2/p02_v02/ew_solo_any"
 data_location <- get_data_location()
@@ -22,21 +24,20 @@ players <- read_parquet(file.path(data_location, "players_broad.parquet"))
 
 
 
-get_slide_wr_gamelength <- function(y, lb, ub) {
+get_slide_wr_gt_gamelength <- function(y) {
     results2 <- results %>%
-        filter(match_length_igm >= lb, match_length_igm <= ub)
+        filter(match_length_igm >= y)
 
     data_wr_naive(results2) %>%
-        mutate(y = y) %>%
-        mutate(limit_upper = ub, limit_lower = lb)
+        mutate(y = y)
 }
 
 
 glen <- matchmeta$match_length_igm
-lower_limit <- floor(quantile(glen, 0.1) / 5) * 5
-upper_limit <- ceiling(quantile(glen, 0.85) / 5) * 5
+lower_limit <- floor(min(glen) / 5) * 5
+upper_limit <- ceiling(quantile(glen, 0.90) / 5) * 5
 
-y <- seq(lower_limit, upper_limit, by = 1)
+y <- seq(lower_limit, upper_limit, length.out = 40)
 
 
 results <- prep_wr_naive(matchmeta, players)
@@ -48,17 +49,17 @@ clusterEvalQ(cl, {
     library(dplyr)
 })
 
+
 res_list <- parallel::clusterMap(
     cl = cl,
-    get_slide_wr_gamelength,
-    y = y,
-    lb = y - 5,
-    ub = y + 5
+    get_slide_wr_gt_gamelength,
+    y = y
 )
 
 stopCluster(cl)
-res <- bind_rows(res_list)
 
+
+res <- bind_rows(res_list)
 
 
 civlist <- res %>%
@@ -75,7 +76,7 @@ pdat <- map(civlist, get_slide_smoothed, res) %>%
 
 arrow::write_parquet(
     x = pdat,
-    sink = file.path(data_location, "ad_slide_WR_GL.parquet")
+    sink = file.path(data_location, "ad_slide_WR_GGL.parquet")
 )
 
 
@@ -84,7 +85,7 @@ results <- split(select(pdat, -civ), pdat$civ)
 
 filepath <- file.path(
     get_output_location(),
-    "slide_WR_GL.json"
+    "slide_WR_GGL.json"
 )
 
 
