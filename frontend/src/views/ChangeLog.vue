@@ -7,6 +7,18 @@
 
     <hr>
 
+    <h4>2022-June-11</h4>
+
+    <ul>
+        <li>Updated most recent "period" to include matches up to 9th June 2022</li>
+        <li>Added new output "Naive Win Rates (Ranked) by Civilisation" to the "Win Rates" tab</li>
+        <li>Added new output "Naive Win Rates by Game Length (Greater Than)" to the "Sliding Window" tab</li>
+        <li>Improved model notation in "Methods" page (thank you @Alanocallaghan)</li>
+    </ul>
+
+
+    <hr>
+
     <h4>2022-May-22</h4>
 
     <ul>
@@ -32,7 +44,7 @@
     <h4>Historic Changes</h4>
 
     <ul>
-        <li>I never kept to a log... :(</li>
+        <li>I forgot to record this... :(</li>
     </ul>
 
 </template>

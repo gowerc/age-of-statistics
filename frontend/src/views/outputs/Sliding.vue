@@ -9,7 +9,14 @@
 
 <Output
     name="slide_wrNaive_gamelength"
-    title="Naive Win Rates by Game Length"
+    title="Naive Win Rates by Game Length (Within)"
+    square
+    :path="path" />
+
+
+<Output
+    name="slide_wrNaive_greatergamelength"
+    title="Naive Win Rates by Game Length (Greater Than)"
     square
     :path="path" />
 
