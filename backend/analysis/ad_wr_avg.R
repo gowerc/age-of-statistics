@@ -6,8 +6,9 @@ library(arrow)
 library(purrr)
 library(tidyr)
 
-
-data_location <- get_data_location()
+# args <- get_args("p02_v02", "rm_solo_all")
+args <- get_args()
+data_location <- get_data_location(args)
 
 
 mcoef <- readRDS(file.path(data_location, "cvc.Rds"))

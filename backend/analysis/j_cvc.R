@@ -4,10 +4,10 @@ library(stringr)
 library(jsonlite)
 library(arrow)
 
+# args <- get_args("p02_v02", "rm_solo_all")
+args <- get_args()
 
-data_location <- "./data/processed/aoe2/p02_v02/rm_solo_open"
-
-data_location <- get_data_location()
+data_location <- get_data_location(args)
 
 mcoef <- readRDS(file.path(data_location, "cvc.Rds"))
 
@@ -55,7 +55,7 @@ assert_that(
 results <- split(select(dat, -civ_a), dat$civ_a)
 
 filepath <- file.path(
-    get_output_location(),
+    get_output_location(args),
     "cvc.json"
 )
 

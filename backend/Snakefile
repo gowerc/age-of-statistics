@@ -85,7 +85,7 @@ import json
 
 # config: "./config.yaml"
 
-with open("./config.json", "r") as fi:
+with open("./data/raw/config.json", "r") as fi:
     config = json.load(fi)
 
 

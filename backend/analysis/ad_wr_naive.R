@@ -7,8 +7,9 @@ library(purrr)
 library(tidyr)
 
 
-data_location <- get_data_location()
-#data_location <- "./data/processed/p02_v02/rm_solo_all"
+# args <- get_args("p02_v02", "rm_solo_all")
+args <- get_args()
+data_location <- get_data_location(args)
 
 matchmeta <- read_parquet(
     file.path(data_location, "matchmeta.parquet")

@@ -6,9 +6,10 @@ library(arrow)
 library(purrr)
 library(tidyr)
 
-# data_location <- "data/processed/aoe2/p02_v02/rm_solo_all/"
+# args <- get_args("p02_v02", "rm_solo_all")
+args <- get_args()
 
-data_location <- get_data_location()
+data_location <- get_data_location(args)
 
 
 matchmeta <- read_parquet(

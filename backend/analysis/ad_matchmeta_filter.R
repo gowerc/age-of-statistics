@@ -8,16 +8,12 @@ library(arrow)
 library(dtplyr)
 library(data.table)
 
+# args <- get_args("p02_v02", "rm_solo_all")
+args <- get_args()
 
-## determine which cohort we are building
-config <- get_config()
+config <- get_config(args)
 
-# config_all <- jsonlite::read_json("config.json")
-# config <- list(
-#     filter = config_all[["aoe2"]][["filters"]][["rm_solo_closed_pro"]],
-#     period = config_all[["aoe2"]][["periods"]][["p03_v02"]],
-#     game = "aoe2"
-# )
+
 
 
 #########################
@@ -123,22 +119,22 @@ assert_that(
 
 write_parquet(
     players,
-    file.path(get_data_location(), "players.parquet")
+    file.path(get_data_location(args), "players.parquet")
 )
 
 write_parquet(
     players_broad,
-    file.path(get_data_location(), "players_broad.parquet")
+    file.path(get_data_location(args), "players_broad.parquet")
 )
 
 write_parquet(
     matchmeta,
-    file.path(get_data_location(), "matchmeta.parquet")
+    file.path(get_data_location(args), "matchmeta.parquet")
 )
 
 write_parquet(
     matchmeta_slice,
-    file.path(get_data_location(), "matchmeta_broad.parquet")
+    file.path(get_data_location(args), "matchmeta_broad.parquet")
 )
 
-set_log(get_data_location(), "matchmeta_filter")
+set_log(get_data_location(args), "matchmeta_filter")

@@ -10,9 +10,7 @@ invlogit <- function(x) {
 }
 
 
-as_footnote <- function(x, width = 140, add_Filter = TRUE) {
-
-    args <- get_args()
+as_footnote <- function(x, args, width = 140, add_Filter = TRUE) {
 
     if (add_Filter) {
         x <- c(
@@ -55,9 +53,7 @@ lgl_to_char <- function(x){
 }
 
 
-get_data_location <- function(nofilter=FALSE) {
-    args <- get_args()
-
+get_data_location <- function(args, nofilter=FALSE) {
     if (nofilter) {
         string <- "./data/processed/{period}"
     } else {
@@ -76,8 +72,7 @@ get_data_location <- function(nofilter=FALSE) {
 }
 
 
-get_output_location <- function() {
-    args <- get_args()
+get_output_location <- function(args) {
     LOCATION <- glue::glue(
         "./outputs/{period}/{filter}/",
         period = args$period,
@@ -90,12 +85,19 @@ get_output_location <- function() {
 }
 
 
-get_args <- function() {
+get_args <- function(period = NULL, filter = NULL) {
     args <- commandArgs(trailingOnly = TRUE)
     if (length(args) == 0) {
-        cfg <- get_config_all()
-        period <- cfg$default$period
-        filter <- cfg$default$filter
+        config <- get_config_all()
+        if (is.null(period) || is.null(filter)) {
+            period <- config$default$period
+            filter <- config$default$filter
+        } else {
+            assert_that(
+                period %in% names(config$periods),
+                filter %in% names(config$filter)
+            )
+        }
     } else {
         period <- args[[1]]
         if (length(args) > 1) {
@@ -113,12 +115,11 @@ get_args <- function() {
 
 
 get_config_all <- function() {
-    jsonlite::read_json("config.json")
+    jsonlite::read_json("data/raw/config.json")
 }
 
 
-get_config <- function() {
-    args <- get_args()
+get_config <- function(args) {
     config <- get_config_all()
     list(
         filter = config[["filters"]][[args$filter]],

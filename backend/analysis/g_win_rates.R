@@ -5,8 +5,9 @@ library(scales)
 library(lubridate)
 library(arrow)
 
-
-data_location <- get_data_location()
+# args <- get_args("p02_v02", "rm_solo_all")
+args <- get_args()
+data_location <- get_data_location(args)
 
 pr <- read_parquet(file.path(data_location, "pr.parquet"))
 
@@ -23,7 +24,7 @@ plot_pr_wr <- function(wr, pr) {
     footnotes <- c(
         ""
     ) %>%
-        as_footnote()
+        as_footnote(args)
 
     p <- ggplot(data = pdat, aes(y = pr, x = wr, label = civ)) +
         geom_point() +
@@ -64,7 +65,7 @@ footnotes <- c(
     "The error bars represent the 95% confidence interval.",
     "The dashed blue lines represent an arbitrary region that could be considered as 'balanced'"
 ) %>%
-    as_footnote()
+    as_footnote(args)
 
 p <- ggplot(data = pdat, aes(x = civ, group = civ, ymin = lci, ymax = uci, y = wr)) +
     geom_hline(yintercept = 50, col = "red", alpha = 0.65) +
@@ -119,7 +120,7 @@ footnotes <- c(
     "See methods section for more details.<br/>",
     "The error bars represent the 95% confidence interval."
 ) %>%
-    as_footnote()
+    as_footnote(args)
 
 
 p <- ggplot(data = pdat, aes(x = civ, group = civ, ymin = lci, ymax = uci, y = wr)) +
@@ -153,7 +154,7 @@ save_plot(
 )
 
 
-set_log(get_output_location(), "win_rates")
+set_log(get_output_location(args), "win_rates")
 
 
 

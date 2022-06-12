@@ -6,7 +6,9 @@ library(purrr)
 library(lubridate)
 library(arrow)
 
-data_location <- get_data_location()
+# args <- get_args("p02_v02", "rm_solo_all")
+args <- get_args()
+data_location <- get_data_location(args)
 
 pr <- read_parquet(file.path(data_location, "pr.parquet"))
 matchmeta <- read_parquet(file.path(data_location, "matchmeta.parquet"))
@@ -23,7 +25,7 @@ players <- read_parquet(file.path(data_location, "players.parquet"))
 footnotes <- c(
     "The red line represents the hypothetical play rate if civs were picked at random"
 ) %>%
-    as_footnote()
+    as_footnote(args)
 
 
 prdat <- pr %>%
@@ -107,7 +109,7 @@ footnotes <- c(
         lower_limit
     )
 ) %>%
-    as_footnote()
+    as_footnote(args)
 
 
 p <- ggplot(data = pdat, aes(x = pcent_cat, y = n)) +
@@ -134,5 +136,5 @@ save_plot(
     type = "standard"
 )
 
-set_log(get_output_location(), "play_rates")
+set_log(get_output_location(args), "play_rates")
 

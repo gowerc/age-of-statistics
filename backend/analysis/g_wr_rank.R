@@ -6,9 +6,10 @@ library(ggplot2)
 library(arrow)
 pkgload::load_all()
 
+# args <- get_args("p02_v02", "rm_solo_all")
+args <- get_args()
+data_location <- get_data_location(args)
 
-data_location <- get_data_location()
-# data_location <- "./data/processed/p02_v02/rm_solo_all"
 dat <- read_parquet(file.path(data_location, "wr_boot.parquet"))
 
 
@@ -22,7 +23,7 @@ footnotes <- c(
     "The error bars represent the 95% confidence interval.<br/>",
     "Confidence intervals were calculated by bootstrap resampling"
 ) %>%
-    as_footnote()
+    as_footnote(args)
 
 
 

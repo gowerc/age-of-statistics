@@ -5,7 +5,9 @@ library(scales)
 library(lubridate)
 library(arrow)
 
-data_location <- get_data_location()
+# args <- get_args("p02_v02", "rm_solo_all")
+args <- get_args()
+data_location <- get_data_location(args)
 
 cvc_mat <- readRDS(file.path(data_location, "cvc.Rds"))[["cvc"]]
 
@@ -80,7 +82,7 @@ footnotes <- c(
     "Civilisations are coloured based upon their group.<br/>",
     "Groups are formed by applying an arbitrary cutoff that ensures there are no more than 8 unique groups."
 ) %>%
-    as_footnote()
+    as_footnote(args)
 
 
 p <- ggplot(ddata3, aes(x = x, y = y, xend = xend, yend = nyend, col = grp)) +

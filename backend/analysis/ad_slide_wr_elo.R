@@ -12,9 +12,9 @@ library(parallel)
 library(jsonlite)
 
 
-# data_location <- "./data/processed/aoe2/p03_v02/rm_solo_open"
-# data_location <- "./data/processed/aoe2/p02_v02/ew_solo_any"
-data_location <- get_data_location()
+# args <- get_args("p02_v02", "rm_solo_all")
+args <- get_args()
+data_location <- get_data_location(args)
 
 
 matchmeta <- read_parquet(
@@ -96,7 +96,7 @@ results <- split(
 )
 
 filepath <- file.path(
-    get_output_location(),
+    get_output_location(args),
     "slide_WR_ELO.json"
 )
 

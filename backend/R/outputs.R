@@ -22,7 +22,7 @@ save_plot <- function(p, id, type = "standard") {
     )[[type]]
 
     filepath <- file.path(
-        get_output_location(),
+        get_output_location(args),
         paste0(id, ".", opts$ext)
     )
 

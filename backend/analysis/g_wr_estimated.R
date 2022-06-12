@@ -7,7 +7,9 @@ library(purrr)
 library(lubridate)
 library(arrow)
 
-data_location <- get_data_location()
+# args <- get_args("p02_v02", "rm_solo_all")
+args <- get_args()
+data_location <- get_data_location(args)
 
 wr <- read_parquet(file.path(data_location, "wr_naive.parquet"))
 pr <- read_parquet(file.path(data_location, "pr.parquet"))
@@ -51,7 +53,7 @@ footnotes <- c(
     "box-cox transformed play rates as the predcitor <br/>",
     "The reference lines are arbitrarily set at -2.5 and 2.5 to provide a visual aid"
 ) %>%
-    as_footnote()
+    as_footnote(args)
 
 
 p1 <- ggplot(data = dat2, aes(y = bias, x = civ)) +
@@ -72,7 +74,7 @@ footnotes <- c(
     "Expected win rates are calculated by fitting a robust linear model with",
     "box-cox transformed play rates as the predcitor"
 ) %>%
-    as_footnote()
+    as_footnote(args)
 
 
 p2 <- ggplot(data = dat2, aes(y = wr, x = preds, label = civ)) +
@@ -103,5 +105,5 @@ save_plot(
 )
 
 
-set_log(get_output_location(), "wr_estimated")
+set_log(get_output_location(args), "wr_estimated")
 

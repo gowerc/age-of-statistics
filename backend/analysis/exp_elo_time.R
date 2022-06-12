@@ -8,6 +8,9 @@ library(dtplyr)
 library(data.table)
 library(parallel)
 
+# args <- get_args("p02_v02", "rm_solo_all")
+args <- get_args()
+
 
 get_day_summary <- function(day, matches_set, players_set) {
 
@@ -136,7 +139,7 @@ footnotes <- c(
     "Data does not include games for EW teams<br/>",
     "Exact numbers are underestimated due to ~20% of matches being missing due to data integrity issues"
 ) %>% 
-    as_footnote(add_Filter = FALSE)
+    as_footnote(args, add_Filter = FALSE)
 
 p1 <- ggplot(res_no_all, aes(x = day, y = avg_rating, group = group, col = group)) +
     theme_bw() +

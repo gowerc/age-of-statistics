@@ -5,7 +5,9 @@ library(scales)
 library(lubridate)
 library(arrow)
 
-data_location <- get_data_location()
+# args <- get_args("p02_v02", "rm_solo_all")
+args <- get_args()
+data_location <- get_data_location(args)
 
 
 
@@ -56,7 +58,7 @@ strings <- matchmeta %>%
 footnotes <- c(
     "The mean match Elo is calculated as the mean Elo of all players in the match"
 ) %>%
-    as_footnote()
+    as_footnote(args)
 
 
 p <- ggplot(pdat, aes(x = elocat, y = n)) +
@@ -111,7 +113,7 @@ p <- ggplot(data = pdat, aes(x = version, y = n)) +
     xlab("Patch Version") +
     ylab("Number of Games") +
     theme(plot.caption = element_text(hjust = 0)) +
-    labs(caption = as_footnote(""))
+    labs(caption = as_footnote("", args))
 
 
 save_plot(
@@ -155,7 +157,7 @@ p <- ggplot(data = pdat, aes(x = map, y = n)) +
         axis.text.x = element_text(hjust = 1, angle = 35)
     ) +
     theme(plot.caption = element_text(hjust = 0)) +
-    labs(caption = as_footnote(""))
+    labs(caption = as_footnote("", args))
 
 
 save_plot(
@@ -209,7 +211,8 @@ footnotes <- as_footnote(
     c(
         "Play rates have been normalised by scaling the number of games played by 1 divided by",
         "the percentage<br/>of days in which at least 1 game was played on that map"
-    )
+    ),
+    args
 )
 
 p <- ggplot(data = pdat, aes(x = map, y = n)) +
@@ -294,7 +297,7 @@ p <- ggplot(pdat, aes(x = lencat, y = n)) +
     ) +
     theme(axis.text.x = element_text(hjust = 1, angle = 35)) +
     theme(plot.caption = element_text(hjust = 0)) +
-    labs(caption = as_footnote(""))
+    labs(caption = as_footnote("", args))
 
 
 save_plot(
@@ -305,5 +308,5 @@ save_plot(
 
 
 
-set_log(get_output_location(), "descriptives")
+set_log(get_output_location(args), "descriptives")
 

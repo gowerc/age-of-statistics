@@ -5,9 +5,9 @@ library(scales)
 library(arrow)
 
 
-# data_location <- "./data/processed/aoe2/p03_v02/rm_solo_open"
-# data_location <- "./data/processed/aoe2/p02_v02/ew_solo_any"
-data_location <- get_data_location()
+# args <- get_args("p02_v02", "rm_solo_all")
+args <- get_args()
+data_location <- get_data_location(args)
 
 
 pdat <- arrow::read_parquet(
@@ -22,7 +22,7 @@ footnotes <- c(
     "The error bars represent the 95% confidence interval. ",
     "All lines have been smoothed using a GAM."
 ) %>%
-    as_footnote()
+    as_footnote(args)
 
 
 p <- ggplot(data = pdat, aes(ymin = lci, ymax = uci, x = elo, group = civ, fill = civ, y = med)) +
@@ -70,7 +70,7 @@ footnotes <- c(
     "The error bars represent the 95% confidence interval.",
     "All lines have been smoothed using a GAM."
 ) %>%
-    as_footnote()
+    as_footnote(args)
 
 p <- ggplot(data = pdat, aes(ymin = lci, ymax = uci, x = len, group = civ, fill = civ, y = med)) +
     geom_ribbon(alpha = 0.9, col = NA) +
@@ -119,7 +119,7 @@ footnotes <- c(
     "The error bars represent the 95% confidence interval.",
     "All lines have been smoothed using a GAM."
 ) %>%
-    as_footnote()
+    as_footnote(args)
 
 p <- ggplot(data = pdat, aes(ymin = lci, ymax = uci, x = len, group = civ, fill = civ, y = med)) +
     geom_ribbon(alpha = 0.9, col = NA) +
@@ -169,7 +169,7 @@ footnotes <- c(
     "Play rates are calculated at each point X after filtering the data to",
     "only include matches where mean Elo is within +- 0.1 percentiles of X.<br/>"
 ) %>%
-    as_footnote()
+    as_footnote(args)
 
 p <- ggplot(data = res, aes(x = y, group = civ, y = pr)) +
     geom_line(col = "#383838") +
@@ -194,4 +194,4 @@ save_plot(
     type = "square"
 )
 
-set_log(get_output_location(), "sliding_window")
+set_log(get_output_location(args), "sliding_window")
