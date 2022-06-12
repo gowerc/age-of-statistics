@@ -46,15 +46,9 @@ dat2 <- dat %>%
     mutate(civ = fct_inorder(civ))
 
 
-footnotes <- c(
-    "Negative values indicate that a civilisation is 'underestimated'<br/>",
-    "Positive values indicate that a civilisation is 'overestimated'<br/>",
-    "Expected win rates are calculated by fitting a robust linear model with",
-    "box-cox transformed play rates as the predcitor <br/>",
-    "The reference lines are arbitrarily set at -2.5 and 2.5 to provide a visual aid"
-) %>%
-    as_footnote(args)
 
+
+OUTPUT_ID <- "civ_ewr_owr_diff"
 
 p1 <- ggplot(data = dat2, aes(y = bias, x = civ)) +
     geom_bar(stat = "identity") +
@@ -65,23 +59,27 @@ p1 <- ggplot(data = dat2, aes(y = bias, x = civ)) +
         axis.text.x = element_text(angle = 50, hjust = 1),
         plot.caption = element_text(hjust = 0)
     ) +
-    labs(caption = footnotes) +
+    labs(caption = get_footnotes(OUTPUT_ID, args)) +
     ylab("Difference in Expected Win Rate and Observed Win Rate") +
     xlab("")
 
+save_plot(
+    p = p1,
+    id = OUTPUT_ID,
+    type = "standard"
+)
 
-footnotes <- c(
-    "Expected win rates are calculated by fitting a robust linear model with",
-    "box-cox transformed play rates as the predcitor"
-) %>%
-    as_footnote(args)
 
+
+
+
+OUTPUT_ID <- "civ_ewr_owr"
 
 p2 <- ggplot(data = dat2, aes(y = wr, x = preds, label = civ)) +
     geom_point() +
     theme_bw() +
     scale_y_continuous(breaks = pretty_breaks(10)) +
-    labs(caption = footnotes) +
+    labs(caption = get_footnotes(OUTPUT_ID, args)) +
     ylab("Observed Win Rate") +
     xlab("Expected Win Rate") +
     geom_text_repel(min.segment.length = unit(0.1, "lines"), alpha = 0.7) +
@@ -90,20 +88,11 @@ p2 <- ggplot(data = dat2, aes(y = wr, x = preds, label = civ)) +
     geom_hline(yintercept = 50, col = "blue", alpha = 0.4) +
     theme(plot.caption = element_text(hjust = 0))
 
-
-save_plot(
-    p = p1,
-    id = "civ_ewr_owr_diff",
-    type = "standard"
-)
-
-
 save_plot(
     p = p2,
-    id = "civ_ewr_owr",
+    id = OUTPUT_ID,
     type = "standard"
 )
 
 
 set_log(get_output_location(args), "wr_estimated")
-

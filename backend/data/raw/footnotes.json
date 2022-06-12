@@ -1,0 +1,123 @@
+{
+    "civ_dendro": [
+        "Clusters are formed using complete linkage on the cosine distance between civilisation v civilisation win rates.<br/>",
+        "Civilisations are coloured based upon their group.<br/>",
+        "Groups are formed by applying an arbitrary cutoff that ensures there are no more than 8 unique groups."
+    ],
+    
+    "dist_elo": [
+        "The mean match Elo is calculated as the mean Elo of all players in the match"
+    ],
+    
+    "dist_map": [
+        
+    ],
+    
+    "dist_patch": [
+        
+    ],
+    
+    "dist_map_normal": [
+        "Play rates have been normalised by scaling the number of games played by 1 divided by",
+        "the percentage<br/>of days in which at least 1 game was played on that map"
+    ],
+    
+    "dist_gamelength": [
+        
+    ],
+    
+    "civ_playrate": [
+        "The red line represents the hypothetical play rate if civs were picked at random"
+    ],
+    
+    "dist_civpick": [
+        "Only includes %s / %s players who have played more than %s games"
+    ],
+    
+    "slide_wrNaive_elo": [
+        "Win rates are calculated at each point X after filtering the data to",
+        "only include matches where mean Elo is within +- 0.1 percentiles of X.<br/>",
+        "Win rates have been adjusted for difference in mean Elo.<br/>",
+        "The error bars represent the 95% confidence interval. ",
+        "All lines have been smoothed using a GAM."
+    ],
+    
+    "slide_wrNaive_gamelength": [
+        "Win rates are calculated at each point X after filtering the data to",
+        "only include matches where the game length was within +- 5  in-game minutes of X.<br/>",
+        "Win rates have been adjusted for difference in mean Elo.<br/>",
+        "The error bars represent the 95% confidence interval.",
+        "All lines have been smoothed using a GAM."
+    ],
+    
+    "slide_wrNaive_greatergamelength": [
+        "Win rates are calculated at each point X after filtering the data to only include matches",
+        "where the game length was greater than X in-game minutes.<br/>",
+        "Win rates have been adjusted for difference in mean Elo.<br/>",
+        "The error bars represent the 95% confidence interval.",
+        "All lines have been smoothed using a GAM."
+    ],
+    
+    "slide_playrate_elo": [
+        "Play rates are calculated at each point X after filtering the data to",
+        "only include matches where mean Elo is within +- 0.1 percentiles of X.<br/>"
+    ],
+    
+    "civ_wrNaive": [
+        "Win rates have been adjusted for difference in mean Elo.<br/>",
+        "The error bars represent the 95% confidence interval.",
+        "The dashed blue lines represent an arbitrary region that could be considered as 'balanced'"
+    ],
+    
+    "civ_wrNaive_playrate":[
+        
+    ],
+    
+    "civ_wrAvg": [
+        "Win rates have been calculated as the mean of each separate civ x civ win rate.<br/>",
+        "Win rates have been adjusted for difference in mean Elo.<br/>",
+        "See methods section for more details.<br/>",
+        "The error bars represent the 95% confidence interval."
+    ],
+    
+    "civ_wrAvg_playrate": [
+        
+    ],
+    
+    "civ_ewr_owr_diff": [
+        "Negative values indicate that a civilisation is 'underestimated'<br/>",
+        "Positive values indicate that a civilisation is 'overestimated'<br/>",
+        "Expected win rates are calculated by fitting a robust linear model with",
+        "box-cox transformed play rates as the predcitor <br/>",
+        "The reference lines are arbitrarily set at -2.5 and 2.5 to provide a visual aid"
+    ],
+    
+    "civ_ewr_owr": [
+        "Expected win rates are calculated by fitting a robust linear model with",
+        "box-cox transformed play rates as the predcitor"
+    ],
+    
+    "civ_wr_rank": [
+        "Win rates have been adjusted for difference in mean Elo.<br/>",
+        "The error bars represent the 95% confidence interval.<br/>",
+        "Confidence intervals were calculated by bootstrap resampling"
+    ],
+    
+    "exp_elo_time_AVG":[
+        "Calculations presented are a 14 day rolling average<br/>",
+        "Data does not include games for EW teams<br/>",
+        "Exact numbers are underestimated due to ~20% of matches being missing due to data integrity issues"
+    ],
+    
+    "exp_elo_time_NGAME":[
+        "Calculations presented are a 14 day rolling average<br/>",
+        "Data does not include games for EW teams<br/>",
+        "Exact numbers are underestimated due to ~20% of matches being missing due to data integrity issues"
+    ],
+    
+    "exp_elo_time_NPLAYER":[
+        "Calculations presented are a 14 day rolling average<br/>",
+        "Data does not include games for EW teams<br/>",
+        "Exact numbers are underestimated due to ~20% of matches being missing due to data integrity issues"    
+    ]
+}

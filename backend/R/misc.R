@@ -115,7 +115,9 @@ get_args <- function(period = NULL, filter = NULL) {
 
 
 get_config_all <- function() {
-    jsonlite::read_json("data/raw/config.json")
+    jsonlite::read_json(
+        file.path("data", "raw", "config.json")
+    )
 }
 
 
@@ -134,4 +136,13 @@ set_log <- function(path, id) {
     sink(logpath)
     cat("complete")
     sink()
+}
+
+
+get_footnotes <- function(id, args, add_Filter = TRUE) {
+    footnotes <- jsonlite::read_json(
+        file.path("data", "raw", "footnotes.json")
+    )
+    footnotes2 <- footnotes[[id]] %>% as_footnote(args, add_Filter = add_Filter)
+    return(footnotes2)
 }

@@ -22,11 +22,8 @@ players <- read_parquet(file.path(data_location, "players.parquet"))
 ###############################
 
 
-footnotes <- c(
-    "The red line represents the hypothetical play rate if civs were picked at random"
-) %>%
-    as_footnote(args)
 
+OUTPUT_ID <- "civ_playrate"
 
 prdat <- pr %>%
     arrange(desc(n)) %>%
@@ -46,14 +43,14 @@ p <- ggplot(data = prdat, aes(y = pr, x = civ)) +
         axis.text.x = element_text(angle = 50, hjust = 1),
         plot.caption = element_text(hjust = 0)
     ) +
-    labs(caption = footnotes) +
+    labs(caption = get_footnotes(OUTPUT_ID, args)) +
     ylab("Play Rate (%)") +
     xlab("")
 
 
 save_plot(
     p = p,
-    id = "civ_playrate",
+    id = OUTPUT_ID,
     type = "standard"
 )
 
@@ -101,9 +98,11 @@ pdat <- play_counts_civ %>%
     mutate(yadj = n + max(n) / 50)
 
 
+OUTPUT_ID <- "dist_civpick"
+
 footnotes <- c(
     sprintf(
-        "Only includes %s / %s players who have played more than %s games", 
+        get_footnotes(OUTPUT_ID, args),
         nrow(play_counts),
         n_total_players,
         lower_limit
@@ -132,7 +131,7 @@ pdat2 <- pdat %>%
 
 save_plot(
     p = p,
-    id = "dist_civpick",
+    id = OUTPUT_ID,
     type = "standard"
 )
 

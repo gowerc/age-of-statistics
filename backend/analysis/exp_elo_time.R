@@ -10,6 +10,11 @@ library(parallel)
 
 # args <- get_args("p02_v02", "rm_solo_all")
 args <- get_args()
+dir.create(
+    file.path("outputs", "misc"),
+    recursive = TRUE,
+    showWarnings = FALSE
+)
 
 
 get_day_summary <- function(day, matches_set, players_set) {
@@ -49,8 +54,13 @@ get_day_summary <- function(day, matches_set, players_set) {
 }
 
 
-matches <- read_parquet("./data/processed/matches.parquet")
-players <- read_parquet("./data/processed/players.parquet")
+matches <- read_parquet(
+    file.path("data", "processed", "matches.parquet")
+)
+
+players <- read_parquet(
+    file.path("data", "processed", "matches.parquet")
+)
 
 
 
@@ -134,12 +144,12 @@ elo_limits <- c(
     max(res_no_all$avg_rating)
 )
 
-footnotes <- c(
-    "Calculations presented are a 14 day rolling average<br/>",
-    "Data does not include games for EW teams<br/>",
-    "Exact numbers are underestimated due to ~20% of matches being missing due to data integrity issues"
-) %>% 
-    as_footnote(args, add_Filter = FALSE)
+
+
+
+
+
+OUTPUT_ID <- "exp_elo_time_AVG"
 
 p1 <- ggplot(res_no_all, aes(x = day, y = avg_rating, group = group, col = group)) +
     theme_bw() +
@@ -152,9 +162,25 @@ p1 <- ggplot(res_no_all, aes(x = day, y = avg_rating, group = group, col = group
     theme(
         legend.position = "bottom",
         plot.caption = element_text(hjust = 0)
-    ) +    scale_color_discrete(name = "") +
-    labs(caption = footnotes)
+    ) +
+    scale_color_discrete(name = "") +
+    labs(caption = get_footnotes(OUTPUT_ID, args, FALSE))
 
+ggsave(
+    plot = p1,
+    filename = file.path(
+        "outputs", "misc", paste0(OUTPUT_ID, ".png")
+    ),
+    width = 8,
+    height = 6,
+    dpi = 200
+)
+
+
+
+
+
+OUTPUT_ID <- "exp_elo_time_NGAME"
 
 p2 <- ggplot(res, aes(x = day, y = n_games, group = group, col = group)) +
     theme_bw() +
@@ -169,8 +195,24 @@ p2 <- ggplot(res, aes(x = day, y = n_games, group = group, col = group)) +
         plot.caption = element_text(hjust = 0)
     ) +
     scale_color_discrete(name = "") +
-    labs(caption = footnotes)
+    labs(caption = get_footnotes(OUTPUT_ID, args, FALSE))
 
+ggsave(
+    plot = p2,
+    filename = file.path(
+        "outputs", "misc", paste0(OUTPUT_ID, ".png")
+    ),
+    width = 8,
+    height = 6,
+    dpi = 200
+)
+
+
+
+
+
+
+OUTPUT_ID <- "exp_elo_time_NPLAYER"
 
 p3 <- ggplot(res, aes(x = day, y = n_players, group = group, col = group)) +
     theme_bw() +
@@ -183,35 +225,24 @@ p3 <- ggplot(res, aes(x = day, y = n_players, group = group, col = group)) +
     theme(
         legend.position = "bottom",
         plot.caption = element_text(hjust = 0)
-    ) +    scale_color_discrete(name = "") +
-    labs(caption = footnotes)
-
-
-
-dir.create("./outputs/misc", recursive = TRUE, showWarnings= FALSE)
-
-ggsave(
-    plot = p1,
-    filename = "./outputs/misc/exp_elo_time_AVG.png",
-    width = 8,
-    height = 6,
-    dpi = 200
-)
-
-ggsave(
-    plot = p2,
-    filename = "./outputs/misc/exp_elo_time_NGAME.png",
-    width = 8,
-    height = 6,
-    dpi = 200
-)
+    ) +
+    scale_color_discrete(name = "") +
+    labs(caption = get_footnotes(OUTPUT_ID, args, FALSE))
 
 ggsave(
     plot = p3,
-    filename = "./outputs/misc/exp_elo_time_NPLAYER.png",
+    filename = file.path(
+        "outputs", "misc", paste0(OUTPUT_ID, ".png")
+    ),
     width = 8,
     height = 6,
     dpi = 200
 )
+
+
+
+
+
+
 
 

@@ -55,10 +55,7 @@ strings <- matchmeta %>%
     paste0(collapse = "\n")
 
 
-footnotes <- c(
-    "The mean match Elo is calculated as the mean Elo of all players in the match"
-) %>%
-    as_footnote(args)
+OUTPUT_ID <- "dist_elo"
 
 
 p <- ggplot(pdat, aes(x = elocat, y = n)) +
@@ -81,12 +78,12 @@ p <- ggplot(pdat, aes(x = elocat, y = n)) +
         plot.caption = element_text(hjust = 0),
         axis.text.x = element_text(hjust = 1, angle = 35)
     ) +
-    labs(caption = footnotes)
+    labs(caption = get_footnotes(OUTPUT_ID, args))
 
 
 save_plot(
     p = p,
-    id = "dist_elo",
+    id = OUTPUT_ID,
     type = "standard"
 )
 
@@ -98,6 +95,8 @@ save_plot(
 # Hist plot of Patch version
 #
 #######################################
+
+OUTPUT_ID <- "dist_patch"
 
 pdat <- matchmeta %>%
     group_by(version) %>%
@@ -113,12 +112,12 @@ p <- ggplot(data = pdat, aes(x = version, y = n)) +
     xlab("Patch Version") +
     ylab("Number of Games") +
     theme(plot.caption = element_text(hjust = 0)) +
-    labs(caption = as_footnote("", args))
+    labs(caption = get_footnotes(OUTPUT_ID, args))
 
 
 save_plot(
     p = p,
-    id = "dist_patch",
+    id = OUTPUT_ID,
     type = "standard"
 )
 
@@ -132,6 +131,7 @@ save_plot(
 #
 #######################################
 
+OUTPUT_ID <- "dist_map"
 
 pdat <- matchmeta %>%
     mutate(bign = n()) %>%
@@ -157,12 +157,12 @@ p <- ggplot(data = pdat, aes(x = map, y = n)) +
         axis.text.x = element_text(hjust = 1, angle = 35)
     ) +
     theme(plot.caption = element_text(hjust = 0)) +
-    labs(caption = as_footnote("", args))
+    labs(caption = get_footnotes(OUTPUT_ID, args))
 
 
 save_plot(
     p = p,
-    id = "dist_map",
+    id = OUTPUT_ID,
     type = "standard"
 )
 
@@ -179,6 +179,8 @@ save_plot(
 #
 #######################################
 
+
+OUTPUT_ID <- "dist_map"
 
 matchmeta_with_day <- matchmeta %>%
     mutate(match_day_num = as.numeric(as.Date(start_dt)))
@@ -207,13 +209,9 @@ pdat <- matchmeta %>%
     ) %>%
     mutate(yjust = n + max(n) / 50)
 
-footnotes <- as_footnote(
-    c(
-        "Play rates have been normalised by scaling the number of games played by 1 divided by",
-        "the percentage<br/>of days in which at least 1 game was played on that map"
-    ),
-    args
-)
+
+
+OUTPUT_ID <- "dist_map_normal"
 
 p <- ggplot(data = pdat, aes(x = map, y = n)) +
     geom_bar(stat = "identity") +
@@ -227,12 +225,12 @@ p <- ggplot(data = pdat, aes(x = map, y = n)) +
         axis.text.x = element_text(hjust = 1, angle = 35)
     ) +
     theme(plot.caption = element_text(hjust = 0)) +
-    labs(caption = footnotes)
+    labs(caption =  get_footnotes(OUTPUT_ID, args))
 
 
 save_plot(
     p = p,
-    id = "dist_map_normal",
+    id = OUTPUT_ID,
     type = "standard"
 )
 
@@ -279,6 +277,8 @@ strings <- matchmeta %>%
     paste0(collapse = "\n")
 
 
+OUTPUT_ID <- "dist_gamelength"
+
 p <- ggplot(pdat, aes(x = lencat, y = n)) +
     geom_bar(stat = "identity") +
     geom_text(aes(label = p, y = yadj)) +
@@ -297,12 +297,12 @@ p <- ggplot(pdat, aes(x = lencat, y = n)) +
     ) +
     theme(axis.text.x = element_text(hjust = 1, angle = 35)) +
     theme(plot.caption = element_text(hjust = 0)) +
-    labs(caption = as_footnote("", args))
+    labs(caption =  get_footnotes(OUTPUT_ID, args))
 
 
 save_plot(
     p = p,
-    id = "dist_gamelength",
+    id = OUTPUT_ID,
     type = "standard"
 )
 

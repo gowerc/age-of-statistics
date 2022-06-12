@@ -77,12 +77,7 @@ ddata3 <- ddata2 %>%
     mutate(grp = factor(grp))
 
 
-footnotes <- c(
-    "Clusters are formed using complete linkage on the cosine distance between civilisation v civilisation win rates.<br/>",
-    "Civilisations are coloured based upon their group.<br/>",
-    "Groups are formed by applying an arbitrary cutoff that ensures there are no more than 8 unique groups."
-) %>%
-    as_footnote(args)
+OUTPUT_ID <- "civ_dendro"
 
 
 p <- ggplot(ddata3, aes(x = x, y = y, xend = xend, yend = nyend, col = grp)) +
@@ -104,13 +99,13 @@ p <- ggplot(ddata3, aes(x = x, y = y, xend = xend, yend = nyend, col = grp)) +
         axis.text.x = element_text(angle = 50, hjust = 1),
         plot.caption = element_text(hjust = 0)
     ) +
-    labs(caption = footnotes)
+    labs(caption = get_footnotes(OUTPUT_ID, args))
 
 
 
 save_plot(
     p = p,
-    id = "civ_dendro",
+    id = OUTPUT_ID,
     type = "standard"
 )
 

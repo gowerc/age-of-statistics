@@ -12,7 +12,7 @@ data_location <- get_data_location(args)
 pr <- read_parquet(file.path(data_location, "pr.parquet"))
 
 
-plot_pr_wr <- function(wr, pr) {
+plot_pr_wr <- function(wr, pr, id) {
     assert_that(
         nrow(wr) == nrow(pr)
     )
@@ -21,10 +21,6 @@ plot_pr_wr <- function(wr, pr) {
         inner_join(select(pr, civ, pr), by = "civ") %>%
         select(civ = civ, wr, pr)
 
-    footnotes <- c(
-        ""
-    ) %>%
-        as_footnote(args)
 
     p <- ggplot(data = pdat, aes(y = pr, x = wr, label = civ)) +
         geom_point() +
@@ -35,7 +31,7 @@ plot_pr_wr <- function(wr, pr) {
             plot.caption = element_text(hjust = 0)
         ) +
         geom_text_repel(min.segment.length = unit(0.1, "lines"), alpha = 0.7) +
-        labs(caption = footnotes) +
+        labs(caption = get_footnotes(id, args)) +
         ylab("Play Rate (%)") +
         xlab("Win Rate (%)") +
         geom_vline(xintercept = 50, col = "red", alpha = 0.65) +
@@ -60,12 +56,8 @@ pdat <- wr %>%
     select(civ, lci, uci, wr = est)
 
 
-footnotes <- c(
-    "Win rates have been adjusted for difference in mean Elo.<br/>",
-    "The error bars represent the 95% confidence interval.",
-    "The dashed blue lines represent an arbitrary region that could be considered as 'balanced'"
-) %>%
-    as_footnote(args)
+OUTPUT_ID <- "civ_wrNaive"
+
 
 p <- ggplot(data = pdat, aes(x = civ, group = civ, ymin = lci, ymax = uci, y = wr)) +
     geom_hline(yintercept = 50, col = "red", alpha = 0.65) +
@@ -77,7 +69,7 @@ p <- ggplot(data = pdat, aes(x = civ, group = civ, ymin = lci, ymax = uci, y = w
         axis.text.x = element_text(angle = 50, hjust = 1),
         plot.caption = element_text(hjust = 0)
     ) +
-    labs(caption = footnotes) +
+    labs(caption = get_footnotes(OUTPUT_ID, args)) +
     ylab("Win Rate (%)") +
     xlab("") +
     scale_y_continuous(breaks = pretty_breaks(10))
@@ -85,15 +77,20 @@ p <- ggplot(data = pdat, aes(x = civ, group = civ, ymin = lci, ymax = uci, y = w
 
 save_plot(
     p = p,
-    id = "civ_wrNaive",
+    id = OUTPUT_ID,
     type = "standard"
 )
 
-p2 <- plot_pr_wr(wr, pr)
+
+
+
+OUTPUT_ID <-  "civ_wrNaive_playrate"
+
+p2 <- plot_pr_wr(wr, pr, OUTPUT_ID)
 
 save_plot(
     p = p2,
-    id = "civ_wrNaive_playrate",
+    id = OUTPUT_ID,
     type = "standard"
 )
 
@@ -114,14 +111,7 @@ pdat <- wr %>%
     select(civ = coef, wr = est, lci, uci)
 
 
-footnotes <- c(
-    "Win rates have been calculated as the mean of each separate civ x civ win rate.<br/>",
-    "Win rates have been adjusted for difference in mean Elo.<br/>",
-    "See methods section for more details.<br/>",
-    "The error bars represent the 95% confidence interval."
-) %>%
-    as_footnote(args)
-
+OUTPUT_ID <-  "civ_wrAvg"
 
 p <- ggplot(data = pdat, aes(x = civ, group = civ, ymin = lci, ymax = uci, y = wr)) +
     geom_hline(yintercept = 50, col = "red", alpha = 0.65) +
@@ -133,23 +123,27 @@ p <- ggplot(data = pdat, aes(x = civ, group = civ, ymin = lci, ymax = uci, y = w
         axis.text.x = element_text(angle = 50, hjust = 1),
         plot.caption = element_text(hjust = 0)
     ) +
-    labs(caption = footnotes) +
-        ylab("Win Rate (%)") +
-        xlab("") +
-        scale_y_continuous(breaks = pretty_breaks(10))
-
+    labs(caption = get_footnotes(OUTPUT_ID, args)) +
+    ylab("Win Rate (%)") +
+    xlab("") +
+    scale_y_continuous(breaks = pretty_breaks(10))
 
 save_plot(
     p = p,
-    id = "civ_wrAvg",
+    id = OUTPUT_ID,
     type = "standard"
 )
 
-p2 <- plot_pr_wr(wr, pr)
+
+
+
+OUTPUT_ID <- "civ_wrAvg_playrate"
+
+p2 <- plot_pr_wr(wr, pr, OUTPUT_ID)
 
 save_plot(
     p = p2,
-    id = "civ_wrAvg_playrate",
+    id = OUTPUT_ID,
     type = "standard"
 )
 
