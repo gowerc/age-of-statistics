@@ -13,4 +13,4 @@ configloc = pathlib.Path("./public/config.json")
 if configloc.exists():
     configloc.unlink()
 
-shutil.copy2("../backend/config.json", configloc)
+shutil.copy2("../backend/data/raw/config.json", configloc)

@@ -30,3 +30,4 @@ pnpm-debug.log*
 
 public/outputs
 src/assets/config.json
+public/config.json
