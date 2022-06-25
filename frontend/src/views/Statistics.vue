@@ -36,15 +36,14 @@
 
 
 <script>
+import config from '@/components/json/config.json'
 import Selector from '@/components/Selector'
 import StatsPageLinks from '@/components/StatsPageLinks'
 
+
+
+
 export default {
-    data() {
-        return {
-            "config": null
-        }
-    },
     components: {
         "Selector": Selector,
         "StatsPageLinks": StatsPageLinks,
@@ -59,17 +58,17 @@ export default {
         },
         
         filters(){
-            if (!this.config) {
+            if (!config) {
                 return null;
             }
-            return this.config.filters
+            return config.filters
         },
         
         periods(){
-            if (!this.config) {
+            if (!config) {
                 return null;
             }
-            return this.config.periods
+            return config.periods
         },
         
         current_filter(){
@@ -81,29 +80,25 @@ export default {
         },
         
         current_config(){
-            if (!this.config || !this.current_period || !this.current_filter) {
+            if (!config || !this.current_period || !this.current_filter) {
                 return null;
             }
             
-            if (!(this.current_period in this.config.periods)) {
+            if (!(this.current_period in config.periods)) {
                 this.ensureValidURL(true)
                 return null
             }
             
-            if (!(this.current_filter in this.config.filters)) {
+            if (!(this.current_filter in config.filters)) {
                 this.ensureValidURL(true)
                 return null
             }
             
             return {
-                "period": this.config.periods[this.current_period],
-                "filter": this.config.filters[this.current_filter]
+                "period": config.periods[this.current_period],
+                "filter": config.filters[this.current_filter]
             }
         }
-    },
-    
-    created(){
-        this.fetchData()
     },
     
     beforeUpdate() {
@@ -119,8 +114,8 @@ export default {
             }
             
             if(defaults) {
-                replacement.period = this.config.default.periods
-                replacement.filter = this.config.default.filters
+                replacement.period = config.default.periods
+                replacement.filter = config.default.filters
             }
             
             this.$router.replace({query: replacement});
@@ -134,18 +129,6 @@ export default {
             ) {
                 return this.updateRoute({}, true)
             }
-        },
-        
-        fetchData() {
-            let config_path = '/config.json';
-            fetch(config_path)
-                .then( response => {
-                    return response.json()
-                })
-                .then( jsondata => {
-                    this.config = jsondata
-                    this.ensureValidURL()
-                })
         }
     }
 }

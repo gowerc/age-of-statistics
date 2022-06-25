@@ -9,8 +9,16 @@ if outloc.exists():
 shutil.copytree("../backend/outputs", outloc)
 
 
-configloc = pathlib.Path("./public/config.json")
+configloc = pathlib.Path("./src/components/json/config.json")
 if configloc.exists():
     configloc.unlink()
 
 shutil.copy2("../backend/data/raw/config.json", configloc)
+
+
+
+footnotesloc =  pathlib.Path("./src/components/json/footnotes.json")
+if footnotesloc.exists():
+    footnotesloc.unlink()
+shutil.copy2("../backend/data/raw/footnotes.json", footnotesloc)
+

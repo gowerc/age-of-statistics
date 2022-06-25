@@ -11,7 +11,11 @@
 
 
 <script>
+
+
 import Plotly from 'plotly.js-dist';
+import footnotes_all from '@/components/json/footnotes.json'
+
 
 export default {
     props: {
@@ -42,10 +46,9 @@ export default {
             ]
 
             let footnotes = [
-                `Filter: ${this.$route.query.filter}, Period: ${this.$route.query.period}`,
-                "Win rates have been adjusted for difference in mean Elo",
-                "The error bars represent the 95% confidence interval"
-            ].join("<br>")
+                `Filter: ${this.$route.query.filter}, Period: ${this.$route.query.period}<br>`,
+                ...footnotes_all.civ_wrNaive
+            ].join('').replaceAll("<br/>", "<br>")
             
             let layout = {
                 xaxis: {

@@ -12,6 +12,8 @@
 
 <script>
 import Plotly from 'plotly.js-dist';
+import footnotes_all from '@/components/json/footnotes.json'
+
 
 export default {
     props: {
@@ -48,14 +50,9 @@ export default {
             ]
 
             let footnotes = [
-                `Filter: ${this.$route.query.filter}, Period: ${this.$route.query.period}`,
-                "Win rates are calculated at each point X after filtering the data to" +
-                "only include matches where mean Elo is within +- 0.1 percentiles of X.",
-                "Win rates have been calculated as the # of wins / # of games. " +
-                "Win rates have been adjusted for difference in mean Elo.",
-                "The error bars represent the 95% confidence interval. " +
-                "All lines have been smoothed using a GAM."
-            ].join("<br>")
+                `Filter: ${this.$route.query.filter}, Period: ${this.$route.query.period}<br>`,
+                ...footnotes_all.slide_wrNaive_elo
+            ].join('').replaceAll("<br/>", "<br>")
             
             let layout = {
                 xaxis: {

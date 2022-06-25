@@ -29,5 +29,6 @@ pnpm-debug.log*
 **.jpeg
 
 public/outputs
-src/assets/config.json
-public/config.json
+
+src/components/json/config.json
+src/components/json/footnotes.json
