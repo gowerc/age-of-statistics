@@ -37,6 +37,7 @@ p <- ggplot(data = pdat, aes(ymin = lci, ymax = uci, x = elo, group = civ, fill 
 
 
 save_plot(
+    args = args,
     p = p,
     id = OUTPUT_ID,
     type = "square"
@@ -79,6 +80,7 @@ p <- ggplot(data = pdat, aes(ymin = lci, ymax = uci, x = len, group = civ, fill 
 
 
 save_plot(
+    args = args,
     p = p,
     id = OUTPUT_ID,
     type = "square"
@@ -121,6 +123,7 @@ p <- ggplot(data = pdat, aes(ymin = lci, ymax = uci, x = len, group = civ, fill 
 
 
 save_plot(
+    args = args,
     p = p,
     id = OUTPUT_ID,
     type = "square"
@@ -165,6 +168,7 @@ p <- ggplot(data = res, aes(x = y, group = civ, y = pr)) +
 
 
 save_plot(
+    args = args,
     p = p,
     id = OUTPUT_ID,
     type = "square"

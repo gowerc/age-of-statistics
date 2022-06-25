@@ -22,7 +22,7 @@ plot_pr_wr <- function(wr, pr, id) {
         select(civ = civ, wr, pr)
 
 
-    p <- ggplot(data = pdat, aes(y = pr, x = wr, label = civ)) +
+    p <- ggplot(data = pdat, aes(y = wr, x = pr, label = civ)) +
         geom_point() +
         theme_bw() +
         scale_y_continuous(breaks = pretty_breaks(10)) +
@@ -32,10 +32,10 @@ plot_pr_wr <- function(wr, pr, id) {
         ) +
         geom_text_repel(min.segment.length = unit(0.1, "lines"), alpha = 0.7) +
         labs(caption = get_footnotes(id, args)) +
-        ylab("Play Rate (%)") +
-        xlab("Win Rate (%)") +
-        geom_vline(xintercept = 50, col = "red", alpha = 0.65) +
-        geom_hline(yintercept = 1 / nrow(pr) * 100, col = "red", alpha = 0.65)
+        xlab("Play Rate (%)") +
+        ylab("Win Rate (%)") +
+        geom_hline(yintercept = 50, col = "red", alpha = 0.65) +
+        geom_vline(xintercept = 1 / nrow(pr) * 100, col = "red", alpha = 0.65)
 
     return(p)
 }
@@ -76,6 +76,7 @@ p <- ggplot(data = pdat, aes(x = civ, group = civ, ymin = lci, ymax = uci, y = w
 
 
 save_plot(
+    args = args,
     p = p,
     id = OUTPUT_ID,
     type = "standard"
@@ -89,6 +90,7 @@ OUTPUT_ID <-  "civ_wrNaive_playrate"
 p2 <- plot_pr_wr(wr, pr, OUTPUT_ID)
 
 save_plot(
+    args = args,
     p = p2,
     id = OUTPUT_ID,
     type = "standard"
@@ -129,6 +131,7 @@ p <- ggplot(data = pdat, aes(x = civ, group = civ, ymin = lci, ymax = uci, y = w
     scale_y_continuous(breaks = pretty_breaks(10))
 
 save_plot(
+    args = args,
     p = p,
     id = OUTPUT_ID,
     type = "standard"
@@ -142,6 +145,7 @@ OUTPUT_ID <- "civ_wrAvg_playrate"
 p2 <- plot_pr_wr(wr, pr, OUTPUT_ID)
 
 save_plot(
+    args = args,
     p = p2,
     id = OUTPUT_ID,
     type = "standard"

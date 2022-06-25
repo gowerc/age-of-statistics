@@ -104,6 +104,7 @@ p <- ggplot(ddata3, aes(x = x, y = y, xend = xend, yend = nyend, col = grp)) +
 
 
 save_plot(
+    args = args,
     p = p,
     id = OUTPUT_ID,
     type = "standard"

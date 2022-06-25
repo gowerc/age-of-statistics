@@ -69,19 +69,33 @@
         "The dashed blue lines represent an arbitrary region that could be considered as 'balanced'"
     ],
     
+    "civ_wr_bt": [
+        "Scores have been adjusted for difference in mean Elo.",
+        "The error bars represent the 95% confidence interval.<br/>",
+        "The red line represents the median civilisation score.<br/>",
+        "The dashed blue lines represent scores that have an expected 45% & 55% win rate vs the median score.<br/>",
+        "Vikings have been used as the refence civilisation and thus have a score of 0 with no confidence interval."
+    ],
+    
+    "civ_wr_pr_bt": [
+        "Scores have been adjusted for difference in mean Elo.<br/>",
+        "The horizontal red line represents the median civilisation score.<br/>",
+        "Vikings have been used as the refence civilisation and thus have a score of 0"
+    ],
+    
     "civ_wrNaive_playrate":[
-        
+        "Win rates have been adjusted for difference in mean Elo."
     ],
     
     "civ_wrAvg": [
         "Win rates have been calculated as the mean of each separate civ x civ win rate.<br/>",
         "Win rates have been adjusted for difference in mean Elo.<br/>",
-        "See methods section for more details.<br/>",
         "The error bars represent the 95% confidence interval."
     ],
     
     "civ_wrAvg_playrate": [
-        
+        "Win rates have been calculated as the mean of each separate civ x civ win rate.<br/>",
+        "Win rates have been adjusted for difference in mean Elo."
     ],
     
     "civ_ewr_owr_diff": [

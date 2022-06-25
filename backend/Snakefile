@@ -46,6 +46,8 @@
 #          ./bin/sm outputs/p03_v03/rm_solo_open/descriptives.log
 #          ./bin/sm outputs/p03_v03/rm_solo_open/civ_dendro.png
 #          ./bin/sm outputs/p03_v03/rm_solo_open/civ_wr_rank.png
+#          ./bin/sm outputs/p03_v03/rm_solo_open/civ_wr_bt.png
+#          ./bin/sm outputs/p03_v03/rm_solo_open/civ_wr_pr_bt.png
 #          ./bin/sm outputs/p03_v03/rm_solo_open/output.log
 #
 #
@@ -137,146 +139,116 @@ rule strings:
 #
 
 rule matchmeta:
-    output:
-        "data/processed/matchmeta.log"
-    input:
-        "analysis/ad_matchmeta.R"
-    resources:
-        load=60
-    log:
-        "logs/ad_matchmeta.log"
-    shell:
-        "Rscript {input[0]} > {log} 2>&1"
+    output: "data/processed/matchmeta.log"
+    input: "analysis/ad_matchmeta.R"
+    resources: load=60
+    log: "logs/ad_matchmeta.log"
+    shell: "Rscript {input[0]} > {log} 2>&1"
 
 
 rule matchmeta_filter:
-    output:
-        "data/processed/{period}/{filter}/matchmeta_filter.log"
+    output: "data/processed/{period}/{filter}/matchmeta_filter.log"
     input:
         "analysis/ad_matchmeta_filter.R",
         "data/processed/matchmeta.log"
-    resources:
-        load=60
-    log:
-        "logs/{period}/{filter}/ad_matchmeta_filter.log"
-    shell:
-        "Rscript {input[0]} {wildcards.period} {wildcards.filter} > {log} 2>&1"
+    resources: load=60
+    log: "logs/{period}/{filter}/ad_matchmeta_filter.log"
+    shell: "Rscript {input[0]} {wildcards.period} {wildcards.filter} > {log} 2>&1"
 
 
 rule pr:
-    output:
-        "data/processed/{period}/{filter}/pr.parquet"
+    output: "data/processed/{period}/{filter}/pr.parquet"
     input:
         "analysis/ad_pr.R",
         "data/processed/{period}/{filter}/matchmeta_filter.log"
-    log:
-        "logs/{period}/{filter}/ad_pr.log"
-    shell:
-        "Rscript {input[0]} {wildcards.period} {wildcards.filter} > {log} 2>&1"
+    log: "logs/{period}/{filter}/ad_pr.log"
+    shell: "Rscript {input[0]} {wildcards.period} {wildcards.filter} > {log} 2>&1"
 
 
 rule cvc:
-    output:
-        "data/processed/{period}/{filter}/cvc.Rds"
+    output: "data/processed/{period}/{filter}/cvc.Rds"
     input:
         "analysis/ad_cvc.R",
         "data/processed/{period}/{filter}/matchmeta_filter.log"
-    resources:
-        load=90
-    log:
-        "logs/{period}/{filter}/ad_cvc.log"
-    shell:
-        "Rscript {input[0]} {wildcards.period} {wildcards.filter} > {log} 2>&1"
+    resources: load=90
+    log: "logs/{period}/{filter}/ad_cvc.log"
+    shell: "Rscript {input[0]} {wildcards.period} {wildcards.filter} > {log} 2>&1"
 
 
 
 rule wr_avg:
-    output:
-        "data/processed/{period}/{filter}/wr_avg.parquet"
+    output: "data/processed/{period}/{filter}/wr_avg.parquet"
     input:
         "analysis/ad_wr_avg.R",
         "data/processed/{period}/{filter}/cvc.Rds"
-    log:
-        "logs/{period}/{filter}/ad_wr_avg.log"
-    shell:
-        "Rscript {input[0]} {wildcards.period} {wildcards.filter} > {log} 2>&1"
+    log: "logs/{period}/{filter}/ad_wr_avg.log"
+    shell: "Rscript {input[0]} {wildcards.period} {wildcards.filter} > {log} 2>&1"
 
 
 rule wr_naive:
-    output:
-        "data/processed/{period}/{filter}/wr_naive.parquet"
+    output: "data/processed/{period}/{filter}/wr_naive.parquet"
     input:
         "analysis/ad_wr_naive.R",
         "data/processed/{period}/{filter}/matchmeta_filter.log"
-    log:
-        "logs/{period}/{filter}/ad_wr_naive.log"
-    shell:
-        "Rscript {input[0]} {wildcards.period} {wildcards.filter} > {log} 2>&1"
+    log: "logs/{period}/{filter}/ad_wr_naive.log"
+    shell: "Rscript {input[0]} {wildcards.period} {wildcards.filter} > {log} 2>&1"
 
 
 rule wr_boot:
-    output:
-        "data/processed/{period}/{filter}/wr_boot.parquet"
+    output: "data/processed/{period}/{filter}/wr_boot.parquet"
     input:
         "analysis/ad_wr_boot.R",
         "data/processed/{period}/{filter}/matchmeta_filter.log"
-    resources:
-        load=90
-    log:
-        "logs/{period}/{filter}/ad_wr_boot.log"
-    shell:
-        "Rscript {input[0]} {wildcards.period} {wildcards.filter} > {log} 2>&1"
+    resources: load=90
+    log: "logs/{period}/{filter}/ad_wr_boot.log"
+    shell: "Rscript {input[0]} {wildcards.period} {wildcards.filter} > {log} 2>&1"
 
+
+rule wr_bt:
+    output: "data/processed/{period}/{filter}/wr_bt.parquet"
+    input:
+        "analysis/ad_wr_bt.R",
+        "data/processed/{period}/{filter}/matchmeta_filter.log"
+    log: "logs/{period}/{filter}/ad_wr_bt.log"
+    shell: "Rscript {input[0]} {wildcards.period} {wildcards.filter} > {log} 2>&1"
 
 
 rule slide_wr_elo:
-    output:
-        "data/processed/{period}/{filter}/ad_slide_WR_ELO.parquet"
+    output: "data/processed/{period}/{filter}/ad_slide_WR_ELO.parquet"
     input:
         "analysis/ad_slide_wr_elo.R",
         "data/processed/{period}/{filter}/matchmeta_filter.log"
-    log:
-        "logs/{period}/{filter}/ad_slide_wr_elo.log"
-    shell:
-        "Rscript {input[0]} {wildcards.period} {wildcards.filter} > {log} 2>&1"
+    log: "logs/{period}/{filter}/ad_slide_wr_elo.log"
+    shell: "Rscript {input[0]} {wildcards.period} {wildcards.filter} > {log} 2>&1"
 
 
 
 rule slide_wr_gl:
-    output:
-        "data/processed/{period}/{filter}/ad_slide_WR_GL.parquet"
+    output: "data/processed/{period}/{filter}/ad_slide_WR_GL.parquet"
     input:
         "analysis/ad_slide_wr_gl.R",
         "data/processed/{period}/{filter}/matchmeta_filter.log"
-    log:
-        "logs/{period}/{filter}/ad_slide_wr_gl.log"
-    shell:
-        "Rscript {input[0]} {wildcards.period} {wildcards.filter} > {log} 2>&1"
+    log: "logs/{period}/{filter}/ad_slide_wr_gl.log"
+    shell: "Rscript {input[0]} {wildcards.period} {wildcards.filter} > {log} 2>&1"
 
 
 
 rule slide_wr_ggl:
-    output:
-        "data/processed/{period}/{filter}/ad_slide_WR_GGL.parquet"
+    output: "data/processed/{period}/{filter}/ad_slide_WR_GGL.parquet"
     input:
         "analysis/ad_slide_wr_ggl.R",
         "data/processed/{period}/{filter}/matchmeta_filter.log"
-    log:
-        "logs/{period}/{filter}/ad_slide_wr_ggl.log"
-    shell:
-        "Rscript {input[0]} {wildcards.period} {wildcards.filter} > {log} 2>&1"
+    log: "logs/{period}/{filter}/ad_slide_wr_ggl.log"
+    shell: "Rscript {input[0]} {wildcards.period} {wildcards.filter} > {log} 2>&1"
 
 
 rule slide_pr_elo:
-    output:
-        "data/processed/{period}/{filter}/ad_slide_PR_ELO.parquet"
+    output: "data/processed/{period}/{filter}/ad_slide_PR_ELO.parquet"
     input:
         "analysis/ad_slide_pr_elo.R",
         "data/processed/{period}/{filter}/matchmeta_filter.log"
-    log:
-        "logs/{period}/{filter}/ad_slide_pr_elo.log"
-    shell:
-        "Rscript {input[0]} {wildcards.period} {wildcards.filter} > {log} 2>&1"
+    log: "logs/{period}/{filter}/ad_slide_pr_elo.log"
+    shell: "Rscript {input[0]} {wildcards.period} {wildcards.filter} > {log} 2>&1"
 
 
 
@@ -298,75 +270,74 @@ rule outputs:
         "outputs/{period}/{filter}/play_rates.log",
         "outputs/{period}/{filter}/wr_estimated.log",
         "outputs/{period}/{filter}/civ_wr_rank.png",
+        "outputs/{period}/{filter}/civ_wr_bt.png",
+        "outputs/{period}/{filter}/civ_wr_pr_bt.png",
         "outputs/{period}/{filter}/cvc.json"
 
 
 rule cvcjson:
-    output:
-        "outputs/{period}/{filter}/cvc.json"
+    output: "outputs/{period}/{filter}/cvc.json"
     input:
         "analysis/j_cvc.R",
         "data/processed/{period}/{filter}/cvc.Rds"
-    log:
-        "logs/{period}/{filter}/j_cvc.log"
-    shell:
-        "Rscript {input[0]} {wildcards.period} {wildcards.filter} > {log} 2>&1"
+    log: "logs/{period}/{filter}/j_cvc.log"
+    shell: "Rscript {input[0]} {wildcards.period} {wildcards.filter} > {log} 2>&1"
 
 
 rule descriptives:
-    output:
-        "outputs/{period}/{filter}/descriptives.log"
+    output: "outputs/{period}/{filter}/descriptives.log"
     input:
         "analysis/g_descriptives.R",
         "data/processed/{period}/{filter}/matchmeta_filter.log"
-    log:
-        "logs/{period}/{filter}/g_descriptives.log"
-    shell:
-        "Rscript {input[0]} {wildcards.period} {wildcards.filter} > {log} 2>&1"
+    log: "logs/{period}/{filter}/g_descriptives.log"
+    shell: "Rscript {input[0]} {wildcards.period} {wildcards.filter} > {log} 2>&1"
 
 
 
 rule civ_dendro:
-    output:
-        "outputs/{period}/{filter}/civ_dendro.png"
+    output: "outputs/{period}/{filter}/civ_dendro.png"
     input:
         "analysis/g_civ_dendro.R",
         "data/processed/{period}/{filter}/cvc.Rds"
-    log:
-        "logs/{period}/{filter}/g_civ_dendro.log"
-    shell:
-        "Rscript {input[0]} {wildcards.period} {wildcards.filter} > {log} 2>&1"
+    log: "logs/{period}/{filter}/g_civ_dendro.log"
+    shell: "Rscript {input[0]} {wildcards.period} {wildcards.filter} > {log} 2>&1"
 
 
 rule win_rates:
-    output:
-        "outputs/{period}/{filter}/win_rates.log"
+    output: "outputs/{period}/{filter}/win_rates.log"
     input:
         "analysis/g_win_rates.R",
         "data/processed/{period}/{filter}/pr.parquet",
         "data/processed/{period}/{filter}/wr_avg.parquet",
         "data/processed/{period}/{filter}/wr_naive.parquet"
-    log:
-        "logs/{period}/{filter}/g_win_rates.log"
-    shell:
-        "Rscript {input[0]} {wildcards.period} {wildcards.filter} > {log} 2>&1"
+    log: "logs/{period}/{filter}/g_win_rates.log"
+    shell: "Rscript {input[0]} {wildcards.period} {wildcards.filter} > {log} 2>&1"
 
 
 rule win_rates_rank:
-    output:
-        "outputs/{period}/{filter}/civ_wr_rank.png"
+    output: "outputs/{period}/{filter}/civ_wr_rank.png"
     input:
         "analysis/g_wr_rank.R",
         "data/processed/{period}/{filter}/wr_boot.parquet"
-    log:
-        "logs/{period}/{filter}/g_wr_rank.log"
-    shell:
-        "Rscript {input[0]} {wildcards.period} {wildcards.filter} > {log} 2>&1"
+    log: "logs/{period}/{filter}/g_wr_rank.log"
+    shell: "Rscript {input[0]} {wildcards.period} {wildcards.filter} > {log} 2>&1"
+
+
+
+rule win_rates_bt:
+    output:
+        "outputs/{period}/{filter}/civ_wr_bt.png",
+        "outputs/{period}/{filter}/civ_wr_pr_bt.png"
+    input:
+        "analysis/g_wr_bt.R",
+        "data/processed/{period}/{filter}/wr_bt.parquet",
+        "data/processed/{period}/{filter}/pr.parquet",
+    log: "logs/{period}/{filter}/g_wr_bt.log"
+    shell: "Rscript {input[0]} {wildcards.period} {wildcards.filter} > {log} 2>&1"
 
 
 rule sliding_window:
-    output:
-        "outputs/{period}/{filter}/sliding_window.log"
+    output: "outputs/{period}/{filter}/sliding_window.log"
     input:
         "analysis/g_sliding_window.R",
         "data/processed/{period}/{filter}/ad_slide_WR_ELO.parquet",
@@ -376,35 +347,27 @@ rule sliding_window:
     resources:
         cpu=3,
         load=40
-    log:
-        "logs/{period}/{filter}/g_sliding_window.log"
-    shell:
-        "Rscript {input[0]} {wildcards.period} {wildcards.filter} > {log} 2>&1"
+    log: "logs/{period}/{filter}/g_sliding_window.log"
+    shell: "Rscript {input[0]} {wildcards.period} {wildcards.filter} > {log} 2>&1"
 
 
 rule play_rates:
-    output:
-        "outputs/{period}/{filter}/play_rates.log"
+    output: "outputs/{period}/{filter}/play_rates.log"
     input:
         "analysis/g_play_rates.R",
         "data/processed/{period}/{filter}/pr.parquet",
         "data/processed/{period}/{filter}/matchmeta_filter.log"
-    log:
-        "logs/{period}/{filter}/g_play_rates.log"
-    shell:
-        "Rscript {input[0]} {wildcards.period} {wildcards.filter} > {log} 2>&1"
+    log: "logs/{period}/{filter}/g_play_rates.log"
+    shell: "Rscript {input[0]} {wildcards.period} {wildcards.filter} > {log} 2>&1"
 
 
 rule wr_estimated:
-    output:
-        "outputs/{period}/{filter}/wr_estimated.log"
+    output: "outputs/{period}/{filter}/wr_estimated.log"
     input:
         "analysis/g_wr_estimated.R",
         "data/processed/{period}/{filter}/pr.parquet",
         "data/processed/{period}/{filter}/wr_naive.parquet"
-    log:
-        "logs/{period}/{filter}/g_wr_estimated.log"
-    shell:
-        "Rscript {input[0]} {wildcards.period} {wildcards.filter} > {log} 2>&1"
+    log: "logs/{period}/{filter}/g_wr_estimated.log"
+    shell: "Rscript {input[0]} {wildcards.period} {wildcards.filter} > {log} 2>&1"
 
 

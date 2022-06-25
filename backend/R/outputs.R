@@ -1,7 +1,7 @@
 
 
 
-save_plot <- function(p, id, type = "standard") {
+save_plot <- function(p, id, args, type = "standard") {
     opts <- list(
         standard = list(
             height = 5,

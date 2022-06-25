@@ -64,6 +64,7 @@ p1 <- ggplot(data = dat2, aes(y = bias, x = civ)) +
     xlab("")
 
 save_plot(
+    args = args,
     p = p1,
     id = OUTPUT_ID,
     type = "standard"
@@ -89,6 +90,7 @@ p2 <- ggplot(data = dat2, aes(y = wr, x = preds, label = civ)) +
     theme(plot.caption = element_text(hjust = 0))
 
 save_plot(
+    args = args,
     p = p2,
     id = OUTPUT_ID,
     type = "standard"

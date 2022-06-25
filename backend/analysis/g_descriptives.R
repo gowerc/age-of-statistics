@@ -82,6 +82,7 @@ p <- ggplot(pdat, aes(x = elocat, y = n)) +
 
 
 save_plot(
+    args = args,
     p = p,
     id = OUTPUT_ID,
     type = "standard"
@@ -116,6 +117,7 @@ p <- ggplot(data = pdat, aes(x = version, y = n)) +
 
 
 save_plot(
+    args = args,
     p = p,
     id = OUTPUT_ID,
     type = "standard"
@@ -161,6 +163,7 @@ p <- ggplot(data = pdat, aes(x = map, y = n)) +
 
 
 save_plot(
+    args = args,
     p = p,
     id = OUTPUT_ID,
     type = "standard"
@@ -229,6 +232,7 @@ p <- ggplot(data = pdat, aes(x = map, y = n)) +
 
 
 save_plot(
+    args = args,
     p = p,
     id = OUTPUT_ID,
     type = "standard"
@@ -301,6 +305,7 @@ p <- ggplot(pdat, aes(x = lencat, y = n)) +
 
 
 save_plot(
+    args = args,
     p = p,
     id = OUTPUT_ID,
     type = "standard"

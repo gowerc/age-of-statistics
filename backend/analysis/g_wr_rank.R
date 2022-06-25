@@ -40,6 +40,7 @@ p <- ggplot(data = pdat, aes(x = civ, group = civ, ymin = lci_rank, ymax = uci_r
     scale_y_reverse(breaks = get_breaks_0to1)
 
 save_plot(
+    args = args,
     p = p,
     id = OUTPUT_ID,
     type = "standard"

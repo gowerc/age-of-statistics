@@ -49,6 +49,7 @@ p <- ggplot(data = prdat, aes(y = pr, x = civ)) +
 
 
 save_plot(
+    args = args,
     p = p,
     id = OUTPUT_ID,
     type = "standard"
@@ -130,6 +131,7 @@ pdat2 <- pdat %>%
 
 
 save_plot(
+    args = args,
     p = p,
     id = OUTPUT_ID,
     type = "standard"
