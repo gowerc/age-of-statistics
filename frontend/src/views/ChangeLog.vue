@@ -5,6 +5,19 @@
 
     <h2>Change Log</h2>
 
+
+    <hr>
+
+    <h4>2022-June-25</h4>
+
+    <ul>
+        <li>Updated most recent "period" to include matches up to 23rd June 2022</li>
+        <li>Added new output "Bradley-Terry Score by Civilisation" to the "Win Rates" tab</li>
+        <li>Added new output "Bradley-Terry Score vs Play Rat" to the "Win Rates" tab</li>
+        <li>Added methodology documentation for Bradley-Terry Models</li>
+        <li>Switched the win-rate to be on the x-axis for win-rate vs play-rate plots (thank you @PlumpDucklin)</li>
+    </ul>
+
     <hr>
 
     <h4>2022-June-11</h4>
@@ -41,10 +54,10 @@
     </ul>
     
     <hr>
-    <h4>Historic Changes</h4>
+    <h4>Pre-2022-May-19</h4>
 
     <ul>
-        <li>I forgot to record this... :(</li>
+        <li>I didn't keep a log... :(</li>
     </ul>
 
 </template>

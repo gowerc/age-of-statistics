@@ -104,6 +104,10 @@ export default {
     beforeUpdate() {
         this.ensureValidURL()
     },
+
+    created() {
+        this.ensureValidURL()
+    },
     
     methods: {
         

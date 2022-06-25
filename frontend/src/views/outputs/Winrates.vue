@@ -27,6 +27,16 @@
     title="Averaged Win Rates vs Play Rate"
     :path="path" />
 
+<Output
+    name="civ_wr_bt"
+    title="Bradley-Terry Score by Civilisation"
+    :path="path" />
+
+<Output
+    name="civ_wr_pr_bt"
+    title="Bradley-Terry Score vs Play Rate"
+    :path="path" />
+
 </template>
 
 <script>
