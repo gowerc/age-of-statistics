@@ -15,7 +15,7 @@
         <li>Added new output "Bradley-Terry Score by Civilisation" to the "Win Rates" tab</li>
         <li>Added new output "Bradley-Terry Score vs Play Rate" to the "Win Rates" tab</li>
         <li>Added methodology documentation for Bradley-Terry Models</li>
-        <li>Switched the win-rate to be on the x-axis for win-rate vs play-rate plots (thank you @PlumpDucklin)</li>
+        <li>Switched the win-rate to be on the y-axis for win-rate vs play-rate plots (thank you @PlumpDucklin)</li>
         <li>
             Added new filters "RM, Solo, Nomad, >1200" and "RM, Team, Nomad, >1800" to the
             "20Nov2021 - 26Apr2022" period (will add to latest period once there is enough data)
