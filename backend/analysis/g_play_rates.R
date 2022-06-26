@@ -108,8 +108,7 @@ footnotes <- c(
         n_total_players,
         lower_limit
     )
-) %>%
-    as_footnote(args)
+)
 
 
 p <- ggplot(data = pdat, aes(x = pcent_cat, y = n)) +

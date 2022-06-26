@@ -1,7 +1,7 @@
 {
     "Acclivity": "Open",
     "Acropolis": "Open",
-    "African Clearing": "Nomad",
+    "African Clearing": "Nomad Other",
     "Aftermath": "Removed",
     "Amazon Tunnel": "Closed",
     "Arabia": "Open",
@@ -54,7 +54,7 @@
     "Team Moats" : "Open",
     "Valley": "Open",
     "Wade": "Open",
-    "Water Nomad": "Nomad",
+    "Water Nomad": "Nomad Water",
     "Yucatan": "Closed"
 }
 

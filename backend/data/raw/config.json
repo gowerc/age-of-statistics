@@ -34,6 +34,16 @@
             "length_limit_upper": 180,
             "rm_single_pick": false
         },
+        "rm_solo_nomad": {
+            "label": "RM, Solo, Nomad, >1200",
+            "leaderboard": "1v1 Random Map",
+            "mapclass": "Nomad",
+            "elo_limit_lower": 1200,
+            "elo_limit_lower_slide": 800,
+            "length_limit_lower": 6,
+            "length_limit_upper": 180,
+            "rm_single_pick": false
+        },
         "rm_team_all": {
             "label": "RM, Team, All, >1800",
             "leaderboard": "Team Random Map",
@@ -58,6 +68,16 @@
             "label": "RM, Team, Closed, >1800",
             "leaderboard": "Team Random Map",
             "mapclass": "Closed",
+            "elo_limit_lower": 1800,
+            "elo_limit_lower_slide": 1000,
+            "length_limit_lower": 6,
+            "length_limit_upper": 180,
+            "rm_single_pick": false
+        },
+        "rm_team_nomad": {
+            "label": "RM, Team, Nomad, >1800",
+            "leaderboard": "Team Random Map",
+            "mapclass": "Nomad",
             "elo_limit_lower": 1800,
             "elo_limit_lower_slide": 1000,
             "length_limit_lower": 6,
@@ -107,19 +127,57 @@
     },
     "periods": {
         "p01_v02" : {
-            "label": "10Oct2021 - 16Nov2021",
+            "label": "10Oct2021 - 16Nov2021 (Swordsman Buff)",
             "lower": "2021-10-10",
-            "upper": "2021-11-16"
+            "upper": "2021-11-16",
+            "filters": [
+                "rm_solo_all",
+                "rm_solo_open",
+                "rm_solo_closed",
+                "rm_team_all",
+                "rm_team_open",
+                "rm_team_closed",
+                "rm_solo_open_pro",
+                "rm_solo_closed_pro",
+                "rm_solo_open_nopick",
+                "rm_solo_closed_nopick"
+            ]
         },
         "p02_v02": {
-            "label": "20Nov2021 - 26Apr2022",
+            "label": "20Nov2021 - 26Apr2022 (Unique Infantry Buff)",
             "lower": "2021-11-20",
-            "upper": "2022-04-26"
+            "upper": "2022-04-26",
+            "filters": [
+                "rm_solo_all",
+                "rm_solo_open",
+                "rm_solo_closed",
+                "rm_solo_nomad",
+                "rm_team_all",
+                "rm_team_open",
+                "rm_team_closed",
+                "rm_team_nomad",
+                "rm_solo_open_pro",
+                "rm_solo_closed_pro",
+                "rm_solo_open_nopick",
+                "rm_solo_closed_nopick"
+            ]
         },
         "p03_v05": {
-            "label": "10May2022 - 23June2022",
+            "label": "10May2022 - 23June2022 (Dynasties of India)",
             "lower": "2022-05-10",
-            "upper": "2022-06-23"
+            "upper": "2022-06-23",
+            "filters": [
+                "rm_solo_all",
+                "rm_solo_open",
+                "rm_solo_closed",
+                "rm_team_all",
+                "rm_team_open",
+                "rm_team_closed",
+                "rm_solo_open_pro",
+                "rm_solo_closed_pro",
+                "rm_solo_open_nopick",
+                "rm_solo_closed_nopick"
+            ]
         }
     }
 }
