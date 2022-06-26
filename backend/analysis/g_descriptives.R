@@ -129,7 +129,7 @@ save_plot(
 
 #######################################
 #
-# Map distribtuons
+# Map distributions
 #
 #######################################
 
@@ -143,11 +143,11 @@ pdat <- matchmeta %>%
         p = sprintf("%5.2f%%", n / unique(bign) * 100),
         bign = unique(bign),
         .group = "drop"
-    ) %>% 
+    ) %>%
     mutate(yjust = n + max(n)/50)
 
 
-p <- ggplot(data = pdat, aes(x = map, y = n)) +
+p <- ggplot(data = pdat, aes(x = reorder(map, -n), y = n)) +
     geom_bar(stat = "identity") +
     geom_text(aes(label = p, y = yjust)) +
     theme_bw() +
@@ -178,7 +178,7 @@ save_plot(
 
 #######################################
 #
-# Map distribtuons normalised
+# Map distributions normalised
 #
 #######################################
 
@@ -216,7 +216,7 @@ pdat <- matchmeta %>%
 
 OUTPUT_ID <- "dist_map_normal"
 
-p <- ggplot(data = pdat, aes(x = map, y = n)) +
+p <- ggplot(data = pdat, aes(x = reorder(map, -n), y = n)) +
     geom_bar(stat = "identity") +
     geom_text(aes(label = p, y = yjust)) +
     theme_bw() +
