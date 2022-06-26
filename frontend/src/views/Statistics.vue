@@ -41,6 +41,12 @@ import Selector from '@/components/Selector'
 import StatsPageLinks from '@/components/StatsPageLinks'
 
 
+let object_subset = function (obj, arr) {
+    let result = {}
+    arr.map( e => result[e] = obj[e])
+    return result;
+}
+
 
 
 export default {
@@ -58,10 +64,13 @@ export default {
         },
         
         filters(){
-            if (!config) {
+            if (!config || !this.is_valid_period()) {
                 return null;
             }
-            return config.filters
+            return object_subset(
+                config.filters,
+                config.periods[this.current_period].filters
+            )
         },
         
         periods(){
@@ -79,25 +88,16 @@ export default {
             return this.$route.query.period
         },
         
-        current_config(){
-            if (!config || !this.current_period || !this.current_filter) {
+        current_config() {
+            let is_valid_url = this.ensureValidURL()
+            if (!is_valid_url || !this.current_period || !this.current_filter) {
                 return null;
             }
-            
-            if (!(this.current_period in config.periods)) {
-                this.ensureValidURL(true)
-                return null
-            }
-            
-            if (!(this.current_filter in config.filters)) {
-                this.ensureValidURL(true)
-                return null
-            }
-            
-            return {
+            let result = {
                 "period": config.periods[this.current_period],
                 "filter": config.filters[this.current_filter]
             }
+            return result
         }
     },
     
@@ -111,28 +111,56 @@ export default {
     
     methods: {
         
-        updateRoute(obj, defaults = false){
+        updateRoute(obj, go_to_default){
             let replacement = {
                 ...this.$route.query,
                 ...obj
             }
-            
-            if(defaults) {
+            if (go_to_default) {
                 replacement.period = config.default.periods
                 replacement.filter = config.default.filters
             }
-            
             this.$router.replace({query: replacement});
         },
-        
-        ensureValidURL(force = false){
-            if(
-                !this.$route.query.period ||
-                !this.$route.query.filter ||
-                force
-            ) {
-                return this.updateRoute({}, true)
+
+
+        is_valid_period() {
+            if (!this.$route.query.period) {
+                return false
             }
+            if (!(this.$route.query.period in config.periods)) {
+                return false
+            }
+            return true;
+        },
+
+        is_valid_filter() {
+            if (!this.is_valid_period()){
+                return false
+            }
+            let period = config.periods[this.$route.query.period]
+            if (!this.$route.query.filter) {
+                return false
+            }
+            if (!period.filters.includes(this.$route.query.filter)) {
+                return false
+            }
+            return true
+        },
+
+        ensureValidURL() {
+
+            if (!this.is_valid_period()){
+                this.updateRoute({}, true)
+                return false
+            }
+
+            if (!this.is_valid_filter()) {
+                // TODO - send user to screen to pick a valid filter
+                return false
+            }
+
+            return true
         }
     }
 }

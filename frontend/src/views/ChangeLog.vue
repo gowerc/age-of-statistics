@@ -8,14 +8,22 @@
 
     <hr>
 
-    <h4>2022-June-25</h4>
+    <h4>2022-June-26</h4>
 
     <ul>
-        <li>Updated most recent "period" to include matches up to 23rd June 2022</li>
+        <li>Updated most recent period to include matches up to 23rd June 2022</li>
         <li>Added new output "Bradley-Terry Score by Civilisation" to the "Win Rates" tab</li>
-        <li>Added new output "Bradley-Terry Score vs Play Rat" to the "Win Rates" tab</li>
+        <li>Added new output "Bradley-Terry Score vs Play Rate" to the "Win Rates" tab</li>
         <li>Added methodology documentation for Bradley-Terry Models</li>
         <li>Switched the win-rate to be on the x-axis for win-rate vs play-rate plots (thank you @PlumpDucklin)</li>
+        <li>
+            Added new filters "RM, Solo, Nomad, >1200" and "RM, Team, Nomad, >1800" to the
+            "20Nov2021 - 26Apr2022" period (will add to latest period once there is enough data)
+        </li>
+        <li>
+            Updated the period labels to indicate the main balence changes that were made for
+            the given period
+        </li>
     </ul>
 
     <hr>
