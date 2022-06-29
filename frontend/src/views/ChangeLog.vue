@@ -10,7 +10,10 @@
     <h4>2022-July-XX</h4>
 
     <ul>
-        <li>Added in new statistics tab for game level statistics</li>
+        <li>
+            Added in new tab + outputs for game level statistics
+            (unique players over time, Elo distributions, etc)
+        </li>
     </ul>
 
     <hr>
