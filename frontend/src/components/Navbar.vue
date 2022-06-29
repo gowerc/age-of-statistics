@@ -22,15 +22,29 @@
             
             <ul class="navbar-nav">
                 
-                <li class="nav-item">
-                    <router-link
-                        class="nav-link"
-                        to="/statistics">
-                        
-                        Statistics
-                    </router-link>
-                </li>
                 
+                
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Statistics
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                        <li>
+                            <router-link
+                                class="dropdown-item"
+                                to="/statistics">
+                                Civilisation
+                            </router-link>
+                        </li>
+                        <li>
+                            <router-link
+                                class="dropdown-item"
+                                to="/global">
+                                Game
+                            </router-link>
+                        </li>
+                    </ul>
+                </li>
                 
                 <li class="nav-item">
                     <router-link

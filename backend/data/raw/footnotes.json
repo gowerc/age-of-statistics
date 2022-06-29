@@ -117,21 +117,38 @@
         "Confidence intervals were calculated by bootstrap resampling"
     ],
     
-    "exp_elo_time_AVG":[
-        "Calculations presented are a 14 day rolling average<br/>",
-        "Data does not include games for EW teams<br/>",
-        "Exact numbers are underestimated due to ~20% of matches being missing due to data integrity issues"
+    "global_elo_time_AVG":[
+        "Values presented are 10 day rolling averages<br/>",
+        "The 'all' group does not include games from the Team Empire Wars ladder<br/>",
+        "Numbers will be underestimated due to ~20% of matches being excluded due to data integrity issues"
     ],
     
-    "exp_elo_time_NGAME":[
-        "Calculations presented are a 14 day rolling average<br/>",
-        "Data does not include games for EW teams<br/>",
-        "Exact numbers are underestimated due to ~20% of matches being missing due to data integrity issues"
+    "global_elo_time_NGAME":[
+        "Values presented are 10 day rolling averages<br/>",
+        "The 'all' group does not include games from the Team Empire Wars ladder<br/>",
+        "Numbers will be underestimated due to ~20% of matches being excluded due to data integrity issues"
     ],
     
-    "exp_elo_time_NPLAYER":[
-        "Calculations presented are a 14 day rolling average<br/>",
-        "Data does not include games for EW teams<br/>",
-        "Exact numbers are underestimated due to ~20% of matches being missing due to data integrity issues"    
+    "global_elo_time_NPLAYER":[
+        "Values presented are 10 day rolling averages<br/>",
+        "The 'all' group does not include games from the Team Empire Wars ladder<br/>",
+        "Numbers will be underestimated due to ~20% of matches being excluded due to data integrity issues"    
+    ],
+    
+    "global_elo_dist_solo": [
+        "Elo values presented are players most recent Elo scores as of {date_high}<br/>",
+        "Only players who have played at least one game since {date_low} are included."
+    ],
+    
+    "global_elo_dist_solo_ew": [
+        "Elo values presented are players most recent Elo scores as of {date_high}<br/>",
+        "Only players who have played at least one game since {date_low} are included."
+        
+    ],
+    
+    "global_elo_dist_team": [
+        "Elo values presented are players most recent Elo scores as of {date_high}<br/>",
+        "Only players who have played at least one game since {date_low} are included."
+        
     ]
 }

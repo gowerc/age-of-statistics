@@ -4,7 +4,7 @@
 <template>
   <nav class="nav nav-pills flex-column flex-sm-row mb-4">
     <router-link
-      v-for="tab in tabs"
+      v-for="tab in this.tabs"
       :key="tab"
       :class="[
         'flex-sm-fill', 
@@ -23,18 +23,7 @@
 
 <script>
 export default {
-    data() {
-        return {
-            tabs: [
-                {id: 'criteria', desc: "Criteria"},
-                {id: 'descriptives', desc:"Descriptives"},
-                {id: 'winrates', desc:"Win Rates"},
-                {id: 'individual', desc:"Individual Civs"},
-                {id: 'sliding', desc:"Sliding Window"},
-                {id: 'experimental', desc: "Experimental"}
-            ]
-        }
-    },
+    props: ["tabs"],
     computed: {
         lastUrl(){
             return this.$route.path.split("/").at(-1)

@@ -9,6 +9,9 @@ import Methods from "@/views/Methods.vue"
 import Statistics from "@/views/Statistics.vue"
 import Faq from "@/views/Faq.vue"
 import Change from "@/views/ChangeLog.vue"
+import Global from "@/views/Global.vue"
+import EloDist from "@/views/outputs/EloDist.vue"
+import TimeTrends from "@/views/outputs/TimeTrends.vue"
 
 const routes = [
     {
@@ -29,6 +32,22 @@ const routes = [
     {
         path: "/",
         redirect: '/statistics/criteria'
+    },
+    {
+        path: "/global",
+        name: "Global",
+        component: Global,
+        redirect: '/global/timetrends',
+        children: [
+            {
+                path: "timetrends",
+                component: TimeTrends
+            },
+            {
+                path: "elodist",
+                component: EloDist
+            }
+        ]
     },
     {
         path: "/statistics",

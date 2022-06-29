@@ -4,7 +4,14 @@
 <template>
 
     <h2>Change Log</h2>
+    
+    <hr>
+<!-- TODO - Add in Date-->
+    <h4>2022-July-XX</h4>
 
+    <ul>
+        <li>Added in new statistics tab for game level statistics</li>
+    </ul>
 
     <hr>
 

@@ -19,7 +19,7 @@
 </div>
 
 
-<StatsPageLinks />
+<TabBar :tabs="this.tabs"/>
 
 <router-view v-slot="slotProps">
     <keep-alive max="6">
@@ -38,7 +38,7 @@
 <script>
 import config from '@/components/json/config.json'
 import Selector from '@/components/Selector'
-import StatsPageLinks from '@/components/StatsPageLinks'
+import TabBar from '@/components/TabBar'
 
 
 let object_subset = function (obj, arr) {
@@ -50,9 +50,21 @@ let object_subset = function (obj, arr) {
 
 
 export default {
+    data() {
+        return {
+            tabs: [
+                {id: 'criteria', desc: "Criteria"},
+                {id: 'descriptives', desc:"Descriptives"},
+                {id: 'winrates', desc:"Win Rates"},
+                {id: 'individual', desc:"Individual Civs"},
+                {id: 'sliding', desc:"Sliding Window"},
+                {id: 'experimental', desc: "Experimental"}
+            ]
+        }
+    },
     components: {
         "Selector": Selector,
-        "StatsPageLinks": StatsPageLinks,
+        "TabBar": TabBar,
     },
     computed: {
         path(){ 
@@ -156,7 +168,6 @@ export default {
             }
 
             if (!this.is_valid_filter()) {
-                // TODO - send user to screen to pick a valid filter
                 return false
             }
 
