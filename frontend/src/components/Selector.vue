@@ -1,52 +1,52 @@
+
+
+
+
 <template>
-<div class="col-md-5 px-0 mx-0 py-1">
-    <label class = "px-0 mx-0">
-        {{ toTitleCase(name) }}:&nbsp;
-    </label>
     <select
-        class="form-select px-0 mx-0"
-        @change="onChange($event)">
-        <option v-if = "show_blank" selected="true"></option>
+        :class="['form-select', 'px-0', 'mr-0']"
+        @click="$emit('update:modelValue', $event.target.value)"
+        v-model="selected">
+        <option v-if = "show_blank" selected="true">
+        </option>
         <option 
             v-for="(opt, key) in list" 
             :key="key"
             :value="key"
-            :selected="key===val"> 
+            :selected="key===selected"> 
             {{ opt.label }}
         </option>
     </select>
-</div>
-
-
-
 </template>
 
 
 <script>
 export default {
-    props: ["updateRoute", "list", "name"],
-    computed: {
-        val() {
-            return this.$route.query[this.name]
-        },
-        show_blank() {
-            if (!this.val || !this.list) {
-                return true
-            }
-            return !(this.val in this.list)
+    props: ["list", "default"],
+    emits: ["update:modelValue"],
+    data() {
+        return {
+            selected: ""
         }
     },
+    computed: {
+        show_blank() {
+            if (!this.list || !this.selected) {
+                return true
+            }
+            return !(this.selected in this.list)
+        }
+    },
+    created() {
+        this.selected = this.default
+    },
     methods: {
-        onChange(e){
-            let obj = {}
-            obj[this.name] = e.target.value
-            this.updateRoute(obj)
-        },
         toTitleCase(str) {
             return str.replace(
                 /\w\S*/g,
                 function(txt) {
-                    return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+                    return txt.charAt(0).toUpperCase() +
+                        txt.substr(1).toLowerCase();
                 }
             )
         }
@@ -57,23 +57,25 @@ export default {
 
 <style scoped>
 
-.selection {
-    display: inline-block;
-}
+    .selection {
+        display: inline-block;
+    }
 
-select {
-    display: inline-block;
-    width: calc(100% - 4.2rem);
-    max-width: 340px;
-    min-width: 160px;
-    font-size: calc(100% - 3px);
-}
-
-
-
-
-label {
-    width: 3.6rem
-}
+    select {
+        width: 100%;
+        max-width: 340px;
+        min-width: 160px;
+        font-size: calc(100% - 3px);
+    }
+    
+    .right {
+        margin-right: 0;
+        margin-left: auto;
+    }
+    
+    .left {
+        margin-left: 0;
+        margin-right: auto;
+    }
 
 </style>

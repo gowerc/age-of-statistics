@@ -32,6 +32,13 @@
                         <li>
                             <router-link
                                 class="dropdown-item"
+                                to="/global">
+                                Game
+                            </router-link>
+                        </li>
+                        <li>
+                            <router-link
+                                class="dropdown-item"
                                 to="/statistics">
                                 Civilisation
                             </router-link>
@@ -39,8 +46,8 @@
                         <li>
                             <router-link
                                 class="dropdown-item"
-                                to="/global">
-                                Game
+                                to="/compare">
+                                Cross-Comparison
                             </router-link>
                         </li>
                     </ul>

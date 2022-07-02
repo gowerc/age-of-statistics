@@ -5,12 +5,12 @@
 
 <div class="container pb-2 px-0 mx-0">
     <div class="row justify-content-evenly align-items-center px-0 mx-0">
-        <Selector
+        <StatSelector
             :update-route="updateRoute"
             :list="periods"
             name="period"
         />
-        <Selector
+        <StatSelector
             :update-route="updateRoute"
             :list="filters"
             name="filter"
@@ -37,7 +37,7 @@
 
 <script>
 import config from '@/components/json/config.json'
-import Selector from '@/components/Selector'
+import StatSelector from '@/components/StatSelector'
 import TabBar from '@/components/TabBar'
 
 
@@ -63,7 +63,7 @@ export default {
         }
     },
     components: {
-        "Selector": Selector,
+        "StatSelector": StatSelector,
         "TabBar": TabBar,
     },
     computed: {

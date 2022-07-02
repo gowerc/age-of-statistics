@@ -1,17 +1,22 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import Descriptives from '@/views/outputs/Descriptives.vue'
-import Experimental from '@/views/outputs/Experimental.vue'
-import Winrates from "@/views/outputs/Winrates.vue"
-import Individual from "@/views/outputs/Individual.vue"
-import Sliding from "@/views/outputs/Sliding.vue"
-import Criteria from "@/views/outputs/Criteria.vue"
-import Methods from "@/views/Methods.vue"
-import Statistics from "@/views/Statistics.vue"
+
 import Faq from "@/views/Faq.vue"
 import Change from "@/views/ChangeLog.vue"
-import Global from "@/views/Global.vue"
-import EloDist from "@/views/outputs/EloDist.vue"
-import TimeTrends from "@/views/outputs/TimeTrends.vue"
+import Methods from "@/views/Methods.vue"
+
+import Statistics from "@/views/Statistics/Statistics.vue"
+import Descriptives from '@/views/Statistics/Descriptives.vue'
+import Experimental from '@/views/Statistics/Experimental.vue'
+import Winrates from "@/views/Statistics/Winrates.vue"
+import Individual from "@/views/Statistics/Individual.vue"
+import Sliding from "@/views/Statistics/Sliding.vue"
+import Criteria from "@/views/Statistics/Criteria.vue"
+
+import Global from "@/views/Global/Global.vue"
+import EloDist from "@/views/Global/EloDist.vue"
+import TimeTrends from "@/views/Global/TimeTrends.vue"
+
+import Compare from "@/views/Compare.vue"
 
 const routes = [
     {
@@ -32,6 +37,11 @@ const routes = [
     {
         path: "/",
         redirect: '/statistics/criteria'
+    },
+    {
+        path: "/compare",
+        name: "Compare",
+        component: Compare
     },
     {
         path: "/global",
