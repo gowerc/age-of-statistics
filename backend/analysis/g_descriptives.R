@@ -4,8 +4,10 @@ library(ggplot2)
 library(scales)
 library(lubridate)
 library(arrow)
+library(assertthat)
 
 # args <- get_args("p02_v02", "rm_solo_all")
+# args <- get_args("p03_v06", "rm_solo_all_avg")
 args <- get_args()
 data_location <- get_data_location(args)
 
@@ -27,16 +29,30 @@ elo <- matchmeta$rating_mean
 
 lb <- floor(min(elo) / 100) * 100
 ub <- ceiling(max(elo) / 100) * 100
-cuts <- seq(lb, ub, by = 100)
+
+possible_spacings <- c(25, 50, 100, 200)
+
+selected_spacing <- possible_spacings[which.min(abs((ub - lb) / possible_spacings-15))]
+
+cuts <- seq(lb, ub, by = selected_spacing)
 
 
 pdat <- matchmeta %>%
     mutate(elocat = cut(rating_mean, cuts, right = FALSE, dig.lab = 4)) %>%
     group_by(elocat) %>%
     tally() %>%
-    mutate(p = sprintf("%4.1f%%", n / sum(n) * 100)) %>%
+    mutate(p_n = n / sum(n) * 100) %>%
+    mutate(p = sprintf("%4.1f%%", p_n)) %>%
     mutate(yadj = n + max(n) / 50)
 
+
+assert_that(
+    all( pdat %>% filter(is.na(elocat)) %>% pull(p_n) <= 0.1),
+    msg = "removed a non-insignificant number of matches"
+)
+
+pdat2 <- pdat %>% 
+    filter(!is.na(elocat))
 
 strings <- matchmeta %>%
     mutate(elo = rating_mean) %>%
@@ -55,10 +71,11 @@ strings <- matchmeta %>%
     paste0(collapse = "\n")
 
 
+
 OUTPUT_ID <- "dist_elo"
 
 
-p <- ggplot(pdat, aes(x = elocat, y = n)) +
+p <- ggplot(pdat2, aes(x = elocat, y = n)) +
     geom_bar(stat = "identity") +
     geom_text(aes(label = p, y = yadj)) + 
     theme_bw() +
@@ -69,7 +86,7 @@ p <- ggplot(pdat, aes(x = elocat, y = n)) +
     annotate(
         geom = "text",
         label = strings,
-        x = nrow(pdat),
+        x = nrow(pdat2),
         y = Inf,
         hjust = 1,
         vjust = 1.1

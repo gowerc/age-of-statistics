@@ -101,7 +101,13 @@ all_outputs = [ output for output_list in all_outputs_nested for output in outpu
 
 rule all:
     input:
-        all_outputs
+        all_outputs,
+        "outputs/global/global_elo_dist_solo_ew.png",
+        "outputs/global/global_elo_dist_solo.png",
+        "outputs/global/global_elo_dist_team.png",
+        "outputs/global/global_elo_time_AVG.png",
+        "outputs/global/global_elo_time_NGAME.png",
+        "outputs/global/global_elo_time_NPLAYER.png"
 
 
 rule db:
@@ -387,4 +393,37 @@ rule wr_estimated:
     log: "logs/{period}/{filter}/g_wr_estimated.log"
     shell: "Rscript {input[0]} {wildcards.period} {wildcards.filter} > {log} 2>&1"
 
+
+
+
+###############################
+#
+# Global
+#
+#
+
+
+rule global_elo_dist:
+    input:
+        "analysis/global_elo_dist.R",
+        "data/processed/matches.parquet"
+    output:
+        "outputs/global/global_elo_dist_solo_ew.png",
+        "outputs/global/global_elo_dist_solo.png",
+        "outputs/global/global_elo_dist_team.png"
+    log: "logs/global/global_elo_dist.log"
+    shell: "Rscript {input[0]} > {log} 2>&1"
+
+
+
+rule global_per_day:
+    input:
+        "analysis/global_per_day.R",
+        "data/processed/matches.parquet"
+    output:
+        "outputs/global/global_elo_time_AVG.png",
+        "outputs/global/global_elo_time_NGAME.png",
+        "outputs/global/global_elo_time_NPLAYER.png"
+    log: "logs/global/global_per_day.log"
+    shell: "Rscript {input[0]} > {log} 2>&1"
 

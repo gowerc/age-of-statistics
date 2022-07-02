@@ -68,32 +68,9 @@ matches <- matches_slim %>%
     collect()
 
 
-keep_valid_teams <- players %>%
-    as.data.table() %>%
-    group_by(match_id, team) %>%
-    tally() %>%
-    as_tibble() %>%
-    mutate(team = paste0("team_", team)) %>%
-    spread(team, n) %>%
-    filter(!is.na(team_1), !is.na(team_2)) %>%
-    filter(team_1 == team_2) %>%
-    ungroup()
 
 
-keep_consistant_won <- players %>%
-    as.data.table() %>%
-    group_by(match_id, team) %>%
-    summarise(
-        n_na = sum(is.na(won)),
-        u_res = length(unique(won)),
-        .groups = "drop"
-    ) %>%
-    as_tibble() %>%
-    filter(u_res == 1, n_na == 0) %>%
-    ungroup()
-
-
-
+### Check that all maps have been classified
 matches_maps <- matches %>%
     inner_join(map_ids, by = "map_type") %>%
     select(-map_type)
@@ -111,6 +88,56 @@ assert_that(
 )
 
 
+## calculate n players per team and make sure each team has the same number of players
+keep_valid_teams <- players %>%
+    as.data.table() %>%
+    group_by(match_id, team) %>%
+    tally() %>%
+    as_tibble() %>%
+    mutate(team = paste0("team_", team)) %>%
+    spread(team, n) %>%
+    filter(!is.na(team_1), !is.na(team_2)) %>%
+    filter(team_1 == team_2) %>%
+    ungroup()
+
+
+
+
+# Check that we have agreement on which team actually won
+# within team n unique = 1
+# across teams n unique = 2
+
+assert_that(
+    !any(is.na(players$won)),
+    msg = "Assumption that no 'won' is missing is FALSE"
+)
+
+n_unique_won_match <- players %>%
+    semi_join(keep_valid_teams, by = "match_id") %>%
+    as.data.table() %>%
+    group_by(match_id) %>%
+    summarise(n_unique_match = length(unique(won)), .groups = "drop") %>%
+    as_tibble()
+
+n_unique_won_team <- players %>%
+    semi_join(keep_valid_teams, by = "match_id") %>%
+    as.data.table() %>%
+    group_by(match_id, team) %>%
+    summarise(n_unique_match = length(unique(won)), .groups = "drop") %>%
+    as_tibble()
+
+keep_correct_won_within <- n_unique_won_team %>%
+    mutate(team = paste0("team_", team)) %>%
+    spread(team, n_unique_match) %>% 
+    filter( team_1==1, team_2 == 1) %>% 
+    select(match_id)
+
+keep_correct_won_between <- n_unique_won_match %>% 
+    filter(n_unique_match == 2) %>%
+    select(match_id)
+
+
+
 
 ad_matches <- matches_maps %>%
     inner_join(mapclass, by = c("map" = "map_name")) %>%
@@ -122,7 +149,8 @@ ad_matches <- matches_maps %>%
     inner_join(board_ids, by = "leaderboard_id") %>%
     select(-leaderboard_id) %>%
     semi_join(keep_valid_teams, by = "match_id") %>%
-    semi_join(keep_consistant_won, by = "match_id")
+    semi_join(keep_correct_won_within, by = "match_id") %>% 
+    semi_join(keep_correct_won_between, by = "match_id")
 
 
 
@@ -130,7 +158,8 @@ ad_players <- players %>%
     inner_join(civ_ids, by = "civ") %>%
     select(-civ, civ = civ_string) %>%
     semi_join(keep_valid_teams, by = "match_id") %>%
-    semi_join(keep_consistant_won, by = "match_id")
+    semi_join(keep_correct_won_within, by = "match_id") %>% 
+    semi_join(keep_correct_won_between, by = "match_id")
 
 
 
@@ -151,6 +180,7 @@ team_meta <- ad_players %>%
     mutate(n_players_team = n_players / 2)
 
 
+
 n_players_df <- ad_players %>%
     as.data.table() %>%
     group_by(match_id) %>%
@@ -158,6 +188,7 @@ n_players_df <- ad_players %>%
     as_tibble()
 
 
+# Check that the slot numbers (theoretical players) is equal to the number of actual players
 keep_consistant_nplayers <- team_meta %>%
     left_join(n_players_df, by = "match_id") %>%
     filter(n_players == n_players2)
@@ -177,6 +208,73 @@ ad_players2 <- ad_players %>%
 
 
 
+
+
+############################################
+#
+# Rolling civ play rate
+#
+#   Calculate the max % of times played with a single civ per player
+#   over their last 40 games
+#   All matches under 20 games are given a 0%
+#   Anything that isn't a 1v1 is given a 0%
+#
+
+civs_unique <- sort(unique(ad_players2$civ))
+
+
+civ_percent_rolling <- function(civs, civs_unique) {
+    res <- vector(mode = "numeric", length = length(civs))
+    hold <- vector(mode = "numeric", length = length(civs_unique))
+    for (i in seq_along(civs)) {
+        ind <- civs[[i]]
+        hold[ind] <- hold[ind] + 1
+        if (i > 40) {
+            ind_rem <- civs[[i - 40]]
+            hold[ind_rem] <- hold[ind_rem] - 1
+        }
+        if (i >= 20) {
+            res[[i]] <- max(hold) / sum(hold)
+        }
+    }
+    return(res)
+}
+
+assert_that(
+    civ_percent_rolling(c(rep(1, 40), rep(2, 20)), civs_unique)[60] == 0.5
+)
+
+
+matches_1v1 <- ad_matches2 %>%
+    filter(leaderboard %in% LEADERBOARDS_1v1) %>%
+    select(match_id, leaderboard, start_dt)
+
+
+players_1v1 <- ad_players2 %>%
+    inner_join(matches_1v1, by = "match_id") %>%
+    select(profile_id, leaderboard, civ, start_dt, match_id) %>%
+    arrange(leaderboard, profile_id, start_dt) %>%
+    mutate(civ_ind = as.numeric(factor(civ, levels = civs_unique)))
+
+
+players_roll <- players_1v1 %>%
+    as.data.table() %>%
+    group_by(profile_id, leaderboard) %>%
+    mutate(max_civ_pr = civ_percent_rolling(civ_ind, civs_unique)) %>%
+    as_tibble()
+
+
+players_roll_slim <- players_roll %>%
+    select(profile_id, match_id, max_civ_pr)
+
+
+ad_players3 <- ad_players2 %>%
+    left_join(players_roll_slim, by = c("profile_id", "match_id")) %>%
+    mutate(max_civ_pr = replace_na(max_civ_pr, 0))
+
+
+
+
 ############################################
 #
 # Basic Data integrety checks
@@ -186,11 +284,11 @@ ad_players2 <- ad_players %>%
 
 
 extra_matches_1 <- ad_matches2 %>%
-    anti_join(ad_players2, by = "match_id") %>%
+    anti_join(ad_players3, by = "match_id") %>%
     nrow()
 
 
-extra_matches_2 <- ad_players2 %>%
+extra_matches_2 <- ad_players3 %>%
     anti_join(ad_matches2, by = "match_id") %>%
     nrow()
 
@@ -207,7 +305,8 @@ meta_players <- list(
     "slot" = is.numeric,
     "won" = is.logical,
     "profile_id" = is.numeric,
-    "team" = is.team
+    "team" = is.team,
+    "max_civ_pr" = is.numeric
 )
 
 
@@ -242,8 +341,8 @@ is_non_missing_type <- function(x, tp) {
 assert_that(
     extra_matches_1 == 0,
     extra_matches_2 == 0,
-    all(names(ad_players2) %in% names(meta_players)),
-    all(names(meta_players) %in% names(ad_players2)),
+    all(names(ad_players3) %in% names(meta_players)),
+    all(names(meta_players) %in% names(ad_players3)),
     all(names(ad_matches2) %in% names(meta_matches)),
     all(names(meta_matches) %in% names(ad_matches2))
 )
@@ -251,7 +350,7 @@ assert_that(
 for (var in names(meta_players)) {
     assert_that(
         is_non_missing_type(
-            ad_players2[[var]],
+            ad_players3[[var]],
             meta_players[[var]]
         ),
         msg = sprintf("Variable `%s` failed validation", var)
@@ -268,7 +367,6 @@ for (var in names(meta_matches)) {
         msg = sprintf("Variable `%s` failed validation", var)
     )
 }
-
 
 
 ############################################
@@ -293,10 +391,12 @@ arrow::write_parquet(
 
 
 arrow::write_parquet(
-    x = ad_players2,
+    x = ad_players3,
     sink = file.path("data", "processed", "players.parquet")
 )
 
 
 set_log(file.path("data", "processed"), "matchmeta")
+
+
 

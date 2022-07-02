@@ -19,7 +19,6 @@ dir.create(
 
 
 
-# TODO - Update snakemake to include the global plots
 
 get_day_summary <- function(day, matches_set, players_set) {
 

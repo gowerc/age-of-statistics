@@ -1,18 +1,16 @@
 
-
 devtools::load_all()
 library(dplyr)
 library(assertthat)
 library(lubridate)
 library(arrow)
-library(dtplyr)
-library(data.table)
+library(glue)
+
 
 # args <- get_args("p02_v02", "rm_solo_all")
 args <- get_args()
 
 config <- get_config(args)
-
 
 
 
@@ -39,6 +37,9 @@ DATE_LIMIT_UPPER <- paste0(config$period$upper, " 23:59:59") %>%
     ymd_hms()
 
 
+
+
+
 map_filter <- ifelse(
     config$filter$mapclass != "All",
     function(x) filter(x, map_class == config$filter$mapclass),
@@ -54,46 +55,32 @@ matchmeta_core <- matchmeta_all %>%
     filter(match_length_igm <= config$filter$length_limit_upper) %>%
     map_filter()
 
+
+remove_civ_pickers <- players_all %>% 
+    semi_join(matchmeta_core, by = "match_id") %>% 
+    filter(max_civ_pr >= 0.70) %>% 
+    distinct(match_id)
+
+
+glue(
+    "I have removed {n1} matches out of {n2} ({n3}%)",
+    n1 = nrow(remove_civ_pickers),
+    n2 = nrow(matchmeta_core),
+    n3 = round(nrow(remove_civ_pickers) / nrow(matchmeta_core) * 100)
+)
+
+
 matchmeta <- matchmeta_core %>%
-    filter(rating_min >= config$filter$elo_limit_lower)
+    anti_join(remove_civ_pickers, by = "match_id") %>% 
+    filter(rating_min >= config$filter$elo_limit_lower) %>%
+    filter(rating_max <= config$filter$elo_limit_upper)
 
 matchmeta_slice <- matchmeta_core %>%
+    anti_join(remove_civ_pickers, by = "match_id") %>%
     filter(rating_min >= config$filter$elo_limit_lower_slide)
 
 
 
-if (config$filter$rm_single_pick) {
-
-    matchmeta_gm <- matchmeta_all %>%
-        filter(start_dt >= (DATE_LIMIT_LOWER - days(20))) %>%
-        filter(start_dt <= DATE_LIMIT_UPPER) %>%
-        filter(leaderboard == config$filter$leaderboard)
-
-    players_to_remove <- players_all %>%
-        semi_join(matchmeta_gm, by = "match_id") %>%
-        as.data.table() %>%
-        group_by(profile_id, civ) %>%
-        tally() %>%
-        as_tibble() %>%
-        as.data.table() %>%
-        group_by(profile_id) %>%
-        mutate(bign = sum(n)) %>%
-        ungroup() %>%
-        as_tibble() %>%
-        mutate(pcent = n / bign * 100) %>%
-        filter(bign >= 10, pcent >= 40) %>%
-        distinct(profile_id)
-
-    matches_to_remove <- players_all %>%
-        semi_join(players_to_remove, by = "profile_id") %>%
-        distinct(match_id)
-
-    matchmeta_slice <- matchmeta_slice %>%
-        anti_join(matches_to_remove, by = "match_id")
-
-    matchmeta <- matchmeta %>%
-        anti_join(matches_to_remove, by = "match_id")
-}
 
 
 players <- players_all %>%
@@ -114,6 +101,7 @@ assert_that(
     all(civ_count > 30),
     msg = "At least one civ has less than 30 games"
 )
+
 
 
 
