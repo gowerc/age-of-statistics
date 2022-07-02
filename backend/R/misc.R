@@ -74,7 +74,7 @@ get_data_location <- function(args, nofilter=FALSE) {
 
 get_output_location <- function(args) {
     LOCATION <- glue::glue(
-        "./outputs/{period}/{filter}/",
+        "./outputs/{period}/{filter}",
         period = args$period,
         filter = args$filter
     )

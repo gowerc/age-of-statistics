@@ -5,7 +5,7 @@ library(lubridate)
 library(arrow)
 library(purrr)
 library(tidyr)
-
+library(jsonlite)
 
 # args <- get_args("p02_v02", "rm_solo_all")
 args <- get_args()
@@ -28,6 +28,21 @@ write_parquet(
     file.path(data_location, "wr_naive.parquet")
 )
 
+
+
+filepath <- file.path(
+    get_output_location(args),
+    "wr_naive.json"
+)
+
+
+sink(filepath)
+dat %>%
+    select(est, lci, uci) %>%
+    split(dat$civ) %>%
+    map(as.list) %>%
+    toJSON(auto_unbox = TRUE)
+sink()
 
 
 

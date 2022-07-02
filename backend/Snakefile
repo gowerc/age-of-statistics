@@ -192,7 +192,9 @@ rule ad_wr_avg:
 
 
 rule ad_wr_naive:
-    output: "data/processed/{period}/{filter}/wr_naive.parquet"
+    output: 
+        "data/processed/{period}/{filter}/wr_naive.parquet",
+        "outputs/{period}/{filter}/wr_naive.json"
     input:
         "analysis/ad_wr_naive.R",
         "data/processed/{period}/{filter}/matchmeta_filter.log"
@@ -281,8 +283,8 @@ rule outputs:
         "outputs/{period}/{filter}/civ_wr_rank.png",
         "outputs/{period}/{filter}/civ_wr_bt.png",
         "outputs/{period}/{filter}/civ_wr_pr_bt.png",
-        "outputs/{period}/{filter}/cvc.json"
-
+        "outputs/{period}/{filter}/cvc.json",
+        "outputs/{period}/{filter}/wr_naive.json"
 
 
 rule cvcjson:
