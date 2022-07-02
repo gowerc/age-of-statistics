@@ -6,17 +6,11 @@
         <li>Were played on the <strong>{{config.filter.leaderboard}}</strong> leaderboard</li>
         <li>Have a map classification of <strong>{{config.filter.mapclass}}</strong></li>
         <li>The lowest Elo player has an Elo greater than <strong>{{config.filter.elo_limit_lower}}</strong></li>
+        <li>The highest Elo player has an Elo smaller than <strong>{{config.filter.elo_limit_upper}}</strong></li>
         <li>Started after <strong>{{ config.period.lower }}</strong></li>
         <li>Started before <strong>{{ config.period.upper }}</strong></li>
         <li>Had a game length longer than <strong>{{ config.filter.length_limit_lower }}</strong> in-game minutes</li>
         <li>Had a game length shorter than <strong>{{ config.filter.length_limit_upper }}</strong> in-game minutes</li>
-
-
-
-        <li v-if="config.filter.rm_single_pick">
-            Contains no players who played the same civ more than <strong>40&#65130;</strong>
-        </li>
-
     </ul>
     <p>
         The only exception is for the "Win rate by Elo" plot in which the lowest Elo requirement is

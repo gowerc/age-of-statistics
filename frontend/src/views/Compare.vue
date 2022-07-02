@@ -5,7 +5,7 @@
 
 <h3>
     <a href="#civcross">
-        Civilisation Cross Comparison
+        Civilisation Naive Win Rates Cross-Comparison
     </a>
 </h3>
 

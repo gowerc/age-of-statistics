@@ -91,9 +91,8 @@
     </ul>
     It must be noted however that this doesn't take into account biases associated with the
     "familiarity" of playing a specific civilisation more. That being said, to try and account
-    for this two additional cohorts have been created in which all players who have a play rate
-    of &#62; 40% for their most played civilisation are removed. It must be stressed
-    that this is at best a partial solution to what is a very difficult problem to solve.
+    for this players who use the same civilisation for more than 70% of their last 40 games are 
+    excluded from the 1v1 leaderboard filters. See the methods section for more details.
   </p>
 </template>
 

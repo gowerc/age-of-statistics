@@ -53,16 +53,17 @@ export default {
                 }
             });
 
-            let yrange = [
-                Math.min(...values_y) * 0.98,
-                Math.max(...values_y) * 1.02
-            ]
+            let yrange = [Math.min(...values_y), Math.max(...values_y)]
+            let scaling = 0.05
+            
+            yrange[0] = yrange[0] - (yrange[1] - yrange[0]) * scaling
+            yrange[1] = yrange[1] + (yrange[1] - yrange[0]) * scaling
 
-            let xrange = [
-                Math.min(...values_x) * 0.98,
-                Math.max(...values_x) * 1.02
-            ]
+            let xrange = [Math.min(...values_x), Math.max(...values_x)]
+            xrange[0] = xrange[0] - (xrange[1] - xrange[0]) * scaling
+            xrange[1] = xrange[1] + (xrange[1] - xrange[0]) * scaling
 
+            // Misc options
             let config = {
                 displayModeBar: false, // hide the zoom bar.
                 staticPlot: true,      // Remove interactivity
@@ -70,22 +71,7 @@ export default {
                 responsive: true       // Make plot responsive
             };
 
-            // Main data points + error bars
-            var core = {
-                x: values_x,
-                y: values_y,
-                showlegend: false,
-                mode: 'markers+text',
-                marker: {
-                    size: 10,
-                    color: "#000000",
-                },
-                type: 'scatter',
-                text: values_civ,
-                textfont: { size: 18 },
-                textposition: civ_positions,
-            }
-
+            // Axis defintitions
             let layout = {
                 xaxis: {
                     zeroline: false,
@@ -123,21 +109,65 @@ export default {
                 }
             };
 
-            // X-axis reference line
-            var line_med = {
+            // Main data points + error bars
+            var core = {
+                x: values_x,
+                y: values_y,
+                showlegend: false,
+                mode: 'markers+text',
+                marker: {
+                    size: 10,
+                    color: "#000000",
+                },
                 type: 'scatter',
-                x: [-10, 9000, 50, 50],
-                y: [50, 50, -100, 100],
+                text: values_civ,
+                textfont: { size: 18 },
+                textposition: civ_positions,
+            }
+
+            // Diagonal reference line
+            var ref_diag = {
+                type: 'scatter',
+                x: [0, 100],
+                y: [0, 100],
                 mode: 'lines',
                 showlegend: false,
                 line: {
-                    color: 'rgba(255, 0, 0, 0.8)',
+                    color: 'rgba(0, 0, 255, 0.6)',
                     width: 7,
                     dash: 'solid',
                 }
             }
 
-            var data = [line_med, core];
+            // X-axis reference line
+            var ref_x = {
+                type: 'scatter',
+                x: [0, 100],
+                y: [50, 50],
+                mode: 'lines',
+                showlegend: false,
+                line: {
+                    color: 'rgba(255, 0, 0, 0.6)',
+                    width: 7,
+                    dash: 'solid',
+                }
+            }
+
+            // Y-axis reference line
+            var ref_y = {
+                type: 'scatter',
+                x: [50, 50],
+                y: [ 0, 100],
+                mode: 'lines',
+                showlegend: false,
+                line: {
+                    color: 'rgba(255, 0, 0, 0.6)',
+                    width: 7,
+                    dash: 'solid',
+                }
+            }
+
+            var data = [ref_x, ref_y, ref_diag, core];
             
             let div = document.querySelector('div.' + this.name);
                         

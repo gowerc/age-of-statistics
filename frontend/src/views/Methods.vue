@@ -274,10 +274,18 @@
     <h3>Removing Single Civilisation Players</h3>
 
     <p>
-        In some cohorts "single civilisation pickers" have been removed. In these cohorts
-        single civilisation players are identified as those who have a played at least 10 games
-        and who have a playrate of 	&#62;40% for any single civilisation. In these cases all matches
-        where that player participated are removed.
+        In filters for 1v1 leaderboards (both Empire Wars and Random Map) matches consisting of
+        players who are deemed to be single civilisation pickers are excluded. This is determined
+        by looking at the last 40 games the player has had before each match and seeing if over
+        70% of them have been played with the same civilisation. If the player has less then 20 
+        matches prior to the match then they are included regardless. 
+        
+        The reason for this is that single civilisation pickers can heavily bias win rates; please
+        see the following
+        [article](https://www.reddit.com/r/aoe2/comments/pl4jpz/a_brief_look_at_the_impact_of_civ_picking_on_win/) 
+        to get a better understanding of the issue. Ideally the cutoff point would be lowered to
+        something more like 30-40% however we need to balance this issue against the loss in sample 
+        size that we take from removing these matches. 
     </p>
 </template>
 

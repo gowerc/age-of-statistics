@@ -6,13 +6,36 @@
     <h2>Change Log</h2>
     
     <hr>
-<!-- TODO - Add in Date-->
-    <h4>2022-July-XX</h4>
+    <h4>2022-July-02</h4>
 
     <ul>
         <li>
-            Added in new tab + outputs for game level statistics
+            Updated most recent period to include matches up to 30th June 2022
+        </li>
+        <li>
+            Added in new page + outputs for game level statistics
             (unique players over time, Elo distributions, etc)
+        </li>
+        <li>
+            Added in new page for comparing civilisation naive win rates across different
+            periods & filters
+        </li>
+        <li>
+            Added new filters for 900-1100 Elo players
+        </li>
+        <li>
+            Have applied the "no-civ-pick" derivation directly to all 1v1 leaderboard
+            filters.
+        </li>
+        <li>
+            Have removed the specific "no-civ-pick" filters as they are now
+            redundant
+        </li>
+        <li>
+            Have updated the "no-civ-pick" derivation to be based on a rolling window 
+            where a match is now removed if any players in the match have picked 
+            the same civ for more than 70% of their last 40 games. Matches in which 
+            a player has played less than 20 games are not removed.
         </li>
     </ul>
 
