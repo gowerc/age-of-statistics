@@ -97,8 +97,13 @@ realdat <- get_boot_wr(rand = FALSE) %>%
     select(coef, rank, wr)
 
 
-dat <- res %>%
-    bind_rows() %>%
+
+samples_df <- map2_df(res, 1:length(res), \(x,y) {
+    x %>% mutate(id = y)
+})
+
+
+dat <- samples_df %>%
     group_by(coef) %>%
     summarise(
         lci_rank = quantile(rank, 0.025),
@@ -111,10 +116,13 @@ dat <- res %>%
 
 
 
-
 write_parquet(
     dat,
     file.path(data_location, "wr_boot.parquet")
 )
 
+write_parquet(
+    samples_df,
+    file.path(data_location, "wr_boot_raw.parquet")
+)
 

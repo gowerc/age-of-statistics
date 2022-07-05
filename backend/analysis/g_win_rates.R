@@ -40,6 +40,8 @@ plot_pr_wr <- function(wr, pr, id) {
     return(p)
 }
 
+
+
 ###############################
 #
 # Naive Win Rates
@@ -49,6 +51,27 @@ plot_pr_wr <- function(wr, pr, id) {
 
 
 wr <- read_parquet(file.path(data_location, "wr_naive.parquet"))
+
+wrbt <- read_parquet(file.path(data_location, "wr_boot_raw.parquet"))
+
+abs_point_est <- mean(abs(50 - wr$wr))
+
+abs_ci <- wrbt %>%
+    mutate(abdiff = abs(50 - wr * 100)) %>%
+    group_by(id) %>%
+    summarise(mad = mean(abdiff), .groups = "drop") %>%
+    summarise(
+        lci = quantile(mad, 0.025),
+        uci = quantile(mad, 0.975)
+    )
+
+
+abs_string <- sprintf(
+    "Abs Mean Diff: %5.2f%% [%5.2f%%, %5.2f%%]",
+    round(abs_point_est, 4),
+    round(abs_ci$lci, 4),
+    round(abs_ci$uci, 4)
+)
 
 pdat <- wr %>%
     arrange(desc(est)) %>%
@@ -69,6 +92,7 @@ p <- ggplot(data = pdat, aes(x = civ, group = civ, ymin = lci, ymax = uci, y = w
         axis.text.x = element_text(angle = 50, hjust = 1),
         plot.caption = element_text(hjust = 0)
     ) +
+    annotate("text", y = max(wr$wr) * 1.03, x = Inf, label = abs_string, hjust = 1.05, size = 3) +
     labs(caption = get_footnotes(OUTPUT_ID, args)) +
     ylab("Win Rate (%)") +
     xlab("") +
@@ -82,6 +106,13 @@ save_plot(
     type = "standard"
 )
 
+
+
+###############################
+#
+# Naive Win Rates vs Play Rates
+#
+###############################
 
 
 
@@ -136,6 +167,14 @@ save_plot(
     id = OUTPUT_ID,
     type = "standard"
 )
+
+
+
+###############################
+#
+# Averaged Win Rates vs Play Rates
+#
+###############################
 
 
 

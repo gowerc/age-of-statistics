@@ -210,7 +210,9 @@ rule ad_wr_naive:
 
 
 rule ad_wr_boot:
-    output: "data/processed/{period}/{filter}/wr_boot.parquet"
+    output: 
+        "data/processed/{period}/{filter}/wr_boot.parquet",
+        "data/processed/{period}/{filter}/wr_boot_raw.parquet"
     input:
         "analysis/ad_wr_boot.R",
         "data/processed/{period}/{filter}/matchmeta_filter.log"
@@ -329,7 +331,8 @@ rule win_rates:
         "analysis/g_win_rates.R",
         "data/processed/{period}/{filter}/pr.parquet",
         "data/processed/{period}/{filter}/wr_avg.parquet",
-        "data/processed/{period}/{filter}/wr_naive.parquet"
+        "data/processed/{period}/{filter}/wr_naive.parquet",
+        "data/processed/{period}/{filter}/wr_boot_raw.parquet"
     log: "logs/{period}/{filter}/g_win_rates.log"
     shell: "Rscript {input[0]} {wildcards.period} {wildcards.filter} > {log} 2>&1"
 
