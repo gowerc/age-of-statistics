@@ -64,7 +64,18 @@
         It is referred to as the "naive win rate" as it doesn't take into account the civilisation play
         rates and thus more represents the civilisations win rate against the most played civilisations.
     </p>
+    
+    
+    <h3>Absolute Mean Difference</h3>
 
+    <p>
+        On the naive win rate plots a number called "Abs Mean Diff" is displayed. This number
+        represents the mean absolute difference across each civilisation's win rate from 50%.
+        The idea of this figure is to give some numeric quantification as to how close
+        the civilisations to being "perfectly" balanced. In general the closer this number is 
+        to 0 the better. It is best used in comparison across previous periods to see if civilisation
+        balance is getting better or worse over time. 
+    </p>
 
     <h3>Averaged Win Rates</h3>
 

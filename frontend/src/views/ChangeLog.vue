@@ -5,6 +5,20 @@
 
     <h2>Change Log</h2>
     
+    
+    <hr>
+    <h4>2022-July-05</h4>
+
+    <ul>
+        <li>
+            Added Pearson correlation coefficient to the cross-civilisation plots
+        </li>
+        <li>
+            Added absolute-mean-difference figure to the naive win rate plots
+        </li>
+    </ul>
+    
+    
     <hr>
     <h4>2022-July-02</h4>
 
