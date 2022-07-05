@@ -15,6 +15,38 @@
 import Plotly from 'plotly.js-dist';
 
 
+const pearson_correlation = (x, y) => {
+    let sumX = 0,
+        sumY = 0,
+        sumXY = 0,
+        sumX2 = 0,
+        sumY2 = 0;
+
+    if (x.length !== y.length) {
+        throw 'x and y are of different lengths';
+    }
+
+    const n = x.length
+
+    x.forEach((xi, index) => {
+        const yi = y[index];
+        sumX += xi;
+        sumY += yi;
+        sumXY += xi * yi;
+        sumX2 += xi * xi;
+        sumY2 += yi * yi;
+    })
+
+    const numerator = n * sumXY - sumX * sumY
+    const denominator = Math.sqrt(
+        ( n * sumX2 - sumX * sumX) *
+        ( n * sumY2 - sumY * sumY)
+    )
+    return numerator / denominator;
+};
+
+
+
 export default {
     props: {
         "name": String,
@@ -167,7 +199,21 @@ export default {
                 }
             }
 
-            var data = [ref_x, ref_y, ref_diag, core];
+            let corr = pearson_correlation(values_x, values_y);
+            corr = Math.round(corr * 1000) / 1000;
+
+            let pearson_text = {
+                x: [Math.min(...values_x) ],
+                y: [Math.max(...values_y) ],
+                mode: 'text',
+                showlegend: false,
+                text: ["Pearson's Correlation = " + corr ],
+                textposition: 'bottom-right',
+                type: 'scatter',
+                textfont: { size: 18 },
+            };
+
+            var data = [ref_x, ref_y, ref_diag, pearson_text, core];
             
             let div = document.querySelector('div.' + this.name);
                         
