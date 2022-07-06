@@ -11,10 +11,10 @@
 
     <ul>
         <li>
-            Added Pearson correlation coefficient to the cross-civilisation plots
+            Added Pearson correlation coefficient to the cross-civilisation plots (thank you @Spirit Of The Law)
         </li>
         <li>
-            Added absolute-mean-difference figure to the naive win rate plots
+            Added absolute-mean-difference figure to the naive win rate plots (thank you @Spirit Of The Law)
         </li>
     </ul>
     
