@@ -143,12 +143,25 @@
     "global_elo_dist_solo_ew": [
         "Elo values presented are players most recent Elo scores as of {date_high}<br/>",
         "Only players who have played at least one game since {date_low} are included."
-        
     ],
     
     "global_elo_dist_team": [
         "Elo values presented are players most recent Elo scores as of {date_high}<br/>",
         "Only players who have played at least one game since {date_low} are included."
-        
+    ],
+    
+    "global_elo_games_SOLO": [
+        "Elo values presented are players most recent Elo scores as of {date_high}<br/>",
+        "Only matches played in a 45 day period between {date_low} and {date_high} have been included"
+    ],
+    
+    "global_elo_games_SOLO_EW": [
+        "Elo values presented are players most recent Elo scores as of {date_high}<br/>",
+        "Only matches played in a 45 day period between {date_low} and {date_high} have been included"
+    ],
+    
+    "global_elo_games_TEAM": [
+        "Elo values presented are players most recent Elo scores as of {date_high}<br/>",
+        "Only matches played in a 45 day period between {date_low} and {date_high} have been included"
     ]
 }

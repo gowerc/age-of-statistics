@@ -7,7 +7,7 @@ library(arrow)
 library(glue)
 
 
-# args <- get_args("p02_v02", "rm_solo_all")
+# args <- get_args("p03_v06", "rm_solo_open_avg")
 args <- get_args()
 
 config <- get_config(args)
@@ -56,29 +56,39 @@ matchmeta_core <- matchmeta_all %>%
     map_filter()
 
 
-remove_civ_pickers <- players_all %>% 
-    semi_join(matchmeta_core, by = "match_id") %>% 
-    filter(max_civ_pr >= 0.70) %>% 
+remove_civ_pickers <- players_all %>%
+    semi_join(matchmeta_core, by = "match_id") %>%
+    filter(max_civ_pr >= 0.70) %>%
     distinct(match_id)
 
 
-glue(
-    "I have removed {n1} matches out of {n2} ({n3}%)",
-    n1 = nrow(remove_civ_pickers),
-    n2 = nrow(matchmeta_core),
-    n3 = round(nrow(remove_civ_pickers) / nrow(matchmeta_core) * 100)
-)
-
-
-matchmeta <- matchmeta_core %>%
-    anti_join(remove_civ_pickers, by = "match_id") %>% 
+matchmeta_with_pick <- matchmeta_core %>%
     filter(rating_min >= config$filter$elo_limit_lower) %>%
     filter(rating_max <= config$filter$elo_limit_upper)
 
-matchmeta_slice <- matchmeta_core %>%
-    anti_join(remove_civ_pickers, by = "match_id") %>%
+
+matchmeta_slice_with_pick <- matchmeta_core %>%
     filter(rating_min >= config$filter$elo_limit_lower_slide)
 
+
+matchmeta <- matchmeta_with_pick %>%
+    anti_join(remove_civ_pickers, by = "match_id")
+
+matchmeta_slice <- matchmeta_slice_with_pick %>%
+    anti_join(remove_civ_pickers, by = "match_id")
+
+
+
+nbefore <- nrow(matchmeta_with_pick)
+nafter <-  nrow(matchmeta)
+ndiff <- nbefore - nafter
+
+glue(
+    "I have removed {n1} matches out of {n2} ({n3}%)",
+    n1 = ndiff,
+    n2 = nbefore,
+    n3 = round((1 - (nafter / nbefore)) * 100)
+)
 
 
 

@@ -5,11 +5,28 @@ library(scales)
 library(lubridate)
 library(arrow)
 
-# args <- get_args("p02_v02", "rm_solo_all")
+# args <- get_args("p02_v03", "rm_team_open")
 args <- get_args()
+
+config <- get_config(args)
 data_location <- get_data_location(args)
 
 pr <- read_parquet(file.path(data_location, "pr.parquet"))
+
+
+ref_map <- list(
+    "1v1 Random Map" = c(45, 55),
+    "Team Random Map" = c(47, 53)
+)
+
+assert_that(
+    config$filter$leaderboard %in% names(ref_map),
+    msg = "Leaderboard doesn't have a reference value defined"
+)
+
+reference_lines <- ref_map[[config$filter$leaderboard]]
+
+
 
 
 plot_pr_wr <- function(wr, pr, id) {
@@ -84,7 +101,7 @@ OUTPUT_ID <- "civ_wrNaive"
 
 p <- ggplot(data = pdat, aes(x = civ, group = civ, ymin = lci, ymax = uci, y = wr)) +
     geom_hline(yintercept = 50, col = "red", alpha = 0.65) +
-    geom_hline(yintercept = c(45, 55), col = "blue", alpha = 0.65, lty = 2) +
+    geom_hline(yintercept = reference_lines, col = "blue", alpha = 0.65, lty = 2) +
     geom_errorbar(width = 0.3) +
     geom_point() +
     theme_bw() +
@@ -148,7 +165,7 @@ OUTPUT_ID <-  "civ_wrAvg"
 
 p <- ggplot(data = pdat, aes(x = civ, group = civ, ymin = lci, ymax = uci, y = wr)) +
     geom_hline(yintercept = 50, col = "red", alpha = 0.65) +
-    geom_hline(yintercept = c(45,55), col = "blue", alpha = 0.65, lty = 2) +
+    geom_hline(yintercept = reference_lines, col = "blue", alpha = 0.65, lty = 2) +
     geom_errorbar(width = 0.3) +
     geom_point() +
     theme_bw() +

@@ -1,11 +1,9 @@
 {
     "default": {
         "filters": "rm_solo_all",
-        "periods": "p03_v06"
+        "periods": "p03_v07"
     },
     "filters": {
-        
-        
         
         "rm_solo_all": {
             "label": "RM, Solo, All, >1200",
@@ -204,10 +202,10 @@
 
             ]
         },
-        "p03_v06": {
-            "label": "10May2022 - 30June2022 (Dynasties of India)",
+        "p03_v07": {
+            "label": "10May2022 - 09July2022 (Dynasties of India)",
             "lower": "2022-05-10",
-            "upper": "2022-06-30",
+            "upper": "2022-07-09",
             "filters": [
                 "rm_solo_all_avg",
                 "rm_solo_open_avg",
