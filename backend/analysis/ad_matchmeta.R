@@ -56,7 +56,7 @@ players_slim <- tbl(con, "match_players") %>%
     filter(!is.na(slot)) %>%
     filter(civ %in% local(civ_ids$civ)) %>%
     filter(team %in% c(1, 2), !is.na(team)) %>%
-    select(match_id, rating, civ, won, slot, profile_id, team)
+    select(match_id, rating, civ, won, slot, profile_id, team, color)
 
 
 players <- players_slim %>%
@@ -129,13 +129,29 @@ n_unique_won_team <- players %>%
 keep_correct_won_within <- n_unique_won_team %>%
     mutate(team = paste0("team_", team)) %>%
     spread(team, n_unique_match) %>% 
-    filter( team_1==1, team_2 == 1) %>% 
+    filter(team_1 == 1, team_2 == 1) %>% 
     select(match_id)
 
 keep_correct_won_between <- n_unique_won_match %>% 
     filter(n_unique_match == 2) %>%
     select(match_id)
 
+
+
+
+keep_correct_colors <- players %>%
+    select(match_id, color) %>%
+    data.table() %>%
+    filter(!is.na(color)) %>%
+    group_by(match_id) %>%
+    summarise(
+        n_color = length(color),
+        n_color_unique = length(unique(color)),
+        .groups = "drop"
+    ) %>%
+    filter(n_color == n_color_unique) %>%
+    filter(n_color_unique %in% c(2, 4, 6, 8)) %>%
+    as_tibble()
 
 
 
@@ -149,8 +165,10 @@ ad_matches <- matches_maps %>%
     inner_join(board_ids, by = "leaderboard_id") %>%
     select(-leaderboard_id) %>%
     semi_join(keep_valid_teams, by = "match_id") %>%
-    semi_join(keep_correct_won_within, by = "match_id") %>% 
-    semi_join(keep_correct_won_between, by = "match_id")
+    semi_join(keep_correct_won_within, by = "match_id") %>%
+    semi_join(keep_correct_won_between, by = "match_id") %>%
+    semi_join(keep_correct_colors, by = "match_id")
+    
 
 
 
@@ -158,8 +176,10 @@ ad_players <- players %>%
     inner_join(civ_ids, by = "civ") %>%
     select(-civ, civ = civ_string) %>%
     semi_join(keep_valid_teams, by = "match_id") %>%
-    semi_join(keep_correct_won_within, by = "match_id") %>% 
-    semi_join(keep_correct_won_between, by = "match_id")
+    semi_join(keep_correct_won_within, by = "match_id") %>%
+    semi_join(keep_correct_won_between, by = "match_id") %>%
+    semi_join(keep_correct_colors, by = "match_id")
+    
 
 
 
@@ -306,7 +326,8 @@ meta_players <- list(
     "won" = is.logical,
     "profile_id" = is.numeric,
     "team" = is.team,
-    "max_civ_pr" = is.numeric
+    "max_civ_pr" = is.numeric,
+    "color" = is.numeric
 )
 
 
@@ -397,6 +418,7 @@ arrow::write_parquet(
 
 
 set_log(file.path("data", "processed"), "matchmeta")
+
 
 
 

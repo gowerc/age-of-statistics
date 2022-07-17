@@ -11,6 +11,8 @@
     "Baltic": "Hybrid",
     "Black Forest": "Closed",
     "Bog Islands": "Hybrid",
+    "Bogland": "Open",
+    "Budapest": "Hybrid",
     "Cenotes": "Open",
     "Coastal Forest": "Hybrid",
     "Crater": "Open",
@@ -36,6 +38,7 @@
     "Lowland": "Open",
     "Marketplace": "Open",
     "Meadow": "Hybrid",
+    "Mediterranean" : "Hybrid",
     "MegaRandom": "Random",
     "Migration": "Water",
     "Mountain Range": "Open",
@@ -45,6 +48,7 @@
     "Northern Isles": "Water",
     "Oasis": "Open",
     "Pacific Islands": "Water",
+    "Ravines": "Open",
     "Ring Fortress": "Open",
     "Runestones": "Open",
     "Sacred Springs": "Hybrid",
@@ -59,4 +63,8 @@
     "Water Nomad": "Nomad Water",
     "Yucatan": "Closed"
 }
+
+
+
+
 
