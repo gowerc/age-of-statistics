@@ -22,7 +22,7 @@
 
 <Output
     name="dist_elo"
-    title="Distribution of Matches Played by Mean Team Elo"
+    title="Distribution of Matches Played by Mean Match Elo"
     :path="path" />
 
 <Output
