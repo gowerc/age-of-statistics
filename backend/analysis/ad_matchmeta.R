@@ -6,6 +6,7 @@ library(tidyr)
 library(lubridate)
 library(data.table)
 library(dtplyr)
+library(logger)
 
 
 con <- get_connection()
@@ -20,7 +21,7 @@ boards <- c(
     "1v1 Empire Wars"
 )
 
-
+log_info('Reading Metadata')
 
 civ_ids <- meta %>%
     filter(type == "civ") %>%
@@ -59,6 +60,8 @@ players_slim <- tbl(con, "match_players") %>%
     select(match_id, rating, civ, won, slot, profile_id, team, color)
 
 
+log_info('Reading data from database')
+
 players <- players_slim %>%
     collect()
 
@@ -68,7 +71,7 @@ matches <- matches_slim %>%
     collect()
 
 
-
+log_info('Starting Map classification and valid teams')
 
 ### Check that all maps have been classified
 matches_maps <- matches %>%
@@ -155,6 +158,8 @@ keep_correct_colors <- players %>%
 
 
 
+log_info("Starting ad_matches / ad_players")
+
 ad_matches <- matches_maps %>%
     inner_join(mapclass, by = c("map" = "map_name")) %>%
     mutate(start_dt = ymd("1970-01-01") + seconds(started)) %>%
@@ -168,7 +173,7 @@ ad_matches <- matches_maps %>%
     semi_join(keep_correct_won_within, by = "match_id") %>%
     semi_join(keep_correct_won_between, by = "match_id") %>%
     semi_join(keep_correct_colors, by = "match_id")
-    
+
 
 
 
@@ -179,11 +184,52 @@ ad_players <- players %>%
     semi_join(keep_correct_won_within, by = "match_id") %>%
     semi_join(keep_correct_won_between, by = "match_id") %>%
     semi_join(keep_correct_colors, by = "match_id")
-    
 
 
 
-team_meta <- ad_players %>%
+
+########################
+#
+# Fix Elo for update
+#
+
+log_info("Fixing Elo")
+
+remove_elo_change <- ad_matches %>%
+    select(match_id, leaderboard, start_dt) %>%
+    filter(leaderboard == "Team Random Map") %>%
+    filter(start_dt >= ymd_hms("2022-07-13 23:00:00")) %>%
+    filter(start_dt <= ymd_hms("2022-07-15 23:59:00"))
+
+adjust_for_elo_change <- ad_matches %>%
+    select(match_id, leaderboard, start_dt) %>%
+    filter(leaderboard == "Team Random Map") %>%
+    filter(start_dt <= ymd_hms("2022-07-13 23:00:00"))
+
+adjust_players <- ad_players %>%
+    semi_join(adjust_for_elo_change, by = "match_id") %>%
+    mutate(rating = 0.46134453057734565 * rating + 433.32528079864903)
+
+ad_players_adj <- ad_players %>%
+    anti_join(remove_elo_change, by = "match_id") %>%
+    anti_join(adjust_players, by = "match_id") %>%
+    bind_rows(adjust_players)
+
+ad_matches_adj <- ad_matches %>%
+    anti_join(remove_elo_change, by = "match_id")
+
+
+
+
+
+########################
+#
+# Calculate team rating stats
+#
+
+log_info("Calculating team rating stats")
+
+team_meta <- ad_players_adj %>%
     as.data.table() %>%
     group_by(match_id) %>%
     summarise(
@@ -201,7 +247,7 @@ team_meta <- ad_players %>%
 
 
 
-n_players_df <- ad_players %>%
+n_players_df <- ad_players_adj %>%
     as.data.table() %>%
     group_by(match_id) %>%
     summarise(n_players2 = max(slot)) %>%
@@ -217,13 +263,13 @@ keep_consistant_nplayers <- team_meta %>%
 
 LEADERBOARDS_1v1 <- c("1v1 Random Map", "1v1 Empire Wars")
 
-ad_matches2 <- ad_matches %>%
+ad_matches2 <- ad_matches_adj %>%
     semi_join(keep_consistant_nplayers, by = "match_id") %>%
     inner_join(team_meta, by = "match_id") %>%
     mutate(is_mirror = leaderboard %in% LEADERBOARDS_1v1 & n_unique_civ != 2)
 
 
-ad_players2 <- ad_players %>%
+ad_players2 <- ad_players_adj %>%
     semi_join(ad_matches2, by = "match_id")
 
 
@@ -239,6 +285,8 @@ ad_players2 <- ad_players %>%
 #   All matches under 20 games are given a 0%
 #   Anything that isn't a 1v1 is given a 0%
 #
+
+log_info("Calculating rolling civ play rates")
 
 civs_unique <- sort(unique(ad_players2$civ))
 
@@ -302,6 +350,7 @@ ad_players3 <- ad_players2 %>%
 #
 #
 
+log_info("Data integrety checks")
 
 extra_matches_1 <- ad_matches2 %>%
     anti_join(ad_players3, by = "match_id") %>%
@@ -397,6 +446,7 @@ for (var in names(meta_matches)) {
 #
 #
 
+log_info("Saving Data")
 
 dir.create(
     path = file.path("data", "processed"),
@@ -415,10 +465,3 @@ arrow::write_parquet(
     x = ad_players3,
     sink = file.path("data", "processed", "players.parquet")
 )
-
-
-set_log(file.path("data", "processed"), "matchmeta")
-
-
-
-

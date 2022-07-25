@@ -11,74 +11,21 @@
 #
 # Key commands
 #   - Rebuild Database
-#     ./bin/sm db
+#         ./bin/sm db
 # 
 #   - Remove all prior content (except database)
-#     ./bin/sm clean
+#         ./bin/sm clean
 #
 #   - Remove dead lingering R processes (bug of vscode-R)
-#     ./bin/sm killr
+#         ./bin/sm killr
 #
-#   - Output Datasets
-#         patchmeta
-#         data/processed/{period}/matchmeta.log
-#         data/processed/{period}/{filter}/matchmeta_filter.log
-#         data/processed/{period}/{filter}/pr.parquet
-#         data/processed/{period}/{filter}/cvc.Rds
-#         data/processed/{period}/{filter}/wr_avg.parquet
-#         data/processed/{period}/{filter}/wr_naive.parquet
+#   - Update Patch metadata
+#         ./bin/sm strings
 #
-#    - Outputs
-#          outputs/{period}/{filter}/descriptives.log
-#          outputs/{period}/{filter}/civ_dendro.png
-#          outputs/{period}/{filter}/win_rates.log
-#          outputs/{period}/{filter}/sliding_window.log
-#          outputs/{period}/{filter}/play_rates.log
-#          outputs/{period}/{filter}/wr_estimated.log
-# 
-#     Examples:
-#          ./bin/sm data/processed/matchmeta.log
-#          ./bin/sm data/processed/p03_v05/rm_solo_open/matchmeta_filter.log
-#          ./bin/sm outputs/p03_v05/rm_solo_open/win_rates.log
-#          ./bin/sm outputs/p03_v05/rm_solo_open/wr_estimated.log
-#          ./bin/sm outputs/p03_v05/rm_solo_open/play_rates.log
-#          ./bin/sm outputs/p03_v05/rm_solo_open/sliding_window.log
-#          ./bin/sm outputs/p03_v05/rm_solo_open/descriptives.log
-#          ./bin/sm outputs/p03_v05/rm_solo_open/civ_dendro.png
-#          ./bin/sm outputs/p03_v05/rm_solo_open/civ_wr_rank.png
-#          ./bin/sm outputs/p03_v05/rm_solo_open/civ_wr_bt.png
-#          ./bin/sm outputs/p03_v05/rm_solo_open/civ_wr_pr_bt.png
-#          ./bin/sm outputs/p03_v05/rm_solo_open/output.log
-#
-#
-#
-#
-#     output groups:
-#        ./bin/sm outputs/p03_v05/rm_solo_all/output.log
-#        ./bin/sm outputs/p03_v05/rm_solo_open/output.log
-#        ./bin/sm outputs/p03_v05/rm_solo_closed/output.log
-#        ./bin/sm outputs/p03_v05/rm_team_all/output.log
-#        ./bin/sm outputs/p03_v05/rm_team_open/output.log
-#        ./bin/sm outputs/p03_v05/rm_team_closed/output.log
-#        ./bin/sm outputs/p03_v05/rm_solo_open_pro/output.log
-#        ./bin/sm outputs/p03_v05/rm_solo_closed_pro/output.log
-#        ./bin/sm outputs/p03_v05/rm_solo_open_nopick/output.log
-#        ./bin/sm outputs/p03_v05/rm_solo_closed_nopick/output.log
-#
-#
-#
-#     output period
-#        export PERIOD_TEMP=p03_v03
-#       ./bin/sm outputs/$PERIOD_TEMP/rm_solo_all/output.log \
-#                outputs/$PERIOD_TEMP/rm_solo_open/output.log \
-#                outputs/$PERIOD_TEMP/rm_solo_closed/output.log \
-#                outputs/$PERIOD_TEMP/rm_team_all/output.log \
-#                outputs/$PERIOD_TEMP/rm_team_open/output.log \
-#                outputs/$PERIOD_TEMP/rm_team_closed/output.log \
-#                outputs/$PERIOD_TEMP/rm_solo_open_pro/output.log \
-#                outputs/$PERIOD_TEMP/rm_solo_closed_pro/output.log \
-#                outputs/$PERIOD_TEMP/rm_solo_open_nopick/output.log \
-#                outputs/$PERIOD_TEMP/rm_solo_closed_nopick/output.log
+#   - Specific output groups by period and filter
+#           export SELECT_PERIOD=p03_v08
+#           export SELECT_FILTER=rm_solo_open
+#           ./bin/sm outputs/$SELECT_PERIOD/$SELECT_FILTER/output.log
 #
 #
 
@@ -151,7 +98,9 @@ rule strings:
 
 
 rule ad_matchmeta:
-    output: "data/processed/matchmeta.log"
+    output:
+        "data/processed/matches.parquet",
+        "data/processed/players.parquet"
     input: "analysis/ad_matchmeta.R"
     resources: load=60
     log: "logs/ad_matchmeta.log"
@@ -160,7 +109,11 @@ rule ad_matchmeta:
 
 
 rule ad_matchmeta_filter:
-    output: "data/processed/{period}/{filter}/matchmeta_filter.log"
+    output: 
+        "data/processed/{period}/{filter}/players.parquet",
+        "data/processed/{period}/{filter}/players_broad.parquet",
+        "data/processed/{period}/{filter}/matchmeta.parquet",
+        "data/processed/{period}/{filter}/matchmeta_broad.parquet"
     input:
         "analysis/ad_matchmeta_filter.R"
     resources: load=60
@@ -173,29 +126,25 @@ rule ad_pr:
     output: "data/processed/{period}/{filter}/pr.parquet"
     input:
         "analysis/ad_pr.R",
-        "data/processed/{period}/{filter}/matchmeta_filter.log"
+        "data/processed/{period}/{filter}/matchmeta.parquet",
+        "data/processed/{period}/{filter}/players.parquet"
     log: "logs/{period}/{filter}/ad_pr.log"
     shell: "Rscript {input[0]} {wildcards.period} {wildcards.filter} > {log} 2>&1"
 
 
 
-rule ad_cvc:
-    output: "data/processed/{period}/{filter}/cvc.Rds"
+rule ad_wr_cvc:
+    output:
+        "data/processed/{period}/{filter}/wr_cvc_RAW.parquet",
+        "data/processed/{period}/{filter}/wr_cvc_AVG.parquet",
+        "data/processed/{period}/{filter}/wr_cvc_CIV.parquet",
+        "outputs/{period}/{filter}/cvc.json"
     input:
-        "analysis/ad_cvc.R",
-        "data/processed/{period}/{filter}/matchmeta_filter.log"
-    resources: load=90
-    log: "logs/{period}/{filter}/ad_cvc.log"
-    shell: "Rscript {input[0]} {wildcards.period} {wildcards.filter} > {log} 2>&1"
-
-
-
-rule ad_wr_avg:
-    output: "data/processed/{period}/{filter}/wr_avg.parquet"
-    input:
-        "analysis/ad_wr_avg.R",
-        "data/processed/{period}/{filter}/cvc.Rds"
-    log: "logs/{period}/{filter}/ad_wr_avg.log"
+        "analysis/ad_wr_cvc.R",
+        "data/processed/{period}/{filter}/matchmeta.parquet",
+        "data/processed/{period}/{filter}/players.parquet"
+    resources: cpu=4
+    log: "logs/{period}/{filter}/ad_wr_cvc.log"
     shell: "Rscript {input[0]} {wildcards.period} {wildcards.filter} > {log} 2>&1"
 
 
@@ -206,7 +155,8 @@ rule ad_wr_naive:
         "outputs/{period}/{filter}/wr_naive.json"
     input:
         "analysis/ad_wr_naive.R",
-        "data/processed/{period}/{filter}/matchmeta_filter.log"
+        "data/processed/{period}/{filter}/matchmeta.parquet",
+        "data/processed/{period}/{filter}/players.parquet"
     log: "logs/{period}/{filter}/ad_wr_naive.log"
     shell: "Rscript {input[0]} {wildcards.period} {wildcards.filter} > {log} 2>&1"
 
@@ -218,7 +168,8 @@ rule ad_wr_boot:
         "data/processed/{period}/{filter}/wr_boot_raw.parquet"
     input:
         "analysis/ad_wr_boot.R",
-        "data/processed/{period}/{filter}/matchmeta_filter.log"
+        "data/processed/{period}/{filter}/matchmeta.parquet",
+        "data/processed/{period}/{filter}/players.parquet"
     resources: load=90
     log: "logs/{period}/{filter}/ad_wr_boot.log"
     shell: "Rscript {input[0]} {wildcards.period} {wildcards.filter} > {log} 2>&1"
@@ -229,46 +180,59 @@ rule ad_wr_bt:
     output: "data/processed/{period}/{filter}/wr_bt.parquet"
     input:
         "analysis/ad_wr_bt.R",
-        "data/processed/{period}/{filter}/matchmeta_filter.log"
+        "data/processed/{period}/{filter}/matchmeta.parquet",
+        "data/processed/{period}/{filter}/players.parquet"
     log: "logs/{period}/{filter}/ad_wr_bt.log"
     shell: "Rscript {input[0]} {wildcards.period} {wildcards.filter} > {log} 2>&1"
 
 
 
 rule ad_slide_wr_elo:
-    output: "data/processed/{period}/{filter}/ad_slide_WR_ELO.parquet"
+    output: 
+        "data/processed/{period}/{filter}/ad_slide_WR_ELO.parquet",
+        "outputs/{period}/{filter}/slide_WR_ELO.json"
     input:
         "analysis/ad_slide_wr_elo.R",
-        "data/processed/{period}/{filter}/matchmeta_filter.log"
+        "data/processed/{period}/{filter}/matchmeta_broad.parquet",
+        "data/processed/{period}/{filter}/players_broad.parquet"
     log: "logs/{period}/{filter}/ad_slide_wr_elo.log"
     shell: "Rscript {input[0]} {wildcards.period} {wildcards.filter} > {log} 2>&1"
 
 
 
 rule ad_slide_wr_gl:
-    output: "data/processed/{period}/{filter}/ad_slide_WR_GL.parquet"
+    output:
+        "data/processed/{period}/{filter}/ad_slide_WR_GL.parquet",
+        "outputs/{period}/{filter}/slide_WR_GL.json"
     input:
         "analysis/ad_slide_wr_gl.R",
-        "data/processed/{period}/{filter}/matchmeta_filter.log"
+        "data/processed/{period}/{filter}/matchmeta_broad.parquet",
+        "data/processed/{period}/{filter}/players_broad.parquet"
     log: "logs/{period}/{filter}/ad_slide_wr_gl.log"
     shell: "Rscript {input[0]} {wildcards.period} {wildcards.filter} > {log} 2>&1"
 
 
 
 rule ad_slide_wr_ggl:
-    output: "data/processed/{period}/{filter}/ad_slide_WR_GGL.parquet"
+    output:
+        "data/processed/{period}/{filter}/ad_slide_WR_GGL.parquet",
+        "outputs/{period}/{filter}/slide_WR_GGL.json"
     input:
         "analysis/ad_slide_wr_ggl.R",
-        "data/processed/{period}/{filter}/matchmeta_filter.log"
+        "data/processed/{period}/{filter}/matchmeta_broad.parquet",
+        "data/processed/{period}/{filter}/players_broad.parquet"
     log: "logs/{period}/{filter}/ad_slide_wr_ggl.log"
     shell: "Rscript {input[0]} {wildcards.period} {wildcards.filter} > {log} 2>&1"
 
 
 rule ad_slide_pr_elo:
-    output: "data/processed/{period}/{filter}/ad_slide_PR_ELO.parquet"
+    output:
+        "data/processed/{period}/{filter}/ad_slide_PR_ELO.parquet",
+        "outputs/{period}/{filter}/slide_PR_ELO.json"
     input:
         "analysis/ad_slide_pr_elo.R",
-        "data/processed/{period}/{filter}/matchmeta_filter.log"
+        "data/processed/{period}/{filter}/matchmeta_broad.parquet",
+        "data/processed/{period}/{filter}/players_broad.parquet"
     log: "logs/{period}/{filter}/ad_slide_pr_elo.log"
     shell: "Rscript {input[0]} {wildcards.period} {wildcards.filter} > {log} 2>&1"
 
@@ -285,34 +249,47 @@ rule outputs:
     output:
         touch("outputs/{period}/{filter}/output.log")
     input:
-        "outputs/{period}/{filter}/descriptives.log",
+        "outputs/{period}/{filter}/dist_gamelength.png",
+        "outputs/{period}/{filter}/dist_map_normal.png",
+        "outputs/{period}/{filter}/dist_map.png",
+        "outputs/{period}/{filter}/dist_patch.png",
+        "outputs/{period}/{filter}/dist_elo.png",
         "outputs/{period}/{filter}/civ_dendro.png",
-        "outputs/{period}/{filter}/win_rates.log",
-        "outputs/{period}/{filter}/sliding_window.log",
-        "outputs/{period}/{filter}/play_rates.log",
-        "outputs/{period}/{filter}/wr_estimated.log",
+        "outputs/{period}/{filter}/civ_wrNaive.png",
+        "outputs/{period}/{filter}/civ_wrNaive_playrate.png",
+        "outputs/{period}/{filter}/civ_wrAvg.png",
+        "outputs/{period}/{filter}/civ_wrAvg_playrate.png",
+        "outputs/{period}/{filter}/slide_wrNaive_elo.png",
+        "outputs/{period}/{filter}/slide_wrNaive_gamelength.png",
+        "outputs/{period}/{filter}/slide_wrNaive_greatergamelength.png",
+        "outputs/{period}/{filter}/slide_playrate_elo.png",
+        "outputs/{period}/{filter}/dist_civpick.png",
+        "outputs/{period}/{filter}/civ_playrate.png",
+        "outputs/{period}/{filter}/civ_ewr_owr_diff.png",
+        "outputs/{period}/{filter}/civ_ewr_owr.png",
         "outputs/{period}/{filter}/civ_wr_rank.png",
         "outputs/{period}/{filter}/civ_wr_bt.png",
         "outputs/{period}/{filter}/civ_wr_pr_bt.png",
         "outputs/{period}/{filter}/cvc.json",
-        "outputs/{period}/{filter}/wr_naive.json"
-
-
-rule cvcjson:
-    output: "outputs/{period}/{filter}/cvc.json"
-    input:
-        "analysis/j_cvc.R",
-        "data/processed/{period}/{filter}/cvc.Rds"
-    log: "logs/{period}/{filter}/j_cvc.log"
-    shell: "Rscript {input[0]} {wildcards.period} {wildcards.filter} > {log} 2>&1"
+        "outputs/{period}/{filter}/wr_naive.json",
+        "outputs/{period}/{filter}/slide_PR_ELO.json",
+        "outputs/{period}/{filter}/slide_WR_ELO.json",
+        "outputs/{period}/{filter}/slide_WR_GGL.json",
+        "outputs/{period}/{filter}/slide_WR_GL.json"
 
 
 
 rule descriptives:
-    output: "outputs/{period}/{filter}/descriptives.log"
+    output:
+        "outputs/{period}/{filter}/dist_gamelength.png",
+        "outputs/{period}/{filter}/dist_map_normal.png",
+        "outputs/{period}/{filter}/dist_map.png",
+        "outputs/{period}/{filter}/dist_patch.png",
+        "outputs/{period}/{filter}/dist_elo.png"
     input:
         "analysis/g_descriptives.R",
-        "data/processed/{period}/{filter}/matchmeta_filter.log"
+        "data/processed/{period}/{filter}/matchmeta.parquet",
+        "data/processed/{period}/{filter}/players.parquet"
     log: "logs/{period}/{filter}/g_descriptives.log"
     shell: "Rscript {input[0]} {wildcards.period} {wildcards.filter} > {log} 2>&1"
 
@@ -322,22 +299,37 @@ rule civ_dendro:
     output: "outputs/{period}/{filter}/civ_dendro.png"
     input:
         "analysis/g_civ_dendro.R",
-        "data/processed/{period}/{filter}/cvc.Rds"
+        "data/processed/{period}/{filter}/wr_cvc_CIV.parquet"
     log: "logs/{period}/{filter}/g_civ_dendro.log"
     shell: "Rscript {input[0]} {wildcards.period} {wildcards.filter} > {log} 2>&1"
 
 
 
-rule win_rates:
-    output: "outputs/{period}/{filter}/win_rates.log"
+rule win_rates_naive:
+    output:
+        "outputs/{period}/{filter}/civ_wrNaive.png",
+        "outputs/{period}/{filter}/civ_wrNaive_playrate.png"
     input:
-        "analysis/g_win_rates.R",
+        "analysis/g_wr_naive.R",
         "data/processed/{period}/{filter}/pr.parquet",
-        "data/processed/{period}/{filter}/wr_avg.parquet",
         "data/processed/{period}/{filter}/wr_naive.parquet",
         "data/processed/{period}/{filter}/wr_boot_raw.parquet"
-    log: "logs/{period}/{filter}/g_win_rates.log"
+    log: "logs/{period}/{filter}/g_wr_naive.log"
     shell: "Rscript {input[0]} {wildcards.period} {wildcards.filter} > {log} 2>&1"
+
+
+
+rule win_rates_avg:
+    output:
+        "outputs/{period}/{filter}/civ_wrAvg.png",
+        "outputs/{period}/{filter}/civ_wrAvg_playrate.png"
+    input:
+        "analysis/g_wr_avg.R",
+        "data/processed/{period}/{filter}/pr.parquet",
+        "data/processed/{period}/{filter}/wr_cvc_AVG.parquet",
+    log: "logs/{period}/{filter}/g_wr_avg.log"
+    shell: "Rscript {input[0]} {wildcards.period} {wildcards.filter} > {log} 2>&1"
+
 
 
 
@@ -365,7 +357,11 @@ rule win_rates_bt:
 
 
 rule sliding_window:
-    output: "outputs/{period}/{filter}/sliding_window.log"
+    output:
+        "outputs/{period}/{filter}/slide_wrNaive_elo.png",
+        "outputs/{period}/{filter}/slide_wrNaive_gamelength.png",
+        "outputs/{period}/{filter}/slide_wrNaive_greatergamelength.png",
+        "outputs/{period}/{filter}/slide_playrate_elo.png"
     input:
         "analysis/g_sliding_window.R",
         "data/processed/{period}/{filter}/ad_slide_WR_ELO.parquet",
@@ -381,17 +377,22 @@ rule sliding_window:
 
 
 rule play_rates:
-    output: "outputs/{period}/{filter}/play_rates.log"
+    output:
+        "outputs/{period}/{filter}/dist_civpick.png",
+        "outputs/{period}/{filter}/civ_playrate.png"
     input:
         "analysis/g_play_rates.R",
         "data/processed/{period}/{filter}/pr.parquet",
-        "data/processed/{period}/{filter}/matchmeta_filter.log"
+        "data/processed/{period}/{filter}/matchmeta.parquet",
+        "data/processed/{period}/{filter}/players.parquet"
     log: "logs/{period}/{filter}/g_play_rates.log"
     shell: "Rscript {input[0]} {wildcards.period} {wildcards.filter} > {log} 2>&1"
 
 
 rule wr_estimated:
-    output: "outputs/{period}/{filter}/wr_estimated.log"
+    output:
+        "outputs/{period}/{filter}/civ_ewr_owr_diff.png",
+        "outputs/{period}/{filter}/civ_ewr_owr.png"
     input:
         "analysis/g_wr_estimated.R",
         "data/processed/{period}/{filter}/pr.parquet",

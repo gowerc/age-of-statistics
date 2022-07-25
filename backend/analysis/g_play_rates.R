@@ -136,5 +136,4 @@ save_plot(
     type = "standard"
 )
 
-set_log(get_output_location(args), "play_rates")
 

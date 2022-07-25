@@ -4,13 +4,32 @@ library(ggplot2)
 library(scales)
 library(lubridate)
 library(arrow)
+library(tidyr)
 
 # args <- get_args("p02_v02", "rm_solo_all")
 args <- get_args()
 data_location <- get_data_location(args)
 
-cvc_mat <- readRDS(file.path(data_location, "cvc.Rds"))[["cvc"]]
 
+
+cvc_dat <- read_parquet(
+    file.path(data_location, "wr_cvc_CIV.parquet")
+)
+
+cvc_dat2 <- cvc_dat %>%
+    select(civ1, civ2, med) %>%
+    spread(civ2, med)
+
+civs <- cvc_dat2$civ1
+
+cvc_mat <- cvc_dat2 %>%
+    select(-civ1) %>%
+    as.matrix()
+
+diag(cvc_mat) <- 0.5
+rownames(cvc_mat) <- civs
+colnames(cvc_mat) <- civs
+cvc_mat <- cvc_mat / 100
 
 hmod <- hclust(
     as.dist(1 - lsa::cosine(cvc_mat - 0.5)),

@@ -30,7 +30,8 @@ packages <- c(
     "mvtnorm",
     "arrow",
     "fastglm",
-    "RhpcBLASctl"
+    "RhpcBLASctl",
+    "logger"
 )
 
 

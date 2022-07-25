@@ -131,14 +131,6 @@ get_config <- function(args) {
 
 
 
-set_log <- function(path, id) {
-    logpath <- file.path(path, paste0(id, ".log"))
-    sink(logpath)
-    cat("complete")
-    sink()
-}
-
-
 get_footnotes <- function(id, args, add_Filter = TRUE) {
     footnotes <- jsonlite::read_json(
         file.path("data", "raw", "footnotes.json")

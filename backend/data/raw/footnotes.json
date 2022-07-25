@@ -36,8 +36,8 @@
     
     "slide_wrNaive_elo": [
         "Win rates are calculated at each point X after filtering the data to",
-        "only include matches where mean Elo is within +- 0.1 percentiles of X.<br/>",
-        "Win rates have been adjusted for difference in mean Elo.<br/>",
+        "only include matches where mean match Elo is within +- 0.1 percentiles of X.<br/>",
+        "Win rates have been adjusted for difference in team Elo.<br/>",
         "The error bars represent the 95% confidence interval. ",
         "All lines have been smoothed using a GAM."
     ],
@@ -45,7 +45,7 @@
     "slide_wrNaive_gamelength": [
         "Win rates are calculated at each point X after filtering the data to",
         "only include matches where the game length was within +- 5  in-game minutes of X.<br/>",
-        "Win rates have been adjusted for difference in mean Elo.<br/>",
+        "Win rates have been adjusted for difference in team Elo.<br/>",
         "The error bars represent the 95% confidence interval.",
         "All lines have been smoothed using a GAM."
     ],
@@ -53,24 +53,24 @@
     "slide_wrNaive_greatergamelength": [
         "Win rates are calculated at each point X after filtering the data to only include matches",
         "where the game length was greater than X in-game minutes.<br/>",
-        "Win rates have been adjusted for difference in mean Elo.<br/>",
+        "Win rates have been adjusted for difference in team Elo.<br/>",
         "The error bars represent the 95% confidence interval.",
         "All lines have been smoothed using a GAM."
     ],
     
     "slide_playrate_elo": [
         "Play rates are calculated at each point X after filtering the data to",
-        "only include matches where mean Elo is within +- 0.1 percentiles of X.<br/>"
+        "only include matches where mean match Elo is within +- 0.1 percentiles of X.<br/>"
     ],
     
     "civ_wrNaive": [
-        "Win rates have been adjusted for difference in mean Elo.<br/>",
+        "Win rates have been adjusted for difference in team Elo.<br/>",
         "The error bars represent the 95% confidence interval.",
         "The dashed blue lines represent an arbitrary region that could be considered as 'balanced'"
     ],
     
     "civ_wr_bt": [
-        "Scores have been adjusted for difference in mean Elo.",
+        "Scores have been adjusted for difference in team Elo.",
         "The error bars represent the 95% confidence interval.<br/>",
         "The red line represents the median civilisation score.<br/>",
         "The dashed blue lines represent scores that have an expected 45% & 55% win rate vs the median score.<br/>",
@@ -78,24 +78,24 @@
     ],
     
     "civ_wr_pr_bt": [
-        "Scores have been adjusted for difference in mean Elo.<br/>",
+        "Scores have been adjusted for difference in team Elo.<br/>",
         "The horizontal red line represents the median civilisation score.<br/>",
         "Vikings have been used as the refence civilisation and thus have a score of 0"
     ],
     
     "civ_wrNaive_playrate":[
-        "Win rates have been adjusted for difference in mean Elo."
+        "Win rates have been adjusted for difference in team Elo."
     ],
     
     "civ_wrAvg": [
         "Win rates have been calculated as the mean of each separate civ x civ win rate.<br/>",
-        "Win rates have been adjusted for difference in mean Elo.<br/>",
+        "Win rates have been adjusted for difference in team Elo.<br/>",
         "The error bars represent the 95% confidence interval."
     ],
     
     "civ_wrAvg_playrate": [
         "Win rates have been calculated as the mean of each separate civ x civ win rate.<br/>",
-        "Win rates have been adjusted for difference in mean Elo."
+        "Win rates have been adjusted for difference in team Elo."
     ],
     
     "civ_ewr_owr_diff": [
@@ -112,7 +112,7 @@
     ],
     
     "civ_wr_rank": [
-        "Win rates have been adjusted for difference in mean Elo.<br/>",
+        "Win rates have been adjusted for difference in team Elo.<br/>",
         "The error bars represent the 95% confidence interval.<br/>",
         "Confidence intervals were calculated by bootstrap resampling"
     ],

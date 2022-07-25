@@ -1,5 +1,6 @@
 import shutil
 import pathlib
+import os
 
 outloc = pathlib.Path("./public/outputs")
 
@@ -9,16 +10,22 @@ if outloc.exists():
 shutil.copytree("../backend/outputs", outloc)
 
 
-configloc = pathlib.Path("./src/components/json/config.json")
-if configloc.exists():
-    configloc.unlink()
+def remove_then_copy(from_loc, to_loc):
+    from_loc = pathlib.Path(from_loc)
+    to_loc = pathlib.Path(to_loc)
+    if to_loc.exists():
+        to_loc.unlink()
+    os.makedirs(os.path.dirname(to_loc), exist_ok=True)
+    shutil.copy2(from_loc, to_loc)
 
-shutil.copy2("../backend/data/raw/config.json", configloc)
+
+remove_then_copy(
+    "../backend/data/raw/config.json",
+    "./src/components/json/config.json"
+)
 
 
-
-footnotesloc =  pathlib.Path("./src/components/json/footnotes.json")
-if footnotesloc.exists():
-    footnotesloc.unlink()
-shutil.copy2("../backend/data/raw/footnotes.json", footnotesloc)
-
+remove_then_copy(
+    "../backend/data/raw/footnotes.json",
+    "./src/components/json/footnotes.json"
+)

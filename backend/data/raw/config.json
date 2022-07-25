@@ -1,7 +1,7 @@
 {
     "default": {
         "filters": "rm_solo_all",
-        "periods": "p03_v07"
+        "periods": "p03_v08"
     },
     "filters": {
         
@@ -32,7 +32,7 @@
             "elo_limit_lower": 1200,
             "elo_limit_upper": 9999,
             "elo_limit_lower_slide": 800,
-            "length_limit_lower": 6,
+            "length_limit_lower": 9,
             "length_limit_upper": 180
         },
         "rm_solo_nomad": {
@@ -75,7 +75,7 @@
             "elo_limit_lower": 900,
             "elo_limit_upper": 1100,
             "elo_limit_lower_slide": 700,
-            "length_limit_lower": 6,
+            "length_limit_lower": 9,
             "length_limit_upper": 180
         },
         "rm_solo_nomad_avg": {
@@ -95,65 +95,87 @@
         
         
         "rm_team_all": {
-            "label": "RM, Team, All, >1800",
+            "label": "RM, Team, All, >1200",
             "leaderboard": "Team Random Map",
             "mapclass": "All",
-            "elo_limit_lower": 1800,
+            "elo_limit_lower": 1200,
             "elo_limit_upper": 9999,
-            "elo_limit_lower_slide": 1000,
+            "elo_limit_lower_slide": 800,
             "length_limit_lower": 6,
             "length_limit_upper": 180
         },
         "rm_team_open": {
-            "label": "RM, Team, Open, >1800",
+            "label": "RM, Team, Open, >1200",
             "leaderboard": "Team Random Map",
             "mapclass": "Open",
-            "elo_limit_lower": 1800,
+            "elo_limit_lower": 1200,
             "elo_limit_upper": 9999,
-            "elo_limit_lower_slide": 1000,
+            "elo_limit_lower_slide": 800,
             "length_limit_lower": 6,
             "length_limit_upper": 180
         },
         "rm_team_closed": {
-            "label": "RM, Team, Closed, >1800",
+            "label": "RM, Team, Closed, >1200",
             "leaderboard": "Team Random Map",
             "mapclass": "Closed",
-            "elo_limit_lower": 1800,
+            "elo_limit_lower": 1200,
             "elo_limit_upper": 9999,
-            "elo_limit_lower_slide": 1000,
-            "length_limit_lower": 6,
+            "elo_limit_lower_slide": 800,
+            "length_limit_lower": 9,
             "length_limit_upper": 180
         },
         "rm_team_nomad": {
-            "label": "RM, Team, Nomad, >1800",
+            "label": "RM, Team, Nomad, >1200",
             "leaderboard": "Team Random Map",
             "mapclass": "Nomad",
-            "elo_limit_lower": 1800,
+            "elo_limit_lower": 1200,
             "elo_limit_upper": 9999,
-            "elo_limit_lower_slide": 1000,
+            "elo_limit_lower_slide": 800,
             "length_limit_lower": 6,
             "length_limit_upper": 180
         },
         
         
-        
-        "rm_solo_open_pro": {
-            "label": "RM, Solo, Open, >1600",
+        "rm_solo_pro_all": {
+            "label": "RM, Solo, Open, >1700",
             "leaderboard": "1v1 Random Map",
             "mapclass": "Open",
-            "elo_limit_lower": 1600,
+            "elo_limit_lower": 1700,
             "elo_limit_upper": 9999,
             "elo_limit_lower_slide": 1200,
             "length_limit_lower": 6,
             "length_limit_upper": 180
         },
-        "rm_solo_closed_pro": {
-            "label": "RM, Solo, Closed, >1600",
+        "rm_solo_pro_open": {
+            "label": "RM, Solo, Open, >1700",
             "leaderboard": "1v1 Random Map",
-            "mapclass": "Closed",
-            "elo_limit_lower": 1600,
+            "mapclass": "Open",
+            "elo_limit_lower": 1700,
             "elo_limit_upper": 9999,
             "elo_limit_lower_slide": 1200,
+            "length_limit_lower": 6,
+            "length_limit_upper": 180
+        },
+        "rm_solo_pro_closed": {
+            "label": "RM, Solo, Closed, >1700",
+            "leaderboard": "1v1 Random Map",
+            "mapclass": "Closed",
+            "elo_limit_lower": 1700,
+            "elo_limit_upper": 9999,
+            "elo_limit_lower_slide": 1200,
+            "length_limit_lower": 9,
+            "length_limit_upper": 180
+        },
+        
+        
+        
+        "rm_solo_gt2000_open": {
+            "label": "RM, Solo, Open, >2000",
+            "leaderboard": "1v1 Random Map",
+            "mapclass": "Open",
+            "elo_limit_lower": 2000,
+            "elo_limit_upper": 9999,
+            "elo_limit_lower_slide": 1500,
             "length_limit_lower": 6,
             "length_limit_upper": 180
         }
@@ -162,7 +184,7 @@
         
     },
     "periods": {
-        "p01_v03" : {
+        "p01_v04" : {
             "label": "10Oct2021 - 16Nov2021 (Swordsman Buff)",
             "lower": "2021-10-10",
             "upper": "2021-11-16",
@@ -173,14 +195,15 @@
                 "rm_solo_all",
                 "rm_solo_open",
                 "rm_solo_closed",
-                "rm_solo_open_pro",
-                "rm_solo_closed_pro",
+                "rm_solo_pro_all",
+                "rm_solo_pro_open",
+                "rm_solo_pro_closed",
                 "rm_team_all",
                 "rm_team_open",
                 "rm_team_closed"
             ]
         },
-        "p02_v03": {
+        "p02_v04": {
             "label": "20Nov2021 - 26Apr2022 (Unique Infantry Buff)",
             "lower": "2021-11-20",
             "upper": "2022-04-26",
@@ -193,8 +216,9 @@
                 "rm_solo_open",
                 "rm_solo_closed",
                 "rm_solo_nomad",
-                "rm_solo_open_pro",
-                "rm_solo_closed_pro",
+                "rm_solo_pro_all",
+                "rm_solo_pro_open",
+                "rm_solo_pro_closed",
                 "rm_team_all",
                 "rm_team_open",
                 "rm_team_closed",
@@ -202,10 +226,10 @@
 
             ]
         },
-        "p03_v07": {
-            "label": "10May2022 - 09July2022 (Dynasties of India)",
-            "lower": "2022-05-10",
-            "upper": "2022-07-09",
+        "p03_v08": {
+            "label": "14May2022 - 22July2022 (Dynasties of India)",
+            "lower": "2022-05-14",
+            "upper": "2022-07-22",
             "filters": [
                 "rm_solo_all_avg",
                 "rm_solo_open_avg",
@@ -213,11 +237,14 @@
                 "rm_solo_all",
                 "rm_solo_open",
                 "rm_solo_closed",
-                "rm_solo_open_pro",
-                "rm_solo_closed_pro",
+                "rm_solo_nomad",
+                "rm_solo_pro_all",
+                "rm_solo_pro_open",
+                "rm_solo_pro_closed",
                 "rm_team_all",
                 "rm_team_open",
-                "rm_team_closed"
+                "rm_team_closed",
+                "rm_team_nomad"
             ]
         }
     }

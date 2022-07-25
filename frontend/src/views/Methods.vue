@@ -11,7 +11,7 @@
         the sample size is too small!". A natural question is then "well how big should the sample size
         be?" or the equivalent question of "how much should I trust this statistic given the sample size".
         This is where confidence intervals come in.
-        
+        <br/><br/>
         A key thing to realise is that when we create statistics, like win rates, what we are creating
         are estimates of some true unknown value. Confidence intervals can thus be thought of as the range
         of values in which the true value is likely to be found in i.e. there is a 95% chance that the
@@ -19,7 +19,7 @@
         intervals are presented as error bars around the point estimates. More generally speaking, the
         wider the confidence interval is the less trust we should have in the estimate whilst the narrower
         the confidence interval is the more trust we should have in the estimate.
-            
+        <br/><br/>
         Please note that my above description of confidence intervals isn't technically correct in that
         if you repeated it to a statistician they will probably roll their eyes at you or lecture you.
         That being said it is good enough to give an intuitive sense of what confidence intervals
@@ -69,37 +69,31 @@
     <h3>Absolute Mean Difference</h3>
 
     <p>
-        On the naive win rate plots a number called "Abs Mean Diff" is displayed. This number
-        represents the mean absolute difference across each civilisation's win rate from 50%.
+        On the naive win rate plots a number called "Mean Abs Diff" is displayed. This number
+        represents the mean absolute difference across each civilisations win rate from 50%.
         The idea of this figure is to give some numeric quantification as to how close
         the civilisations to being "perfectly" balanced. In general the closer this number is 
         to 0 the better. It is best used in comparison across previous periods to see if civilisation
-        balance is getting better or worse over time. 
+        balance is getting better or worse over time. Confidence intervals for these statistics
+        were calculated by bootstrap re-sampling.
     </p>
 
     <h3>Averaged Win Rates</h3>
 
     <p>
         Averaged win rates are calculated by taking the average across all civilisation v civilisation win
-        rates. I.e The Aztec win rate is calculated by taking the mean of their win rate vs Berbers,
+        rates. I.e. The Aztec win rate is calculated by taking the mean of their win rate vs Berbers,
         Britons, Bulgarians, etc, separately. This statistic can be thought of as the win rate if your
         opponent was picking their civilisation at random.
 
-        For 1v1's each civilisation v civilisation win rate is calculated using the "naive" method
-        mentioned above. For team games though the win rates are calculated by fitting a logistic
-        regression that derives the probability of winning as the average across each pairwise
-        civilisation match-up.  For example, let's say in match \(j\) that team 1 had civilisations A, B
-        and C whilst team 2 had civilisations X, Y and Z. The model fitted would then be:
-
+        Each pairwise civilisation win rate is calculated by filtering the data for matches that
+        the two civilisations on opposing teams and then calculating the win rate adjusting for 
+        difference in mean team Elo, i.e.
+        
         $$
             \displaylines{
-                Y_{j} \sim Bin(1, p_{j}) \\
-                p_j = \text{logistic}
-                \left(\frac{
-                \beta_{AX} + \beta_{AY} + \beta_{AZ} + 
-                \beta_{BX} + \beta_{BY} + \beta_{BZ} + 
-                \beta_{CX} + \beta_{CY} + \beta_{CZ}
-                }{9} +  \beta_d d_{j}\right)
+                Y_{k} \sim Bin(1, p_{k}) \\
+                p_k = \text{logistic}( \beta_{mn} +  \beta_d d_{k})
             }
         $$
 
@@ -107,26 +101,38 @@
 
         <ul>
             <li>
-                \(Y_j\) = 1 if team 1 won or 0 if team 2 won
+                \(k\) is the match index for all matches that have civilisation \(m\) and \(n\)
+                on opposing sides
+            </li>
+            <li>
+                \(Y_k\) = 1 if the team with civilisation \(m\) on it won otherwise 0
             </li>
             <li>
                 \(\beta_{mn}\) is civilisation \(m\)'s win rate against civilisation \(n\)
             </li>
             <li>
-                \(d_j\) is the difference in mean Elo between team 1 and team 2
+                \(d_k\) is the difference in mean team Elo between team 1 and team 2 in match \(k\)
             </li>
             <li>
-                \(\beta_d\) is the importance of the difference in mean Elo between team 1 and team 2 in match \(j\)
+                \(\beta_d\) is the coefficient for \(d_k\)
+                
             </li>
         </ul>
 
+        Confidence intervals for these statistics were calculated by bootstrap re-sampling.
+        <br/><br/>
         Please note that a major limitation of this formulation is that it doesn't allow for any
-        interaction effects. I.e. it doesn't account for the fact that some civilisation pairings
+        interaction effects in team games.
+        I.e. it doesn't account for the fact that some civilisation pairings
         are stronger together than if they were to be considered independently (think a team of all
-        cavalry civilisation vs a team of both archer and cavalry civilisation).
-        
+        cavalry civilisation vs a team of both archer and cavalry civilisations). Likewise it also
+        doesn't account for the correlation between civilisations in team games due to them
+        being picked together
+        e.g. maybe Britons win rate is higher than it should be because it is always picked alongside
+        Franks.
+        <br/><br/>
         In all cases, a small Laplace smoother was added to avoid issues associated with certainty
-        bias from low civilisation v civilisation sample sizes (most notably in the Empire Wars data).
+        bias from low civilisation v civilisation sample sizes.
         This will mean that the confidence intervals are very marginally underestimated and biased
         towards 50%; realistically however this should be negligible.
     </p>
@@ -187,90 +193,50 @@
         to the expected win percentage:
     </p>
     <table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
-    <thead>
-    <tr>
-    <th style="text-align:center;">
-    Difference in Performance Score
-    </th>
-    <th style="text-align:center;">
-    Expected Win Percentage
-    </th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr>
-    <td style="text-align:center;">
-    0.4
-    </td>
-    <td style="text-align:center;">
-    59.87%
-    </td>
-    </tr>
-    <tr>
-    <td style="text-align:center;">
-    0.3
-    </td>
-    <td style="text-align:center;">
-    57.44%
-    </td>
-    </tr>
-    <tr>
-    <td style="text-align:center;">
-    0.2
-    </td>
-    <td style="text-align:center;">
-    54.98%
-    </td>
-    </tr>
-    <tr>
-    <td style="text-align:center;">
-    0.1
-    </td>
-    <td style="text-align:center;">
-    52.5%
-    </td>
-    </tr>
-    <tr>
-    <td style="text-align:center;">
-    0.0
-    </td>
-    <td style="text-align:center;">
-    50%
-    </td>
-    </tr>
-    <tr>
-    <td style="text-align:center;">
-    -0.1
-    </td>
-    <td style="text-align:center;">
-    47.5%
-    </td>
-    </tr>
-    <tr>
-    <td style="text-align:center;">
-    -0.2
-    </td>
-    <td style="text-align:center;">
-    45.02%
-    </td>
-    </tr>
-    <tr>
-    <td style="text-align:center;">
-    -0.3
-    </td>
-    <td style="text-align:center;">
-    42.56%
-    </td>
-    </tr>
-    <tr>
-    <td style="text-align:center;">
-    -0.4
-    </td>
-    <td style="text-align:center;">
-    40.13%
-    </td>
-    </tr>
-    </tbody>
+        <thead>
+            <tr>
+                <th style="text-align:center;"> Difference in Performance Score </th>
+                <th style="text-align:center;"> Expected Win Percentage </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td style="text-align:center;"> 0.4 </td>
+                <td style="text-align:center;"> 59.87% </td>
+            </tr>
+            <tr>
+                <td style="text-align:center;"> 0.3 </td>
+                <td style="text-align:center;"> 57.44% </td>
+            </tr>
+            <tr>
+                <td style="text-align:center;"> 0.2 </td>
+                <td style="text-align:center;"> 54.98% </td>
+            </tr>
+            <tr>
+                <td style="text-align:center;"> 0.1 </td>
+                <td style="text-align:center;"> 52.5% </td>
+            </tr>
+            <tr>
+                <td style="text-align:center;"> 0.0 </td>
+                <td style="text-align:center;"> 50% </td>
+            </tr>
+            <tr>
+                <td style="text-align:center;"> -0.1 </td>
+                <td style="text-align:center;"> 47.5% </td>
+            </tr>
+            <tr>
+                <td style="text-align:center;"> -0.2 </td>
+                <td style="text-align:center;"> 45.02% </td>
+            </tr>
+            <tr>
+                <td style="text-align:center;"> -0.3 </td>
+                <td style="text-align:center;"> 42.56% </td>
+            </tr>
+            <tr>
+                <td style="text-align:center;"> -0.4 </td>
+                <td style="text-align:center;"> 40.13% </td>
+            </tr>
+        </tbody>
     </table>
     <p>
         Note that an obvious limitation to this type of model is that it assumes linearity in the
@@ -293,7 +259,9 @@
         
         The reason for this is that single civilisation pickers can heavily bias win rates; please
         see the following
-        [article](https://www.reddit.com/r/aoe2/comments/pl4jpz/a_brief_look_at_the_impact_of_civ_picking_on_win/) 
+        <a href="https://www.reddit.com/r/aoe2/comments/pl4jpz/a_brief_look_at_the_impact_of_civ_picking_on_win/">
+            article
+        </a> 
         to get a better understanding of the issue. Ideally the cutoff point would be lowered to
         something more like 30-40% however we need to balance this issue against the loss in sample 
         size that we take from removing these matches. 

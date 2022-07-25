@@ -134,5 +134,3 @@ write_parquet(
     matchmeta_slice,
     file.path(get_data_location(args), "matchmeta_broad.parquet")
 )
-
-set_log(get_data_location(args), "matchmeta_filter")

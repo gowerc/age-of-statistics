@@ -174,4 +174,3 @@ save_plot(
     type = "square"
 )
 
-set_log(get_output_location(args), "sliding_window")
