@@ -137,9 +137,9 @@
         
         
         "rm_solo_pro_all": {
-            "label": "RM, Solo, Open, >1700",
+            "label": "RM, Solo, All, >1700",
             "leaderboard": "1v1 Random Map",
-            "mapclass": "Open",
+            "mapclass": "All",
             "elo_limit_lower": 1700,
             "elo_limit_upper": 9999,
             "elo_limit_lower_slide": 1200,

@@ -6,11 +6,25 @@
     <h2>Change Log</h2>
 
 
+    <hr>
+    <h4>2022-July-26</h4>
+    <ul>
+        <li>
+            Fixed bug that meant the "RM, Solo, All, >1700" filter was identical to the
+            "RM, Solo, Open, >1700" filter. Thank you @Lepigozzus
+        </li>
+        <li>
+            Fixed bug that meant the civilisation vs civilisation plots were sorted in the wrong
+            order
+        </li>
+    </ul>
+
+
+
 
 
     <hr>
     <h4>2022-July-25</h4>
-
     <ul>
         <li>
             Updated most recent period to include matches up to 22nd July 2022
@@ -68,7 +82,6 @@
 
     <hr>
     <h4>2022-July-05</h4>
-
     <ul>
         <li>
             Added Pearson correlation coefficient to the cross-civilisation plots (thank you @Spirit Of The Law)
@@ -84,7 +97,6 @@
 
     <hr>
     <h4>2022-July-02</h4>
-
     <ul>
         <li>
             Updated most recent period to include matches up to 30th June 2022
@@ -122,9 +134,7 @@
 
 
     <hr>
-
     <h4>2022-June-26</h4>
-
     <ul>
         <li>Updated most recent period to include matches up to 23rd June 2022</li>
         <li>Added new output "Bradley-Terry Score by Civilisation" to the "Win Rates" tab</li>
@@ -149,9 +159,7 @@
 
 
     <hr>
-
     <h4>2022-June-11</h4>
-
     <ul>
         <li>Updated most recent "period" to include matches up to 9th June 2022</li>
         <li>Added new output "Naive Win Rates (Ranked) by Civilisation" to the "Win Rates" tab</li>
@@ -165,9 +173,7 @@
 
 
     <hr>
-
     <h4>2022-May-22</h4>
-
     <ul>
         <li>Updated most recent "period" to include matches up to 21st May 2022</li>
         <li>Added WR vs Elo to the individual civilisation panel</li>
@@ -181,9 +187,7 @@
 
 
     <hr>
-
     <h4>2022-May-19</h4>
-    
     <ul>
         <li>Updated most recent "period" to include matches up to 17th   May 2022</li>
         <li>Included new section for “individual civilisation” win rates</li>
@@ -194,7 +198,6 @@
     
     <hr>
     <h4>Pre-2022-May-19</h4>
-
     <ul>
         <li>I didn't keep a log... :(</li>
     </ul>

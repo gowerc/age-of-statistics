@@ -17,6 +17,29 @@ import Plotly from 'plotly.js-dist';
 import footnotes_all from '@/components/json/footnotes.json'
 
 
+function get_sort_index(toSort) {
+    let hold = [];
+    toSort.map((v, i) => {
+        hold.push([v,i])
+    })
+    hold.sort(function(left, right) {
+        return left[0] > right[0] ? -1 : 1;
+    });
+    var sortIndices = [];
+    hold.map(e => {
+        sortIndices.push(e[1]);
+    })
+  return sortIndices;
+}
+
+
+function sort_by_index(arr, idx) {
+    return idx.map(e => {
+        return arr[e]
+    })
+}
+
+
 export default {
     props: {
         name: String,
@@ -32,6 +55,15 @@ export default {
             let lci = cvc.map(a => a.lci);
             let uci_adj = cvc.map(a => a.uci - a.wr);
             let lci_adj = cvc.map(a => a.wr - a.lci);
+
+
+            let idx = get_sort_index(wr);
+            civs = sort_by_index(civs, idx);
+            wr = sort_by_index(wr, idx);
+            uci = sort_by_index(uci, idx);
+            lci = sort_by_index(lci, idx);
+            uci_adj = sort_by_index(uci_adj, idx);
+            lci_adj = sort_by_index(lci_adj, idx);
             
             let civ_index = Array.from({length: wr.length}, (e, i)=> i)
             
