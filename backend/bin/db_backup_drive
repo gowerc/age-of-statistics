@@ -1,0 +1,4 @@
+#!/bin/bash
+
+rclone sync  ./data/source age-of-statistics-gdrive:  -v --stats=1m
+
