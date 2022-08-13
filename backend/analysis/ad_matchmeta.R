@@ -1,15 +1,35 @@
 
 pkgload::load_all()
 library(dplyr)
-library(dbplyr)
 library(tidyr)
 library(lubridate)
 library(data.table)
 library(dtplyr)
 library(logger)
+library(arrow)
 
 
-con <- get_connection()
+log_n_removed_df <- function(dset, df, msg, keep=TRUE) {
+    ndset <- length(unique(dset$match_id))
+    ndf <- length(unique(df$match_id))
+    if (keep) {
+        nrm <- ndset - ndf
+    } else {
+        nrm <- ndf
+    }
+    log_n_removed(ndset, nrm, msg)
+}
+
+
+log_n_removed <- function(n1, n2, msg) {
+    m <- sprintf(
+        "Removing %s (%s%%) matches due to %s\n",
+        n2,
+        round((n2 / n1) * 1000) / 10,
+        msg
+    )
+    log_info(m)
+}
 
 
 meta <- get_strings()
@@ -39,39 +59,119 @@ board_ids <- meta %>%
     select(leaderboard_id = id, leaderboard = string)
 
 
-matches_slim <- tbl(con, "match_meta") %>%
-    filter(leaderboard_id %in% local(board_ids$leaderboard_id)) %>%
-    filter(!is.na(version)) %>%
-    filter(map_type %in% local(map_ids$map_type)) %>%
-    filter(!(is.na(started) | is.na(finished))) %>%
-    filter(finished - started < (180 * 60)) %>%
-    select(match_id, started, version, leaderboard_id, finished, map_type)
+
+###################################
+#
+# Matches
+#
+#
+
+log_info('Reading Matches from filesystem')
 
 
-
-players_slim <- tbl(con, "match_players") %>%
-    semi_join(matches_slim, by = "match_id") %>%
-    filter(!is.na(profile_id)) %>%
-    filter(!is.na(rating)) %>%
-    filter(!is.na(won)) %>%
-    filter(!is.na(slot)) %>%
-    filter(civ %in% local(civ_ids$civ)) %>%
-    filter(team %in% c(1, 2), !is.na(team)) %>%
-    select(match_id, rating, civ, won, slot, profile_id, team, color)
+match_files <- list.files(
+    path = "./data/source/matches",
+    pattern = "*.parquet",
+    full.names = TRUE
+)
 
 
-log_info('Reading data from database')
+matches_slim_all <- open_dataset(match_files) |>
+    filter(leaderboard_id %in% local(board_ids$leaderboard_id)) |>
+    select(match_id, started, match_uuid, version, leaderboard_id, finished, map_type)
 
-players <- players_slim %>%
+keep_all <- matches_slim_all |> nrow()
+drop_valid_version <- matches_slim_all |> filter(is.na(version)) |> nrow()
+drop_valid_maps <- matches_slim_all |> filter(!map_type %in% local(map_ids$map_type)) |> nrow()
+drop_valid_start_stop <- matches_slim_all |> filter((is.na(started) | is.na(finished))) |> nrow()
+drop_valid_game_length <- matches_slim_all |> filter(finished - started >= (180 * 60)) |> nrow()
+
+
+log_n_removed(keep_all, drop_valid_version, "invalid version")
+log_n_removed(keep_all, drop_valid_maps, "invalid maps")
+log_n_removed(keep_all, drop_valid_start_stop, "invalid start/stop time")
+log_n_removed(keep_all, drop_valid_game_length, "invalid game length")
+
+matches_slim <- matches_slim_all |>
+    filter(!is.na(version)) |>
+    filter(map_type %in% local(map_ids$map_type)) |>
+    filter(!(is.na(started) | is.na(finished))) |>
+    filter(finished - started < (180 * 60)) |>
+    arrange(started) |>
     collect()
+
+
+
+###################################
+#
+# Players
+#
+#
+
+log_info('Reading Players from filesystem')
+
+player_files <- list.files(
+    path = "./data/source/players",
+    pattern = "*.parquet",
+    full.names = TRUE
+)
+
+players_slim_all <- open_dataset(player_files) |>
+    select(match_id, rating, civ, won, slot, profile_id, team, color) |>
+    filter(match_id %in% local(matches_slim$match_id)) |>
+    mutate(
+        cond1 = is.na(profile_id),
+        cond2 = is.na(rating),
+        cond3 = is.na(won),
+        cond4 = is.na(slot),
+        cond5 = !civ %in% local(civ_ids$civ),
+        cond6 = !team %in% c(1, 2) | is.na(team)
+    )
+
+
+keep_all <- players_slim_all |> nrow()
+drop_valid_profile <- players_slim_all |> filter(cond1) |> nrow()
+drop_valid_rating <- players_slim_all |> filter(cond2) |> nrow()
+drop_valid_won <- players_slim_all |> filter(cond3) |> nrow()
+drop_valid_slot <- players_slim_all |> filter(cond4) |> nrow()
+drop_valid_civ <- players_slim_all |> filter(cond5) |> nrow()
+drop_valid_team <- players_slim_all |> filter(cond6) |> nrow()
+
+log_n_removed(keep_all, drop_valid_profile, "invalid profile")
+log_n_removed(keep_all, drop_valid_rating, "invalid rating")
+log_n_removed(keep_all, drop_valid_won, "invalid won")
+log_n_removed(keep_all, drop_valid_slot, "invalid slot")
+log_n_removed(keep_all, drop_valid_civ, "invalid civ")
+log_n_removed(keep_all, drop_valid_team, "invalid team")
+
+
+players_slim <- players_slim_all |>
+    filter(!cond1, !cond2, !cond3, !cond4, !cond5, !cond6) |>
+    select(-cond1, -cond2, -cond3, -cond4, -cond5, -cond6) |>
+    collect()
+
+
+
+###################################
+#
+# Combining
+#
+#
+
+
+players <- players_slim |>
+    semi_join(matches_slim, by = "match_id") |>
+    distinct()
 
 
 matches <- matches_slim %>%
-    semi_join(players_slim, by = "match_id") %>%
-    collect()
+    semi_join(players_slim, by = "match_id") |>
+    distinct()
 
 
 log_info('Starting Map classification and valid teams')
+
+
 
 ### Check that all maps have been classified
 matches_maps <- matches %>%
@@ -104,6 +204,13 @@ keep_valid_teams <- players %>%
     ungroup()
 
 
+log_n_removed_df(matches, keep_valid_teams, msg = "unequal team numbers")
+
+
+# players |>
+#     anti_join(keep_valid_teams, by = "match_id") |>
+#     arrange(match_id, profile_id) |>
+#     print(n = 50)
 
 
 # Check that we have agreement on which team actually won
@@ -116,14 +223,12 @@ assert_that(
 )
 
 n_unique_won_match <- players %>%
-    semi_join(keep_valid_teams, by = "match_id") %>%
     as.data.table() %>%
     group_by(match_id) %>%
     summarise(n_unique_match = length(unique(won)), .groups = "drop") %>%
     as_tibble()
 
 n_unique_won_team <- players %>%
-    semi_join(keep_valid_teams, by = "match_id") %>%
     as.data.table() %>%
     group_by(match_id, team) %>%
     summarise(n_unique_match = length(unique(won)), .groups = "drop") %>%
@@ -131,31 +236,44 @@ n_unique_won_team <- players %>%
 
 keep_correct_won_within <- n_unique_won_team %>%
     mutate(team = paste0("team_", team)) %>%
-    spread(team, n_unique_match) %>% 
-    filter(team_1 == 1, team_2 == 1) %>% 
+    spread(team, n_unique_match) %>%
+    filter(team_1 == 1, team_2 == 1) %>%
     select(match_id)
 
-keep_correct_won_between <- n_unique_won_match %>% 
+keep_correct_won_between <- n_unique_won_match %>%
     filter(n_unique_match == 2) %>%
     select(match_id)
 
-
+log_n_removed_df(
+    matches, keep_correct_won_within,
+    msg = "inconsistent result within team"
+)
+log_n_removed_df(
+    matches, keep_correct_won_between,
+    msg = "inconsistent result between teams"
+)
 
 
 keep_correct_colors <- players %>%
     select(match_id, color) %>%
     data.table() %>%
     filter(!is.na(color)) %>%
+    mutate(unknown_color = !color %in% c(1:8)) |>
     group_by(match_id) %>%
     summarise(
         n_color = length(color),
         n_color_unique = length(unique(color)),
+        unknown_color = any(unknown_color),
         .groups = "drop"
     ) %>%
     filter(n_color == n_color_unique) %>%
-    filter(n_color_unique %in% c(2, 4, 6, 8)) %>%
+    filter(!unknown_color) %>%
     as_tibble()
 
+log_n_removed_df(
+    matches, keep_correct_colors,
+    msg = "invalid colours"
+)
 
 
 log_info("Starting ad_matches / ad_players")
@@ -175,6 +293,10 @@ ad_matches <- matches_maps %>%
     semi_join(keep_correct_colors, by = "match_id")
 
 
+log_n_removed_df(
+    matches, ad_matches,
+    msg = "Not meeting the above keep requirements"
+)
 
 
 ad_players <- players %>%
@@ -198,8 +320,8 @@ log_info("Fixing Elo")
 remove_elo_change <- ad_matches %>%
     select(match_id, leaderboard, start_dt) %>%
     filter(leaderboard == "Team Random Map") %>%
-    filter(start_dt >= ymd_hms("2022-07-13 23:00:00")) %>%
-    filter(start_dt <= ymd_hms("2022-07-15 23:59:00"))
+    filter(start_dt >= ymd_hms("2022-07-12 23:00:00")) %>%
+    filter(start_dt <= ymd_hms("2022-07-16 23:59:00"))
 
 adjust_for_elo_change <- ad_matches %>%
     select(match_id, leaderboard, start_dt) %>%
@@ -259,6 +381,11 @@ keep_consistant_nplayers <- team_meta %>%
     left_join(n_players_df, by = "match_id") %>%
     filter(n_players == n_players2)
 
+
+log_n_removed_df(
+    ad_matches_adj, keep_consistant_nplayers,
+    msg = "number of players not equalling number of slots"
+)
 
 
 LEADERBOARDS_1v1 <- c("1v1 Random Map", "1v1 Empire Wars")
@@ -437,6 +564,12 @@ for (var in names(meta_matches)) {
         msg = sprintf("Variable `%s` failed validation", var)
     )
 }
+
+
+log_n_removed_df(
+    matches, ad_matches2,
+    msg = "not passing all of the checks (final %)"
+)
 
 
 ############################################

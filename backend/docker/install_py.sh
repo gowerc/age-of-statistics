@@ -9,10 +9,9 @@
 pip3 install \
     flake8 \
     requests \
-    psycopg2 \
-    Jinja2 \
     snakemake \
     numpy \
-    pandas
+    pandas \
+    pyarrow
 
 

@@ -1,7 +1,0 @@
-{
-    "APP_DB" : "aoe",
-    "APP_HOST" : "db",
-    "APP_PASSWORD" : "Hunter2",
-    "APP_USER" : "postgres",
-    "APP_PORT" : "5432"
-}
