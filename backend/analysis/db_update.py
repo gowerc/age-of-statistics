@@ -219,7 +219,7 @@ if __name__ == "__main__":
         latest = int(matches["started"].to_numpy().max())
         
         SAVE_CURRENT += 1
-        if SAVE_CURRENT == SAVE_LIMIT:
+        if SAVE_CURRENT >= SAVE_LIMIT:
             print("---Saving to disk---")
             save_data(players, "players")
             save_data(matches, "matches")

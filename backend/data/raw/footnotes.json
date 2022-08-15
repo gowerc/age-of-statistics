@@ -118,21 +118,19 @@
     ],
     
     "global_elo_time_AVG":[
-        "Values presented are 10 day rolling averages<br/>",
-        "The 'all' group does not include games from the Team Empire Wars ladder<br/>",
-        "Numbers will be underestimated due to ~20% of matches being excluded due to data integrity issues"
+        "Numbers will be underestimated due to ~5% of matches being excluded due to data integrity issues"
     ],
     
     "global_elo_time_NGAME":[
-        "Values presented are 10 day rolling averages<br/>",
+        "Values presented are 14 day rolling averages<br/>",
         "The 'all' group does not include games from the Team Empire Wars ladder<br/>",
-        "Numbers will be underestimated due to ~20% of matches being excluded due to data integrity issues"
+        "Numbers will be underestimated due to ~5% of matches being excluded due to data integrity issues"
     ],
     
     "global_elo_time_NPLAYER":[
-        "Values presented are 10 day rolling averages<br/>",
+        "Values presented are 14 day rolling averages<br/>",
         "The 'all' group does not include games from the Team Empire Wars ladder<br/>",
-        "Numbers will be underestimated due to ~20% of matches being excluded due to data integrity issues"    
+        "Numbers will be underestimated due to ~5% of matches being excluded due to data integrity issues"    
     ],
     
     "global_elo_dist_solo": [

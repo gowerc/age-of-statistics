@@ -18,42 +18,48 @@ dir.create(
 
 
 
+get_day_summary <- function(day, games2, WINDOW) {
+    cat(paste("Starting day", day, "\n"))
+    games_selected <- games2 |>
+        filter(start > (day - days(WINDOW))) |>
+        filter(start <= day)
 
+    valid_days <- games_selected |>
+        group_by(start, leaderboard) |>
+        tally() |>
+        spread(leaderboard, n) |>
+        drop_na()
 
-get_day_summary <- function(day, matches_set, players_set) {
+    games_selected2 <- games_selected |>
+        semi_join(valid_days, by = "start")
 
-    matches_selected <- matches_set %>%
-        filter(start > day - days(STEP_SIZE)) %>%
-        filter(start <= day) %>%
-        select(match_id, start)
-
-
-    players_selected <- players_set %>%
-        inner_join(matches_selected, by = "match_id")
-
-
-    players_rating <- players_selected %>%
-        as.data.table() %>%
-        group_by(profile_id, start) %>%
-        summarise(rating_avg_plr = mean(rating), .groups = "drop") %>%
-        group_by(start) %>%
-        summarise(rating_avg = mean(rating_avg_plr)) %>%
+    players_rating <- games_selected2 |>
+        as.data.table() |>
+        group_by(profile_id, leaderboard) |>
+        slice(1) |>
+        select(match_id, profile_id, leaderboard, rating) |>
+        group_by(leaderboard) |>
+        summarise(avg_rating = mean(rating)) |>
         as_tibble()
 
-
-    players_n <- players_selected %>%
-        as.data.table() %>%
-        group_by(start) %>%
-        summarise(n = length(unique(profile_id)), .groups = "drop") %>%
+    players_n <- games_selected2 |>
+        as.data.table() |>
+        group_by(start, leaderboard) |>
+        summarise(
+            n_players = length(unique(profile_id)),
+            n_games = length(unique(match_id)),
+            .groups = "drop"
+        ) |>
+        group_by(leaderboard) |>
+        summarise(
+            n_players = mean(n_players),
+            n_games = mean(n_games),
+            .groups = "drop"
+        ) |>
         as_tibble()
 
-
-    tibble(
-        day = day,
-        avg_rating = mean(players_rating$rating_avg),
-        n_games = nrow(matches_selected) / STEP_SIZE,
-        n_players = mean(players_n$n)
-    )
+    inner_join(players_n, players_rating, by = "leaderboard") |>
+        mutate(day = day)
 }
 
 
@@ -67,82 +73,43 @@ players <- read_parquet(
 
 
 
-matches2 <- matches %>%
-    mutate(start = as.Date(start_dt)) %>%
-    mutate(stop = as.Date(stop_dt))
+matches2 <- matches |>
+    mutate(start = as.Date(start_dt)) |>
+    mutate(stop = as.Date(stop_dt)) |>
+    select(match_id, start, stop, leaderboard, start_dt)
 
 
 
-players2 <- players %>%
-    semi_join(matches2, by = "match_id")
+games <- players |>
+    inner_join(matches2, by = "match_id") |>
+    select(match_id, start, stop, profile_id, rating, leaderboard, start_dt) |>
+    arrange(desc(start_dt))
 
 
-rm("matches", "players")
+rm("matches", "players", "matches2")
 gc()
 
-matches_solo <- matches2 %>%
-    filter(leaderboard == "1v1 Random Map") %>%
-    mutate(start = as.Date(start_dt)) %>%
-    mutate(stop = as.Date(stop_dt))
-
-matches_solo_ew <- matches2 %>%
-    filter(leaderboard == "1v1 Empire Wars") %>%
-    mutate(start = as.Date(start_dt)) %>%
-    mutate(stop = as.Date(stop_dt))
-
-matches_team <- matches2 %>%
-    filter(leaderboard == "Team Random Map") %>%
-    mutate(start = as.Date(start_dt)) %>%
-    mutate(stop = as.Date(stop_dt))
+games2 <- bind_rows(
+    games,
+    games |> mutate(leaderboard = "All Ladders")
+)
 
 
+WINDOW <- 14
+STEP_SIZE <- 4
+DAY_START <- min(games$start) + days(WINDOW)
+DAY_STOP <- max(games$stop) - days(2)
 
-STEP_SIZE <- 10
-DAY_START <- as.Date(min(matches2$start_dt)) + days(STEP_SIZE)
-DAY_STOP <- as.Date(max(matches2$stop_dt))
 
-
-res_all <- map_df(
-    seq(DAY_START, DAY_STOP, by = 4),
+res <- map_df(
+    seq(DAY_START, DAY_STOP, by = STEP_SIZE),
     get_day_summary,
-    matches2,
-    players2
+    games2,
+    WINDOW
 )
 
 
-res_solo <- map_df(
-    seq(DAY_START, DAY_STOP, by = 4),
-    get_day_summary,
-    matches_solo,
-    players2
-)
-
-
-res_solo_ew <- map_df(
-    seq(DAY_START, DAY_STOP, by = 4),
-    get_day_summary,
-    matches_solo_ew,
-    players2
-)
-
-
-res_team <- map_df(
-    seq(DAY_START, DAY_STOP, by = 4),
-    get_day_summary,
-    matches_team,
-    players2
-)
-
-
-
-res <- bind_rows(
-    res_all %>% mutate(group = "All Ladders"),
-    res_solo %>% mutate(group = "RM 1v1 Ladder"),
-    res_team %>% mutate(group = "RM Team Ladder"),
-    res_solo_ew %>% mutate(group = "EW 1v1 Ladder")
-)
-
-res_no_all <- res %>% filter(group != "All Ladders")
+res_no_all <- res  |> filter(leaderboard != "All Ladders")
 
 elo_limits <- c(
     min(1000, res_no_all$avg_rating),
@@ -150,13 +117,31 @@ elo_limits <- c(
 )
 
 
+# games2 |>
+#     filter(profile_id == "179973") |>
+#     filter(leaderboard == "Team Random Map") |>
+#     print(n = 120)
 
+# games3 <- games2 |>
+#     as.data.table() |>
+#     filter(leaderboard == "Team Random Map") |>
+#     group_by(profile_id) |>
+#     mutate(celo = cummean(rating)) |>
+#     mutate(ediff = abs(rating - celo)) |>
+#     as_tibble()
 
+# games3 |> filter(ediff > 300) |> print(n = 50)
+# games3 |>
+#     filter(start > ymd("2022-07-08")) |>
+#     filter(ediff > 300) |>
+#     group_by(start) |>
+#     tally() |>
+#     print(n = 99)
 
 
 OUTPUT_ID <- "global_elo_time_AVG"
 
-p1 <- ggplot(res_no_all, aes(x = day, y = avg_rating, group = group, col = group)) +
+p1 <- ggplot(res_no_all, aes(x = day, y = avg_rating, group = leaderboard, col = leaderboard)) +
     theme_bw() +
     geom_point() +
     geom_line() +
@@ -185,7 +170,7 @@ save_plot_no_arg(
 
 OUTPUT_ID <- "global_elo_time_NGAME"
 
-p2 <- ggplot(res, aes(x = day, y = n_games, group = group, col = group)) +
+p2 <- ggplot(res, aes(x = day, y = n_games, group = leaderboard, col = leaderboard)) +
     theme_bw() +
     geom_point() +
     geom_line() +
@@ -214,7 +199,7 @@ save_plot_no_arg(
 
 OUTPUT_ID <- "global_elo_time_NPLAYER"
 
-p3 <- ggplot(res, aes(x = day, y = n_players, group = group, col = group)) +
+p3 <- ggplot(res, aes(x = day, y = n_players, group = leaderboard, col = leaderboard)) +
     theme_bw() +
     geom_point() +
     geom_line() +
@@ -235,7 +220,5 @@ save_plot_no_arg(
     OUTPUT_ID,
     file.path("outputs", "global")
 )
-
-
 
 

@@ -1,7 +1,7 @@
 {
     "default": {
         "filters": "rm_solo_all",
-        "periods": "p03_v08"
+        "periods": "p03_v09"
     },
     "filters": {
         
@@ -184,7 +184,7 @@
         
     },
     "periods": {
-        "p01_v04" : {
+        "p01_v05" : {
             "label": "10Oct2021 - 16Nov2021 (Swordsman Buff)",
             "lower": "2021-10-10",
             "upper": "2021-11-16",
@@ -203,7 +203,7 @@
                 "rm_team_closed"
             ]
         },
-        "p02_v04": {
+        "p02_v05": {
             "label": "20Nov2021 - 26Apr2022 (Unique Infantry Buff)",
             "lower": "2021-11-20",
             "upper": "2022-04-26",
@@ -226,10 +226,10 @@
 
             ]
         },
-        "p03_v08": {
-            "label": "14May2022 - 22July2022 (Dynasties of India)",
+        "p03_v09": {
+            "label": "14May2022 - 11August2022 (Dynasties of India)",
             "lower": "2022-05-14",
-            "upper": "2022-07-22",
+            "upper": "2022-08-11",
             "filters": [
                 "rm_solo_all_avg",
                 "rm_solo_open_avg",
