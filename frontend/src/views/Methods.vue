@@ -248,6 +248,9 @@
         Regardless, the model still gives us a good estimate of the teams <em>average</em> performance
         and provides a more stable estimate for team games than the "averaged win rates" estimate.
     </p>
+
+
+
     <h3>Removing Single Civilisation Players</h3>
 
     <p>
@@ -265,6 +268,22 @@
         to get a better understanding of the issue. Ideally the cutoff point would be lowered to
         something more like 30-40% however we need to balance this issue against the loss in sample 
         size that we take from removing these matches. 
+    </p>
+
+
+
+    <h3>Missing Elo Imputation</h3>
+
+    <p>
+        About 10% of matches contain at least 1 player missing an Elo rating.
+        This is mostly due to the way in which aoe2.net collects the data as is unfortunately unavoidable.
+        To address this a “last observation carried backwards” imputation is applied. This is
+        where missing values are imputed to be the next known value i.e. if a players Elo rating other 4 matches were 1015 -> 1005 -> missing -> 1020 then the missing value would be imputed as 1020.
+        This is particularly useful for placement matches (the first 10 matches before players
+        are assigned an Elo) where we use their final Elo after the 10 matches as an estimate of their Elo during those 10 matches.
+        Despite applying this imputation some players still do not have a known Elo for some of their matches, a particular example are players that never complete their 10 placement matches. 
+        In these cases these matches are excluded as there is no reasonable way to determine if they won or lost due to a difference in skill or due to the civilisation they selected. 
+        About 4% of matches are excluded due to falling into this category. 
     </p>
 </template>
 

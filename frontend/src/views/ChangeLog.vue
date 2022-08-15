@@ -6,6 +6,37 @@
     <h2>Change Log</h2>
 
 
+
+    <hr>
+    <h4>2022-August-15</h4>
+    <ul>
+        <li>
+            Updated most recent period to include matches up to 11th August 2022
+        </li>
+        <li>
+            Relaxed data inclusion criteria to allow for matches with an unknown patch version
+        </li>
+        <li>
+            Some matches that were previosly excluded due to players having unknown Elos are now included by applying last observation carried backwards imputation. Matches which still have a missing Elo despite this imputation as still excluded (this equals about ~4% of all matches)
+        </li>
+        <li>
+            The above 2 changes mean that about ~10% more matches are now included into the analysis
+        </li>
+        <li>
+            Increased rolling average window on the "Total Number of X per Day" plots to be 14 days instead of 10 as to always include 2 weekends.
+        </li>
+        <li>
+            Fixed a minor bug in the "Total Number of X per Day" plot that underestimated the numbers produced for the period of time when the team Elo was updated
+        </li>
+        <li>
+            Changed Elo derivation in the "Mean Elo of Unique Active Players per Day" to use last known Elo within the 14 day window. 
+        </li>
+    </ul>
+
+
+
+
+
     <hr>
     <h4>2022-July-26</h4>
     <ul>
