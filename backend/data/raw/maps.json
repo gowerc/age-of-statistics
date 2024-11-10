@@ -3,6 +3,7 @@
     "Acropolis": "Open",
     "African Clearing": "Nomad Other",
     "Aftermath": "Removed",
+    "Alpine Lakes": "Open",
     "Amazon Tunnel": "Closed",
     "Arabia": "Open",
     "Archipelago": "Water",
@@ -14,9 +15,12 @@
     "Bogland": "Open",
     "Budapest": "Hybrid",
     "Cenotes": "Open",
+    "City Of Lakes": "Hybrid",
     "Coastal": "Hybrid",
     "Coastal Forest": "Hybrid",
+    "Continental": "Hybrid",
     "Crater": "Open",
+    "Crossroads": "Open",
     "Enclosed": "Closed",
     "Eruption": "Open",
     "Fortress": "Closed",
@@ -30,6 +34,7 @@
     "Haboob": "Open",
     "Hamburger": "Hybrid",
     "Hideout": "Closed",
+    "Highland": "Hybrid",
     "Hill Fort": "Closed",
     "Islands": "Water",
     "Kawasan": "Open",
@@ -40,8 +45,10 @@
     "Marketplace": "Open",
     "Meadow": "Hybrid",
     "Mediterranean" : "Hybrid",
-    "MegaRandom": "Random",
+    "Mega Random": "Random",
+    "Michi": "Closed",
     "Migration": "Water",
+    "Mongolia": "Open",
     "Mountain Range": "Open",
     "Mountain Ridge": "Open",
     "Nile Delta" : "Water",
@@ -53,6 +60,7 @@
     "Ring Fortress": "Open",
     "Runestones": "Open",
     "Sacred Springs": "Hybrid",
+    "Sandbank": "Water",
     "Scandinavia": "Hybrid",
     "Serengeti": "Open",
     "Socotra": "Open",
@@ -64,8 +72,5 @@
     "Water Nomad": "Nomad Water",
     "Yucatan": "Closed"
 }
-
-
-
 
 

@@ -31,7 +31,8 @@ packages <- c(
     "arrow",
     "fastglm",
     "RhpcBLASctl",
-    "logger"
+    "logger",
+    "quarto"
 )
 
 

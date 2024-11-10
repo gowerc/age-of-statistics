@@ -184,25 +184,6 @@
         
     },
     "periods": {
-        "p01_v05" : {
-            "label": "10Oct2021 - 16Nov2021 (Swordsman Buff)",
-            "lower": "2021-10-10",
-            "upper": "2021-11-16",
-            "filters": [
-                "rm_solo_all_avg",
-                "rm_solo_open_avg",
-                "rm_solo_closed_avg",
-                "rm_solo_all",
-                "rm_solo_open",
-                "rm_solo_closed",
-                "rm_solo_pro_all",
-                "rm_solo_pro_open",
-                "rm_solo_pro_closed",
-                "rm_team_all",
-                "rm_team_open",
-                "rm_team_closed"
-            ]
-        },
         "p02_v05": {
             "label": "20Nov2021 - 26Apr2022 (Unique Infantry Buff)",
             "lower": "2021-11-20",
@@ -226,10 +207,10 @@
 
             ]
         },
-        "p03_v09": {
-            "label": "14May2022 - 11August2022 (Dynasties of India)",
+        "p03_v10": {
+            "label": "14May2022 - 28Aug2022 (Dynasties of India)",
             "lower": "2022-05-14",
-            "upper": "2022-08-11",
+            "upper": "2022-08-28",
             "filters": [
                 "rm_solo_all_avg",
                 "rm_solo_open_avg",
@@ -245,6 +226,21 @@
                 "rm_team_open",
                 "rm_team_closed",
                 "rm_team_nomad"
+            ]
+        },
+        "p04_v01": {
+            "label": "5Sep2022 - 18Sep2022 (Archer 'nerf')",
+            "lower": "2022-09-05",
+            "upper": "2022-09-18",
+            "filters": [
+                "rm_solo_all_avg",
+                "rm_solo_all",
+                "rm_solo_open",
+                "rm_solo_closed",
+                "rm_solo_pro_all",
+                "rm_team_all",
+                "rm_team_open",
+                "rm_team_closed"
             ]
         }
     }

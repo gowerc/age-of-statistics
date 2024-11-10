@@ -19,9 +19,6 @@
 #   - Remove dead lingering R processes (bug of vscode-R)
 #         ./bin/sm killr
 #
-#   - Update Patch metadata
-#         ./bin/sm strings
-#
 #   - Specific output groups by period and filter
 #           export SELECT_PERIOD=p03_v08
 #           export SELECT_FILTER=rm_solo_open
@@ -61,7 +58,7 @@ rule all:
 
 
 rule db:
-    shell: "python3.9 ./analysis/db_update.py"
+    shell: "python3.10 ./analysis/db_fetch.py"
 
 
 rule clean:
@@ -80,12 +77,6 @@ rule killr:
         """
 
 
-
-# Used to periodically update strings, not apart of overall pipeline
-rule strings:
-    output: "data/raw/strings.json"
-    input: "data/raw/strings.py"
-    shell: "python3.9 {input[0]}"
 
 
 
